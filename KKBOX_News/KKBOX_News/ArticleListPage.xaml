@@ -1,0 +1,59 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="KKBOX_News.ArticleListPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:KKBOX_News"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d"
+    shell:SystemTray.IsVisible="False">
+
+    <phone:PhoneApplicationPage.Resources>
+        <!--<converter:BooleanToVisibilityConverter xmlns:converter="clr-namespace:KKBOX_News" x:Key="BooleanToVisibility" />-->
+    </phone:PhoneApplicationPage.Resources>
+    
+    <!--LayoutRoot 是放置所有頁面的根資料格-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel 包含應用程式的名稱和頁面標題-->
+        <StackPanel Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock Text="我的應用程式" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock Text="頁面名稱" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+        </StackPanel>
+
+        <!--ContentPanel - 其他內容置於此-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <ListBox ItemsSource="{Binding Items}" SelectionChanged="ListBox_SelectionChanged">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Image Grid.Column="0" Source="{Binding IconImagePath}" Width="60" Height="60"/>
+                            <StackPanel  Grid.Column="1" Orientation="Vertical">
+                                <TextBlock  Text="{Binding Title}" TextWrapping="Wrap" Margin="10,0" Style="{StaticResource PhoneTextExtraLargeStyle}" FontSize="{StaticResource PhoneFontSizeLarge}" />
+                                <TextBlock  Text="{Binding Content}" TextWrapping="Wrap" Margin="10,0" Style="{StaticResource PhoneTextSmallStyle}" Visibility="{Binding IsExtended,Converter = {StaticResource BooleanToVisibility}}"/>
+                                <TextBlock  Text="更多文章及歌曲" TextWrapping="Wrap" Margin="10,0" Foreground="Blue" Style="{StaticResource PhoneTextSmallStyle}"  Visibility="{Binding IsExtended,Converter = {StaticResource BooleanToVisibility}}" ManipulationStarted="TextBlock_ManipulationStarted"/>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </Grid>
+
+</phone:PhoneApplicationPage>

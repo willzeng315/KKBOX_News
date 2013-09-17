@@ -57,6 +57,29 @@
 
             </phone:PanoramaItem>
 
+            
+
+            <!--Panorama 項目 3-->
+            <phone:PanoramaItem Header="third item" Orientation="Horizontal">
+                <!--具有大型影像預留位置的雙倍寬度 Panorama-->
+                <Grid>
+                    <StackPanel Margin="0,4,16,0" Orientation="Vertical" VerticalAlignment="Top">
+                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                            <Border Background="#FFFFC700" Height="173" Width="173" Margin="12,0,0,0"/>
+                            <Border Background="#FFFFC700" Height="173" Width="173" Margin="12,0,0,0"/>
+                            <Border Background="#FFFFC700" Height="173" Width="173" Margin="12,0,0,0"/>
+                            <Border Background="#FFFFC700" Height="173" Width="173" Margin="12,0,0,0"/>
+                        </StackPanel>
+                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,12,0,0">
+                            <Border Background="#FFFFC700" Height="173" Width="173" Margin="12,0,0,0"/>
+                            <Border Background="#FFFFC700" Height="173" Width="173" Margin="12,0,0,0"/>
+                            <Border Background="#FFFFC700" Height="173" Width="173" Margin="12,0,0,0"/>
+                            <Border Background="#FFFFC700" Height="173" Width="173" Margin="12,0,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </phone:PanoramaItem>
+
             <!--Panorama 項目 2-->
             <phone:PanoramaItem>
                 <!--有圖像預留位置且文字會換行，並使用會隨內容捲動之浮動標頭的雙行清單-->
@@ -89,26 +112,6 @@
                 </phone:LongListSelector>
             </phone:PanoramaItem>
 
-            <!--Panorama 項目 3-->
-            <phone:PanoramaItem Header="third item" Orientation="Horizontal">
-                <!--具有大型影像預留位置的雙倍寬度 Panorama-->
-                <Grid>
-                    <StackPanel Margin="0,4,16,0" Orientation="Vertical" VerticalAlignment="Top">
-                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                            <Border Background="#FFFFC700" Height="173" Width="173" Margin="12,0,0,0"/>
-                            <Border Background="#FFFFC700" Height="173" Width="173" Margin="12,0,0,0"/>
-                            <Border Background="#FFFFC700" Height="173" Width="173" Margin="12,0,0,0"/>
-                            <Border Background="#FFFFC700" Height="173" Width="173" Margin="12,0,0,0"/>
-                        </StackPanel>
-                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,12,0,0">
-                            <Border Background="#FFFFC700" Height="173" Width="173" Margin="12,0,0,0"/>
-                            <Border Background="#FFFFC700" Height="173" Width="173" Margin="12,0,0,0"/>
-                            <Border Background="#FFFFC700" Height="173" Width="173" Margin="12,0,0,0"/>
-                            <Border Background="#FFFFC700" Height="173" Width="173" Margin="12,0,0,0"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Grid>
-            </phone:PanoramaItem>
         </phone:Panorama>
 
         <!--取消註解以查看對齊格線，協助確保您的控制項

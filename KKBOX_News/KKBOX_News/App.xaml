@@ -19,8 +19,7 @@
         </Style>
         
         <local:LocalizedStrings xmlns:local="clr-namespace:KKBOX_News" x:Key="LocalizedStrings"/>
-        <converter:RssTextTrimmer xmlns:converter="clr-namespace:KKBOX_News" x:Key="RssTextTrimmer" />
-        <converter:RssImageTrimmer xmlns:converter="clr-namespace:KKBOX_News" x:Key="RssImageTrimmer" />
+        <converter:BooleanToVisibilityConverter xmlns:converter="clr-namespace:KKBOX_News" x:Key="BooleanToVisibility" />
     </Application.Resources>
 
     <Application.ApplicationLifetimeObjects>

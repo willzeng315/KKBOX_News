@@ -40,7 +40,7 @@ namespace KKBOX_News
             //SimpleItem item = box.SelectedItem as SimpleItem;
             ItemViewModel n = box.SelectedItem as ItemViewModel;
 
-            string destination = "/TopicSelected.xaml";
+            string destination = "/ArticleListPage.xaml";
 
                 destination += String.Format("?XML={0}",n.LineThree);
            
