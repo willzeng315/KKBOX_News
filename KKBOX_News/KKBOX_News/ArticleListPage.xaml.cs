@@ -18,6 +18,8 @@ namespace KKBOX_News
     public partial class ArticleListPage : PhoneApplicationPage
     {
         private bool IsLinkClick = false;
+        private ObservableCollection<ArticleItem> items;
+        private int LastSelectedItemIndex = -1;
         private ArticleListPageModel _model;
         public ArticleListPageModel Model
         {
@@ -40,21 +42,26 @@ namespace KKBOX_News
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             // First, check whether the feed is already saved in the page state.
-
-            IDictionary<string, string> parameters = this.NavigationContext.QueryString;
-            string xmlValue = "";
-            if (parameters.ContainsKey("XML"))
+            if (items != null)
             {
-                xmlValue = parameters["XML"];
+                items[LastSelectedItemIndex].IsExtended = true;
+                Debug.WriteLine(LastSelectedItemIndex);
             }
+            else
+            {
+                IDictionary<string, string> parameters = this.NavigationContext.QueryString;
+                string xmlValue = "";
+                if (parameters.ContainsKey("XML"))
+                {
+                    xmlValue = parameters["XML"];
+                }
 
-            Uri uri = new Uri(xmlValue, UriKind.Absolute); ;
-            WebClient webClient = new WebClient();
-            webClient.DownloadStringCompleted += webClient_DownloadStringCompleted;
-            webClient.DownloadStringAsync(uri);
-            Debug.WriteLine("125345236");
-
-        }
+                Uri uri = new Uri(xmlValue, UriKind.Absolute); ;
+                WebClient webClient = new WebClient();
+                webClient.DownloadStringCompleted += webClient_DownloadStringCompleted;
+                webClient.DownloadStringAsync(uri);
+            }
+       }
 
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
         {
@@ -70,7 +77,7 @@ namespace KKBOX_News
             XDocument root = XDocument.Parse(sXML);
             XElement channelRoot = root.Element("rss").Element("channel");
             IEnumerable<XElement> elements = channelRoot.Elements("item");
-            ObservableCollection<ArticleItem> items = new ObservableCollection<ArticleItem>();
+            items = new ObservableCollection<ArticleItem>();
             foreach (XElement eleItem in elements)
             {
                 String sTitle = eleItem.Element("title").Value;
@@ -78,7 +85,6 @@ namespace KKBOX_News
                 String sIconPath = ImageRetriever(sDescription);
                 String sContent = ContentRetriever(sDescription);
                 String sLink = LinkRetriever(sDescription);
-                bool sIsItemClik = false;
                 ArticleItem newItem = new ArticleItem();
                 newItem.Title = sTitle;
                 newItem.Content = sContent;
@@ -170,9 +176,19 @@ namespace KKBOX_News
             {
                 // Get the SyndicationItem that was tapped.
                 ArticleItem sItem = (ArticleItem)listBox.SelectedItem;
-
+                //listBox.SelectedIndex
                 sItem.IsExtended = true;
-                
+                if (LastSelectedItemIndex == -1)
+                {
+                    LastSelectedItemIndex = listBox.SelectedIndex;
+                }
+                else
+                {
+                    items[LastSelectedItemIndex].IsExtended = false;
+                    LastSelectedItemIndex = listBox.SelectedIndex;
+                }
+                Debug.WriteLine(LastSelectedItemIndex);
+                Debug.WriteLine(listBox.SelectedIndex);
                 // Set up the page navigation only if a link actually exists in the feed item.
                 //if (sItem.Links.Count > 0 && IsLinkClick)
                 //{
@@ -199,8 +215,6 @@ namespace KKBOX_News
         {
             IsLinkClick = true;
             //Debug.WriteLine("Manipulation");  
-
-            //afsdf
         }
     }
 }
