@@ -13,6 +13,7 @@ using KKBOX_News.ViewModels;
 
 namespace KKBOX_News
 {
+// Ascii 2013-09-17"
     public partial class MainPage : PhoneApplicationPage
     {
         // 建構函式
