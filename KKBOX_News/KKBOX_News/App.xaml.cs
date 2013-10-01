@@ -24,6 +24,7 @@ namespace KKBOX_News
         /// 供檢視繫結的靜態 ViewModel。
         /// </summary>
         /// <returns>MainViewModel 物件。</returns>
+
         public static MainViewModel ViewModel
         {
             get
@@ -35,7 +36,6 @@ namespace KKBOX_News
                 return viewModel;
             }
         }
-
         /// <summary>
         /// 提供簡單的方法，來存取電話應用程式的根畫面。
         /// </summary>
@@ -92,10 +92,10 @@ namespace KKBOX_News
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
             // 確定已適當還原應用程式狀態
-            if (!App.ViewModel.IsDataLoaded)
-            {
-                App.ViewModel.LoadData();
-            }
+            //if (!App.ViewModel.IsDataLoaded)
+            //{
+            //    App.ViewModel.LoadData();
+            //}
         }
 
         // 停用應用程式 (移到背景) 時要執行的程式碼

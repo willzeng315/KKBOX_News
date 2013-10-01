@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:local="clr-namespace:KKBOX_News"
     xmlns:sys="clr-namespace:System;assembly=mscorlib">
     
 
@@ -19,7 +20,7 @@
         </Style>
         
         <local:LocalizedStrings xmlns:local="clr-namespace:KKBOX_News" x:Key="LocalizedStrings"/>
-        <converter:BooleanToVisibilityConverter xmlns:converter="clr-namespace:KKBOX_News" x:Key="BooleanToVisibility" />
+        <local:BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
     </Application.Resources>
 
     <Application.ApplicationLifetimeObjects>

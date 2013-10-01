@@ -25,15 +25,19 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+
         <!--TitlePanel 包含應用程式的名稱和頁面標題-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock Text="我的應用程式" Style="{StaticResource PhoneTextNormalStyle}"/>
-            <TextBlock Text="頁面名稱" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+            <TextBlock Text="KKBOX NEWS" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock x:Name="TopicPageTitle" Text="{Binding PageTitle}" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
-
-        <!--ContentPanel - 其他內容置於此-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <ListBox ItemsSource="{Binding Items}" SelectionChanged="ListBox_SelectionChanged">
+        <TextBlock Grid.Row="1" 
+                   x:Name="LoadingText" 
+                   Text="Loading..." 
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Visibility="{Binding IsNotRssPageLoaded,Converter = {StaticResource BooleanToVisibility}}"/>
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0" >
+            <ListBox ItemsSource="{Binding Items}" SelectionChanged="OnListBoxSelectionChanged">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid >
@@ -43,7 +47,7 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <Image Grid.Column="0" Source="{Binding IconImagePath}" Width="60" Height="60"/>
+                            <Image Grid.Column="0" Source="{Binding IconImagePath}" Width="60" Height="60" VerticalAlignment="Top"/>
                             <StackPanel  Grid.Column="1" Orientation="Vertical">
                                 <TextBlock  Text="{Binding Title}" TextWrapping="Wrap" Margin="10,0" Style="{StaticResource PhoneTextExtraLargeStyle}" FontSize="{StaticResource PhoneFontSizeLarge}" />
                                 <TextBlock  Text="{Binding Content}" TextWrapping="Wrap" Margin="10,0" Style="{StaticResource PhoneTextSmallStyle}" Visibility="{Binding IsExtended,Converter = {StaticResource BooleanToVisibility}}"/>

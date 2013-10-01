@@ -27,49 +27,22 @@ namespace KKBOX_News
         // 載入 ViewModel 項目的資料
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (!App.ViewModel.IsDataLoaded)
+            if (!App.ViewModel.IsTopicsXmlLoaded)
             {
                 App.ViewModel.SelectTopicParser();
             }
         }
 
-        private void LongListSelector_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        private void OnListBoxSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            
-            LongListSelector box = sender as LongListSelector;
-            //SimpleItem item = box.SelectedItem as SimpleItem;
-            ItemViewModel n = box.SelectedItem as ItemViewModel;
+            ListBox topics = sender as ListBox;
+            ChannelListItem channelItem = topics.SelectedItem as ChannelListItem;
 
-            string destination = "/ArticleListPage.xaml";
+            String sDestination = String.Format("/ArticleListPage.xaml?XML={0}&Title={1}", channelItem.Url, channelItem.Title);
 
-                destination += String.Format("?XML={0}",n.LineThree);
-           
-
-            this.NavigationService.Navigate(new Uri(destination, UriKind.Relative));
+            this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
             //Debug.WriteLine(n.LineOne);
         }
 
-        //private void PhoneApplicationPage_Loaded_1(object sender, RoutedEventArgs e)
-        //{
-        //    Uri uri = new Uri("https://mail.kkbox.com.tw/~willzeng/SelectTopic.xml"); 
-
-        //    WebClient webClient = new WebClient();
-        //    webClient.DownloadStringCompleted += OnDownloadStringCompleted;
-        //    webClient.DownloadStringAsync(uri);
-        //}
-
-        //void OnDownloadStringCompleted(object sender, DownloadStringCompletedEventArgs args)
-        //{
-            
-        //    XDocument doc = XDocument.Parse(args.Result);
-        //    Console.WriteLine(doc.ToString());
-        //    IEnumerable<XElement> eles = doc.Element("kkbox_news").Elements("topic");
-        //   foreach (XElement el in eles) {
-        //       Debug.WriteLine(el.Element("title").Value); 
-        //      // + " , " + el.Element("title").Value 
-        //      // + " , " + el.Attribute("publisher").Value);
-        //   }
-
-        //}
     }
 }

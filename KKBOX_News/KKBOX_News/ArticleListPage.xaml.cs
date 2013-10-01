@@ -12,40 +12,45 @@ using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using Microsoft.Phone.Tasks;
 using System.Diagnostics;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace KKBOX_News
 {
-    public partial class ArticleListPage : PhoneApplicationPage
+    public partial class ArticleListPage : PhoneApplicationPage,INotifyPropertyChanged
     {
-        private bool IsLinkClick = false;
+
+        private Boolean isLinkClick = false;
         private ObservableCollection<ArticleItem> items;
-        private int LastSelectedItemIndex = -1;
-        private ArticleListPageModel _model;
+        private Int32 lastSelectedItemIndex = -1;
+        private ArticleListPageModel model;
         public ArticleListPageModel Model
         {
             get
             {
-                if (_model == null)
+                if (model == null)
                 {
-                    _model = new ArticleListPageModel();
+                    model = new ArticleListPageModel();
                 }
-                return _model;
+                return model;
             }
         }
 
         public ArticleListPage()
         {
             InitializeComponent();
+            IsNotRssPageLoaded = true;
+            LoadingText.DataContext = this;
+            TopicPageTitle.DataContext = this;
             DataContext = Model;
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
-            // First, check whether the feed is already saved in the page state.
             if (items != null)
             {
-                items[LastSelectedItemIndex].IsExtended = true;
-                Debug.WriteLine(LastSelectedItemIndex);
+                items[lastSelectedItemIndex].IsExtended = true;
+                Debug.WriteLine(lastSelectedItemIndex);
             }
             else
             {
@@ -55,23 +60,25 @@ namespace KKBOX_News
                 {
                     xmlValue = parameters["XML"];
                 }
+                if(parameters.ContainsKey("Title"))
+                {
+                    PageTitle = parameters["Title"];
+                }
 
                 Uri uri = new Uri(xmlValue, UriKind.Absolute); ;
                 WebClient webClient = new WebClient();
-                webClient.DownloadStringCompleted += webClient_DownloadStringCompleted;
+                webClient.DownloadStringCompleted += OnDownloadStringCompleted;
                 webClient.DownloadStringAsync(uri);
             }
        }
 
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
         {
-            // First, check whether the feed is already saved in the page state.
-
-
+            
         }
 
 
-        private void webClient_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
+        private void OnDownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
         {
             String sXML = e.Result;
             XDocument root = XDocument.Parse(sXML);
@@ -90,131 +97,166 @@ namespace KKBOX_News
                 newItem.Content = sContent;
                 newItem.IconImagePath = sIconPath;
                 newItem.Link = sLink;
-                newItem.IsExtended = false;//"Visible";
-                //newItem.IsItemClik = sIsItemClik;
+                newItem.IsExtended = false;
                 items.Add(newItem);
             }
             Model.Items = items;
+
+            IsNotRssPageLoaded = false;
         }
-        private string ImageRetriever(string sDescription)
+        private String ImageRetriever(String sDescription)
         {
-            if (sDescription == null) return null;
+            String ImageSource = "";
+            const Int32 IndexShift = 9; //Length of "img src='"
 
-            string ImageSource = "";
+            if (sDescription != null)
+            {
+                Int32 startIndex = sDescription.ToString().IndexOf("img src='");
+                Int32 EndIndex = sDescription.ToString().IndexOf("jpg");
+                Int32 srcLen = EndIndex - startIndex;
 
-            int startIndex = sDescription.ToString().IndexOf("img src='");
-            int EndIndex = sDescription.ToString().IndexOf("jpg");
-            int srcLen = EndIndex - startIndex - 6;
+                if (startIndex > EndIndex || srcLen < 0)
+                {
+                    return null;
+                }
 
-            if (startIndex > EndIndex || srcLen < 0)
-                return null;
-
-            ImageSource = sDescription.ToString().Substring(startIndex + 9, srcLen);
-
+                ImageSource = sDescription.ToString().Substring(startIndex + IndexShift, srcLen);
+                return ImageSource;
+            }
             return ImageSource;
         }
-        private string ContentRetriever(string sDescription)
+
+        private String ContentRetriever(String sDescription)
         {
-            if (sDescription == null) return null;
-
-            int maxLength = 200;
-            int strLength = 0;
-            string fixedString = "";
-            fixedString = Regex.Replace(sDescription.ToString(), "<[^>]+>", string.Empty);
-
-            // Remove newline characters.
-            fixedString = fixedString.Replace("\r", "").Replace("\n", "");
-
-            // Remove encoded HTML characters.
-            fixedString = HttpUtility.HtmlDecode(fixedString);
-            int ContentLenth = fixedString.IndexOf("更多文章");
-            if (ContentLenth != -1)
+            String ContentString = "";
+            
+            if (sDescription != null)
             {
-                fixedString = fixedString.Substring(0, ContentLenth);
+                ContentString = Regex.Replace(sDescription.ToString(), "<[^>]+>", String.Empty);
+
+                ContentString = ContentString.Replace("\r", "").Replace("\n", "");
+
+                ContentString = HttpUtility.HtmlDecode(ContentString);
+
+                Int32 ContentLenth = ContentString.IndexOf("更多文章");
+
+                if (ContentLenth != -1)
+                {
+                    ContentString = ContentString.Substring(0, ContentLenth);
+                }
+
+                ContentString = String.Format("{0},{1}", ContentString, "...");
+                
             }
-
-            strLength = fixedString.ToString().Length;
-
-            if (strLength == 0)
-            {
-                return null;
-            }
-
-            else if (strLength >= maxLength)
-            {
-                fixedString = fixedString.Substring(0, maxLength);
-                fixedString = fixedString.Substring(0, fixedString.LastIndexOf(" "));
-            }
-
-            fixedString += "...";
-
-            return fixedString;
+            return ContentString;
         }
-        private string LinkRetriever(string sDescription)
+
+        private String LinkRetriever(String sDescription)
         {
-            if (sDescription == null) return null;
+            String LinkSource = "";
+            const Int32 IndexShift = 4; // Length of "http"
 
-            string LinkSource = "";
+            if (sDescription != null)
+            {
+                Int32 startIndex = sDescription.ToString().IndexOf("http");
+                Int32 EndIndex = sDescription.ToString().IndexOf("html");
+                Int32 srcLen = EndIndex - startIndex;
 
-            int startIndex = sDescription.ToString().IndexOf("http");
-            int EndIndex = sDescription.ToString().IndexOf("html");
-            int srcLen = EndIndex - startIndex;
-
-            if (startIndex > EndIndex || srcLen < 0)
-                return null;
-
-            LinkSource = sDescription.ToString().Substring(startIndex, srcLen+4);
-
+                if (startIndex < EndIndex && srcLen > 0)
+                {
+                    LinkSource = sDescription.ToString().Substring(startIndex, srcLen + IndexShift);
+                }
+            }
             return LinkSource;
 
         }
-        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void OnListBoxSelectionChanged(Object sender, SelectionChangedEventArgs e)
         {
             ListBox listBox = sender as ListBox;
 
             if (listBox != null && listBox.SelectedItem != null)
             {
-                // Get the SyndicationItem that was tapped.
+
                 ArticleItem sItem = (ArticleItem)listBox.SelectedItem;
-                //listBox.SelectedIndex
-                sItem.IsExtended = true;
-                if (LastSelectedItemIndex == -1)
+
+                if (lastSelectedItemIndex != -1 && lastSelectedItemIndex != listBox.SelectedIndex)
                 {
-                    LastSelectedItemIndex = listBox.SelectedIndex;
+                    items[lastSelectedItemIndex].IsExtended = false;
+                    lastSelectedItemIndex = listBox.SelectedIndex;
+                }
+
+                if (sItem.IsExtended == true)
+                {
+                    sItem.IsExtended = false;
                 }
                 else
                 {
-                    items[LastSelectedItemIndex].IsExtended = false;
-                    LastSelectedItemIndex = listBox.SelectedIndex;
+                   sItem.IsExtended = true;
+                   lastSelectedItemIndex = listBox.SelectedIndex;
                 }
-                Debug.WriteLine(LastSelectedItemIndex);
-                Debug.WriteLine(listBox.SelectedIndex);
-                // Set up the page navigation only if a link actually exists in the feed item.
-                //if (sItem.Links.Count > 0 && IsLinkClick)
-                //{
-                //    // Get the associated URI of the feed item.
-                //    Uri uri = sItem.Links.FirstOrDefault().Uri;
 
-                //    // Create a new WebBrowserTask Launcher to navigate to the feed item. 
-                //    // An alternative solution would be to use a WebBrowser control, but WebBrowserTask is simpler to use. 
-                if (IsLinkClick)
+                if (isLinkClick)
                 {
                     WebBrowserTask webBrowserTask = new WebBrowserTask();
                     webBrowserTask.Uri = new Uri(sItem.Link, UriKind.Absolute);
                     webBrowserTask.Show();
-                    IsLinkClick = false;
+                    isLinkClick = false;
                 }
-               // Debug.WriteLine("Selection");
 
-                //}
             }
+
             listBox.SelectedItem = null;
         }
-
+       
         private void TextBlock_ManipulationStarted(object sender, System.Windows.Input.ManipulationStartedEventArgs e)
         {
-            IsLinkClick = true;
+            isLinkClick = true;
             //Debug.WriteLine("Manipulation");  
+        }
+
+        private Boolean isNotRssPageLoaded;
+        public Boolean IsNotRssPageLoaded
+        {
+            get
+            {
+                return isNotRssPageLoaded;
+            }
+            set
+            {
+                SetProperty(ref isNotRssPageLoaded, value, "IsNotRssPageLoaded");
+            }
+        }
+        private String pageTitle;
+        public String PageTitle
+        {
+            get
+            {
+                return pageTitle;
+            }
+            set
+            {
+                SetProperty(ref pageTitle, value, "PageTitle");
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected Boolean SetProperty<T>(ref T storage, T value, [CallerMemberName] String propertyName = null)
+        {
+            if (object.Equals(storage, value)) return false;
+
+            storage = value;
+            this.OnPropertyChanged(propertyName);
+            return true;
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] String propertyName = null)
+        {
+            var eventHandler = this.PropertyChanged;
+            if (eventHandler != null)
+            {
+                eventHandler(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

@@ -17,24 +17,6 @@
     <!--LayoutRoot 是放置所有頁面的根資料格-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
 
-        <!-- 當地語系化注意事項:
-            若要將顯示的字串當地語系化，請將其值複製到應用程式的中性語言資源檔
-            (AppResources.resx) 中已適當命名的機碼，然後
-            將屬性的引號之間硬式編碼的文字值取代
-            為其路徑指向該字串名稱的繫結子句。
-
-            例如:
-
-                Text="{Binding Path=LocalizedResources.ApplicationTitle, Source={StaticResource LocalizedStrings}}"
-
-            此繫結指向範本中名為 "ApplicationTitle" 的字串資源。
-
-            在 [專案屬性] 索引標籤中加入支援的語言將為
-            每種能承載 UI 字串翻譯值的每一種語言建立一個
-            新的 resx 檔案。這些範例中的繫結將導致在執行時從
-            與應用程式的 CurrentUICulture 相符的 .resx 檔案中
-            取得屬性的值。
-         -->
 
          <!--Panorama 控制項-->
         <phone:Panorama Title="我的應用程式">
@@ -44,83 +26,31 @@
 
             <!--Panorama 項目 1-->
             <phone:PanoramaItem Header="訂閱中心">
-                <phone:LongListSelector Margin="0,-38,-22,2" ItemsSource="{Binding Items}" SelectionChanged="LongListSelector_SelectionChanged_1">
-                    <phone:LongListSelector.ItemTemplate>
+                <ListBox ItemsSource="{Binding Topics}" SelectionChanged="OnListBoxSelectionChanged">
+                    <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Margin="12,2,0,4" >
-                                 <Image Source="{Binding LineTwo}" Width="64" Height="64"/>
-                                 <TextBlock Text="{Binding LineOne}" TextWrapping="Wrap" Margin="10,0" Style="{StaticResource PhoneTextExtraLargeStyle}" FontSize="{StaticResource PhoneFontSizeLarge}" />
+                            <StackPanel Orientation="Horizontal" Margin="0,10" >
+                                <Image Source="{Binding IconImagePath}"/>
+                                <TextBlock Text="{Binding Title}" FontSize="28" VerticalAlignment="Center" Margin="10,0"/>
                             </StackPanel>
                         </DataTemplate>
-                    </phone:LongListSelector.ItemTemplate>
-                </phone:LongListSelector>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </phone:PanoramaItem>
+            
+
+            <!--Panorama 項目 2-->
+            <phone:PanoramaItem Header="我的精選">
 
             </phone:PanoramaItem>
 
             
-
             <!--Panorama 項目 3-->
-            <phone:PanoramaItem Header="third item" Orientation="Horizontal">
-                <!--具有大型影像預留位置的雙倍寬度 Panorama-->
-                <Grid>
-                    <StackPanel Margin="0,4,16,0" Orientation="Vertical" VerticalAlignment="Top">
-                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                            <Border Background="#FFFFC700" Height="173" Width="173" Margin="12,0,0,0"/>
-                            <Border Background="#FFFFC700" Height="173" Width="173" Margin="12,0,0,0"/>
-                            <Border Background="#FFFFC700" Height="173" Width="173" Margin="12,0,0,0"/>
-                            <Border Background="#FFFFC700" Height="173" Width="173" Margin="12,0,0,0"/>
-                        </StackPanel>
-                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,12,0,0">
-                            <Border Background="#FFFFC700" Height="173" Width="173" Margin="12,0,0,0"/>
-                            <Border Background="#FFFFC700" Height="173" Width="173" Margin="12,0,0,0"/>
-                            <Border Background="#FFFFC700" Height="173" Width="173" Margin="12,0,0,0"/>
-                            <Border Background="#FFFFC700" Height="173" Width="173" Margin="12,0,0,0"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Grid>
-            </phone:PanoramaItem>
-
-            <!--Panorama 項目 2-->
-            <phone:PanoramaItem>
-                <!--有圖像預留位置且文字會換行，並使用會隨內容捲動之浮動標頭的雙行清單-->
-                <phone:LongListSelector Margin="0,-38,-22,2" ItemsSource="{Binding Items}">
-                    <phone:LongListSelector.ListHeaderTemplate>
-                        <DataTemplate>
-                            <Grid Margin="12,0,0,38">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-                                <TextBlock Text="第二個項目"
-                                           Style="{StaticResource PanoramaItemHeaderTextStyle}"
-                                           Grid.Row="0"/>
-                            </Grid>
-                        </DataTemplate>
-                    </phone:LongListSelector.ListHeaderTemplate>
-                    <phone:LongListSelector.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Margin="12,2,0,4" Height="105" Width="432">
-                                <!--用影像取代矩形-->
-                                <Border BorderThickness="1" Width="99" Height="99" BorderBrush="#FFFFC700" Background="#FFFFC700"/>
-                                <StackPanel Width="311" Margin="8,-7,0,0">
-                                    <TextBlock Text="{Binding LineOne}" TextWrapping="Wrap" Margin="10,0" Style="{StaticResource PhoneTextExtraLargeStyle}" FontSize="{StaticResource PhoneFontSizeLarge}" />
-                                    <TextBlock Text="{Binding LineTwo}" TextWrapping="Wrap" Margin="10,-2,10,0" Style="{StaticResource PhoneTextSubtleStyle}" />
-                                </StackPanel>
-                            </StackPanel>
-                        </DataTemplate>
-                    </phone:LongListSelector.ItemTemplate>
-                </phone:LongListSelector>
+            <phone:PanoramaItem Header="設定">
+            
             </phone:PanoramaItem>
 
         </phone:Panorama>
-
-        <!--取消註解以查看對齊格線，協助確保您的控制項
-            皆對齊共同的邊界。當影像在系統匣中顯示時的
-            上方邊界為 -32px。如果隱藏了系統匣，則將此值設為 0
-            (或完全移除邊界)。
-
-            在送出之前請移除此 XAML 和影像本身。-->
-        <!--<Image Source="/Assets/AlignmentGrid.png" VerticalAlignment="Top" Height="800" Width="480" Margin="0" Grid.Row="0" Grid.RowSpan="2" IsHitTestVisible="False" />-->
 
     </Grid>
 </phone:PhoneApplicationPage>
