@@ -22,43 +22,7 @@
         
         <local:LocalizedStrings xmlns:local="clr-namespace:KKBOX_News" x:Key="LocalizedStrings"/>
         <local:BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
-        <DataTemplate x:Key="MyTemplate">
-            <local:ListItemTemplateSelector Content="{Binding}">
-                <local:ListItemTemplateSelector.One>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="0" Orientation="Vertical" Margin="10,0">
-                                <Image Source="{Binding LeftImagePath}" HorizontalAlignment="Center"/>
-                                <TextBlock Text="{Binding LeftTitle}" HorizontalAlignment="Center"/>
-                            </StackPanel>
-                            <Rectangle Grid.Column="1" Fill="Transparent" Margin="10,0"/>
-                        </Grid>
-                    </DataTemplate>
-                </local:ListItemTemplateSelector.One>
-                <local:ListItemTemplateSelector.Two>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="0" Orientation="Vertical" Margin="10,0">
-                                <Image Source="{Binding LeftImagePath}" HorizontalAlignment="Center"/>
-                                <TextBlock Text="{Binding LeftTitle}" HorizontalAlignment="Center"/>
-                            </StackPanel>
-                            <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10,0">
-                                <Image Source="{Binding RightImagePath}" HorizontalAlignment="Center"/>
-                                <TextBlock Text="{Binding RightTitle}" HorizontalAlignment="Center"/>
-                            </StackPanel>
-                        </Grid>
-                    </DataTemplate>
-                </local:ListItemTemplateSelector.Two>
-            </local:ListItemTemplateSelector>
-        </DataTemplate>
+        
     </Application.Resources>
 
     <Application.ApplicationLifetimeObjects>

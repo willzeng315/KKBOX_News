@@ -7,70 +7,20 @@ using System.Windows;
 
 namespace KKBOX_News
 {
-    public class ListItemTemplateSelector : DataTemplateSelector
-    {
-        public DataTemplate One
-        {
-            get;
-            set;
-        }
-
-        public DataTemplate Two
-        {
-            get;
-            set;
-        }
-
-        public override DataTemplate SelectTemplate(Object item, DependencyObject container)
-        {
-            
-            MySelectedArticleDirectory myItem = item as MySelectedArticleDirectory;
-            if (myItem != null)
-            {
-                if (myItem.Type == "One")
-                {
-                    return One;
-                }
-                else
-                {
-                    return Two;
-                }
-            }
-            return base.SelectTemplate(item, container);
-        }
-    }
-
 
     public class MySelectedArticleDirectory 
     {
-        public List<ArticleItem> LeftArticleItemList;
-        public List<ArticleItem> RightArticleItemList;
+        public List<ArticleItem> ArticleItemList;
+       
 
-        public String RightImagePath
+        public String ImagePath
         {
             get;
             set;
         }
 
-        public String LeftImagePath
-        {
-            get;
-            set;
-        }
-
-        public String RightTitle
-        {
-            get;
-            set;
-        }
-
-        public String LeftTitle
-        {
-            get;
-            set;
-        }
-
-        public String Type
+      
+        public String Title
         {
             get;
             set;
@@ -78,9 +28,7 @@ namespace KKBOX_News
 
         public MySelectedArticleDirectory()
         {
-
-            LeftArticleItemList = new List<ArticleItem>();
-            RightArticleItemList = new List<ArticleItem>();
+            ArticleItemList = new List<ArticleItem>();
         }
     }
 }

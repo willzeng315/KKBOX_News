@@ -10,6 +10,10 @@ namespace KKBOX_News
     {
         public object Convert(Object value, Type targetType, Object parameter, CultureInfo culture)
         {
+            if ((String)parameter == "Xml")
+            {
+                return (Boolean)value ? Visibility.Collapsed : Visibility.Visible;
+            }
             return (Boolean)value ? Visibility.Visible : Visibility.Collapsed;
         }
 

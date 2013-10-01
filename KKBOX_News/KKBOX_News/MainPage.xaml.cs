@@ -22,6 +22,7 @@ namespace KKBOX_News
 
             // 將清單方塊控制項的資料內容設為範例資料
             DataContext = App.ViewModel;
+            
         }
 
         // 載入 ViewModel 項目的資料
@@ -31,9 +32,10 @@ namespace KKBOX_News
             {
                 App.ViewModel.SelectTopicParser();
             }
+            //TopicListBox.SelectedItem = null;
         }
 
-        private void OnListBoxSelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void OnListBoxSelectionChanged(Object sender, SelectionChangedEventArgs e)
         {
             ListBox topics = sender as ListBox;
             ChannelListItem channelItem = topics.SelectedItem as ChannelListItem;
@@ -41,6 +43,7 @@ namespace KKBOX_News
             String sDestination = String.Format("/ArticleListPage.xaml?XML={0}&Title={1}", channelItem.Url, channelItem.Title);
 
             this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
+            //topics.SelectedIndex = -1;
             //Debug.WriteLine(n.LineOne);
         }
 

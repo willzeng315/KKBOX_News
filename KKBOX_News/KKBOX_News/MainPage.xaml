@@ -27,109 +27,54 @@
 
             <!--Panorama 項目 1-->
             <phone:PanoramaItem Header="訂閱中心">
-                <ListBox ItemsSource="{Binding Topics}" SelectionChanged="OnListBoxSelectionChanged">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Margin="0,10" >
-                                <Image Source="{Binding IconImagePath}"/>
-                                <TextBlock Text="{Binding Title}" FontSize="28" VerticalAlignment="Center" Margin="10,0"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                <Grid>
+                    <TextBlock Grid.Row="1" 
+                   x:Name="LoadingText" 
+                   Text="Loading..." 
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Visibility="{Binding IsTopicsXmlLoaded,Converter = {StaticResource BooleanToVisibility},ConverterParameter='Xml'}"/>
+                    <ListBox x:Name="TopicListBox" ItemsSource="{Binding Topics}" SelectionChanged="OnListBoxSelectionChanged">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="0,5" >
+                                    <Image Source="{Binding IconImagePath}"/>
+                                    <TextBlock Text="{Binding Title}" FontSize="35" VerticalAlignment="Center" Margin="10,0"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
             </phone:PanoramaItem>
             
 
             <!--Panorama 項目 2-->
             <phone:PanoramaItem Header="我的精選" Orientation="Horizontal">
-                <!--<ListBox ItemsSource="{Binding ArticleDirectories}" MaxWidth="600">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0" Orientation="Vertical" Margin="10,0">
-                                    <Image Source="{Binding LeftItem.ImagePath}" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="{Binding LeftItem.Title}" HorizontalAlignment="Center"/>
-                                </StackPanel>
-                                <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10,0">
-                                    <Image Source="{Binding RightItem.ImagePath}" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="{Binding Type}" HorizontalAlignment="Center"/>
-                                </StackPanel>
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>-->
-                <!--<ScrollViewer>
-                    <ItemsControl ItemsSource="{Binding Datas}">
+                <ScrollViewer MaxWidth="700">
+                    <ItemsControl ItemsSource="{Binding ArticleDirectories}"  >
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <toolkit:WrapPanel/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
-                        <Button Width="200" Height="200" Margin="10" Content="Click" Click="Button_Click"/>
-                        <Button Width="200" Height="200" Margin="10" Content="Click" Click="Button_Click"/>
-                        <Button Width="200" Height="200" Margin="10" Content="Click" Click="Button_Click"/>
-                        <Button Width="200" Height="200" Margin="10" Content="Click" Click="Button_Click"/>
-                        <Button Width="200" Height="200" Margin="10" Content="Click" Click="Button_Click"/>
-                        <Button Width="200" Height="200" Margin="10" Content="Click" Click="Button_Click"/>
-                        <Button Width="200" Height="200" Margin="10" Content="Click" Click="Button_Click"/>
-                        <Button Width="200" Height="200" Margin="10" Content="Click" Click="Button_Click"/>
-                        <Button Width="200" Height="200" Margin="10" Content="Click" Click="Button_Click"/>
-                        <Button Width="200" Height="200" Margin="10" Content="Click" Click="Button_Click"/>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="10">
+                                    <Image Source="{Binding ImagePath}" HorizontalAlignment="Center" Width="200" Height="200"/>
+                                    <TextBlock Text="{Binding Title}" FontSize="28" HorizontalAlignment="Center"/>
+                                </StackPanel>
+
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                </ScrollViewer>-->
-                <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" MaxWidth="700">
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <toolkit:WrapPanel/>
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ListBoxItem>
-                        <Button Width="200" Height="200" Margin="10" Content="Click" />
-                    </ListBoxItem>
-                    <ListBoxItem>
-                        <Button Width="200" Height="200" Margin="10" Content="Click"/>
-                    </ListBoxItem>
-                    <ListBoxItem>
-                        <Button Width="200" Height="200" Margin="10" Content="Click"/>
-                    </ListBoxItem>
-                    <ListBoxItem>
-                        <Button Width="200" Height="200" Margin="10" Content="Click"/>
-                    </ListBoxItem>
-                    <ListBoxItem>
-                        <Button Width="200" Height="200" Margin="10" Content="Click"/>
-                    </ListBoxItem>
-                    <ListBoxItem>
-                        <Button Width="200" Height="200" Margin="10" Content="Click"/>
-                    </ListBoxItem>
-                    <ListBoxItem>
-                        <Button Width="200" Height="200" Margin="10" Content="Click"/>
-                    </ListBoxItem>
-                    <ListBoxItem>
-                        <Button Width="200" Height="200" Margin="10" Content="Click"/>
-                    </ListBoxItem>
-                    <ListBoxItem>
-                        <Button Width="200" Height="200" Margin="10" Content="Click"/>
-                    </ListBoxItem>
-                    <ListBoxItem>
-                        <Button Width="200" Height="200" Margin="10" Content="Click"/>
-                    </ListBoxItem>
-                    <ListBoxItem>
-                        <Button Width="200" Height="200" Margin="10" Content="Click"/>
-                    </ListBoxItem>
-                    <ListBoxItem>
-                        <Button Width="200" Height="200" Margin="10" Content="Click"/>
-                    </ListBoxItem>
-                </ListBox>
-            </phone:PanoramaItem>
+                </ScrollViewer>
+             </phone:PanoramaItem>
 
             
             <!--Panorama 項目 3-->
             <phone:PanoramaItem Header="設定">
-            
+                <ListBox>
+                    
+                </ListBox>
             </phone:PanoramaItem>
 
         </phone:Panorama>

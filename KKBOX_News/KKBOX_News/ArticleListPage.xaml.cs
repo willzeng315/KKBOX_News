@@ -54,8 +54,8 @@ namespace KKBOX_News
             }
             else
             {
-                IDictionary<string, string> parameters = this.NavigationContext.QueryString;
-                string xmlValue = "";
+                IDictionary<String, String> parameters = this.NavigationContext.QueryString;
+                String xmlValue = "";
                 if (parameters.ContainsKey("XML"))
                 {
                     xmlValue = parameters["XML"];
@@ -257,6 +257,20 @@ namespace KKBOX_News
             {
                 eventHandler(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        private void OnAddMySelectClick(Object sender, RoutedEventArgs e)
+        {
+           
+            MenuItem menuItem = (MenuItem)sender;
+            ArticleItem articleItem = (ArticleItem)menuItem.DataContext;
+            
+            Debug.WriteLine(articleItem.Title);
+
+            String sDestination = String.Format("/AddMySelectPage.xaml?Title={0}&Content={1}&Link={2}&ImagePath={3}",
+                articleItem.Title, articleItem.Content, articleItem.Link, articleItem.IconImagePath);
+
+            this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
         }
     }
 }

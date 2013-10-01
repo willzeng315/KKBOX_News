@@ -13,6 +13,7 @@ namespace KKBOX_News.ViewModels
     {
         private IEnumerable<XElement> TopicsInXml;
 
+
         public MainViewModel()
         {
             
@@ -23,32 +24,21 @@ namespace KKBOX_News.ViewModels
         private void loadDirectoris()
         {
             ArticleDirectories = new ObservableCollection<MySelectedArticleDirectory>();
-            ArticleDirectories.Add(new MySelectedArticleDirectory()
+            for (int i = 0; i < 5; i++)
             {
-                RightTitle = "RightTitle",
-                LeftTitle = "LeftTitle",
-                RightImagePath = "Images/green.png",
-                LeftImagePath = "Images/green.png",
-                Type = "Two"
-            });
-            ArticleDirectories.Add(new MySelectedArticleDirectory()
-            {
-                RightTitle = "RightTitle",
-                LeftTitle = "LeftTitle",
-                RightImagePath = "Images/green.png",
-                LeftImagePath = "Images/green.png",
-                Type = "Two"
-            });
-            ArticleDirectories.Add(new MySelectedArticleDirectory()
-            {
-                LeftTitle = "LeftTitle",
-                LeftImagePath = "Images/green.png",
-                Type = "One"
-            });
+                ArticleDirectories.Add(new MySelectedArticleDirectory() 
+                { 
+                    Title = String.Format("{0} {1}","個人精選",i),
+                    ImagePath = "Images/green.png"
+                });
+            }
+            
+                
         }
 
         public void SelectTopicParser()
         {
+            IsTopicsXmlLoaded = false;
             Uri uri = new Uri("https://mail.kkbox.com.tw/~willzeng/SelectChannel.xml");
 
             WebClient webClient = new WebClient();
@@ -70,13 +60,19 @@ namespace KKBOX_News.ViewModels
 
             IsTopicsXmlLoaded = true;
         }
-
+        #region Property
+        private Boolean isTopicsXmlLoaded;
         public Boolean IsTopicsXmlLoaded
         {
-            get;
-            private set;
+            get
+            {
+                return isTopicsXmlLoaded;
+            }
+            set
+            {
+                SetProperty(ref isTopicsXmlLoaded, value, "IsTopicsXmlLoaded");
+            }
         }
-
         private ObservableCollection<ChannelListItem> topics;
         public ObservableCollection<ChannelListItem> Topics
         {
@@ -102,7 +98,7 @@ namespace KKBOX_News.ViewModels
                 SetProperty(ref articleDirectories, value, "ArticleDirectories");
             }
         }
-        
 
+        #endregion
     }
 }
