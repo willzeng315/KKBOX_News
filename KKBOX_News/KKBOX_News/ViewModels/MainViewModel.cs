@@ -17,6 +17,34 @@ namespace KKBOX_News.ViewModels
         {
             
             //SelectTopicParser();
+            loadDirectoris();
+        }
+
+        private void loadDirectoris()
+        {
+            ArticleDirectories = new ObservableCollection<MySelectedArticleDirectory>();
+            ArticleDirectories.Add(new MySelectedArticleDirectory()
+            {
+                RightTitle = "RightTitle",
+                LeftTitle = "LeftTitle",
+                RightImagePath = "Images/green.png",
+                LeftImagePath = "Images/green.png",
+                Type = "Two"
+            });
+            ArticleDirectories.Add(new MySelectedArticleDirectory()
+            {
+                RightTitle = "RightTitle",
+                LeftTitle = "LeftTitle",
+                RightImagePath = "Images/green.png",
+                LeftImagePath = "Images/green.png",
+                Type = "Two"
+            });
+            ArticleDirectories.Add(new MySelectedArticleDirectory()
+            {
+                LeftTitle = "LeftTitle",
+                LeftImagePath = "Images/green.png",
+                Type = "One"
+            });
         }
 
         public void SelectTopicParser()
@@ -48,7 +76,8 @@ namespace KKBOX_News.ViewModels
             get;
             private set;
         }
-        private ObservableCollection<ChannelListItem> topics = null;
+
+        private ObservableCollection<ChannelListItem> topics;
         public ObservableCollection<ChannelListItem> Topics
         {
             get
@@ -58,6 +87,19 @@ namespace KKBOX_News.ViewModels
             set
             {
                 SetProperty(ref topics, value, "Topics");
+            }
+        }
+
+        private ObservableCollection<MySelectedArticleDirectory> articleDirectories;
+        public ObservableCollection<MySelectedArticleDirectory> ArticleDirectories
+        {
+            get
+            {
+                return articleDirectories;
+            }
+            set
+            {
+                SetProperty(ref articleDirectories, value, "ArticleDirectories");
             }
         }
         

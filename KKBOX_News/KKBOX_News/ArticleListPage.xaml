@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:KKBOX_News"
+    xmlns:toolkit ="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -53,10 +54,16 @@
                                 <TextBlock  Text="{Binding Content}" TextWrapping="Wrap" Margin="10,0" Style="{StaticResource PhoneTextSmallStyle}" Visibility="{Binding IsExtended,Converter = {StaticResource BooleanToVisibility}}"/>
                                 <TextBlock  Text="更多文章及歌曲" TextWrapping="Wrap" Margin="10,0" Foreground="Blue" Style="{StaticResource PhoneTextSmallStyle}"  Visibility="{Binding IsExtended,Converter = {StaticResource BooleanToVisibility}}" ManipulationStarted="TextBlock_ManipulationStarted"/>
                             </StackPanel>
+                            <toolkit:ContextMenuService.ContextMenu>
+                                <toolkit:ContextMenu>
+                                    <toolkit:MenuItem Header="加到我的精選" />
+                                </toolkit:ContextMenu>
+                            </toolkit:ContextMenuService.ContextMenu>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+
         </Grid>
     </Grid>
 

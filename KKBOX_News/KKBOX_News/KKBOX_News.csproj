@@ -96,6 +96,8 @@
     <Compile Include="ArticleListPage.xaml.cs">
       <DependentUpon>ArticleListPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DataTemplateSelector.cs" />
+    <Compile Include="MySelectedArticleDirectory.cs" />
     <Compile Include="ViewModels\ArticleListPageModel.cs" />
     <Compile Include="BindableBase.cs" />
     <Compile Include="Converters.cs" />
@@ -110,6 +112,9 @@
       <DependentUpon>AppResources.resx</DependentUpon>
     </Compile>
     <Compile Include="ChannelListItem.cs" />
+    <Compile Include="JoinMySelectPageModel.xaml.cs">
+      <DependentUpon>JoinMySelectPageModel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\MainViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -129,6 +134,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </DesignData>
+    <Page Include="JoinMySelectPageModel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AppManifest.xml" />
@@ -137,6 +146,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Images\green.png" />
     <Resource Include="Assets\PanoramaBackground.png" />
     <Content Include="Assets\AlignmentGrid.png" />
     <Content Include="Assets\ApplicationIcon.png">
@@ -165,6 +175,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Phone.Controls.Toolkit, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b772ad94eb9ca604, processorArchitecture=MSIL" />
     <Reference Include="System.ServiceModel.Syndication">
       <HintPath>DLL\System.ServiceModel.Syndication.dll</HintPath>
     </Reference>

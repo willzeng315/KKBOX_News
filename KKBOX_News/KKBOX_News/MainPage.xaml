@@ -6,6 +6,7 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     mc:Ignorable="d"
     d:DataContext="{d:DesignData SampleData/MainViewModelSampleData.xaml}"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -40,8 +41,89 @@
             
 
             <!--Panorama 項目 2-->
-            <phone:PanoramaItem Header="我的精選">
-
+            <phone:PanoramaItem Header="我的精選" Orientation="Horizontal">
+                <!--<ListBox ItemsSource="{Binding ArticleDirectories}" MaxWidth="600">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Orientation="Vertical" Margin="10,0">
+                                    <Image Source="{Binding LeftItem.ImagePath}" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding LeftItem.Title}" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10,0">
+                                    <Image Source="{Binding RightItem.ImagePath}" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding Type}" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>-->
+                <!--<ScrollViewer>
+                    <ItemsControl ItemsSource="{Binding Datas}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <toolkit:WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <Button Width="200" Height="200" Margin="10" Content="Click" Click="Button_Click"/>
+                        <Button Width="200" Height="200" Margin="10" Content="Click" Click="Button_Click"/>
+                        <Button Width="200" Height="200" Margin="10" Content="Click" Click="Button_Click"/>
+                        <Button Width="200" Height="200" Margin="10" Content="Click" Click="Button_Click"/>
+                        <Button Width="200" Height="200" Margin="10" Content="Click" Click="Button_Click"/>
+                        <Button Width="200" Height="200" Margin="10" Content="Click" Click="Button_Click"/>
+                        <Button Width="200" Height="200" Margin="10" Content="Click" Click="Button_Click"/>
+                        <Button Width="200" Height="200" Margin="10" Content="Click" Click="Button_Click"/>
+                        <Button Width="200" Height="200" Margin="10" Content="Click" Click="Button_Click"/>
+                        <Button Width="200" Height="200" Margin="10" Content="Click" Click="Button_Click"/>
+                    </ItemsControl>
+                </ScrollViewer>-->
+                <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" MaxWidth="700">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <toolkit:WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBoxItem>
+                        <Button Width="200" Height="200" Margin="10" Content="Click" />
+                    </ListBoxItem>
+                    <ListBoxItem>
+                        <Button Width="200" Height="200" Margin="10" Content="Click"/>
+                    </ListBoxItem>
+                    <ListBoxItem>
+                        <Button Width="200" Height="200" Margin="10" Content="Click"/>
+                    </ListBoxItem>
+                    <ListBoxItem>
+                        <Button Width="200" Height="200" Margin="10" Content="Click"/>
+                    </ListBoxItem>
+                    <ListBoxItem>
+                        <Button Width="200" Height="200" Margin="10" Content="Click"/>
+                    </ListBoxItem>
+                    <ListBoxItem>
+                        <Button Width="200" Height="200" Margin="10" Content="Click"/>
+                    </ListBoxItem>
+                    <ListBoxItem>
+                        <Button Width="200" Height="200" Margin="10" Content="Click"/>
+                    </ListBoxItem>
+                    <ListBoxItem>
+                        <Button Width="200" Height="200" Margin="10" Content="Click"/>
+                    </ListBoxItem>
+                    <ListBoxItem>
+                        <Button Width="200" Height="200" Margin="10" Content="Click"/>
+                    </ListBoxItem>
+                    <ListBoxItem>
+                        <Button Width="200" Height="200" Margin="10" Content="Click"/>
+                    </ListBoxItem>
+                    <ListBoxItem>
+                        <Button Width="200" Height="200" Margin="10" Content="Click"/>
+                    </ListBoxItem>
+                    <ListBoxItem>
+                        <Button Width="200" Height="200" Margin="10" Content="Click"/>
+                    </ListBoxItem>
+                </ListBox>
             </phone:PanoramaItem>
 
             
