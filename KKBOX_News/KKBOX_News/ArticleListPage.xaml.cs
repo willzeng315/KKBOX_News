@@ -47,10 +47,10 @@ namespace KKBOX_News
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
-            if (items != null)
+            if (lastSelectedItemIndex != -1 && items != null)
             {
                 items[lastSelectedItemIndex].IsExtended = true;
-                Debug.WriteLine(lastSelectedItemIndex);
+                //Debug.WriteLine(lastSelectedItemIndex);
             }
             else
             {
@@ -104,6 +104,7 @@ namespace KKBOX_News
 
             IsNotRssPageLoaded = false;
         }
+        #region LoadArticles
         private String ImageRetriever(String sDescription)
         {
             String ImageSource = "";
@@ -170,6 +171,7 @@ namespace KKBOX_News
             return LinkSource;
 
         }
+#endregion
         private void OnListBoxSelectionChanged(Object sender, SelectionChangedEventArgs e)
         {
             ListBox listBox = sender as ListBox;
@@ -197,9 +199,16 @@ namespace KKBOX_News
 
                 if (isLinkClick)
                 {
-                    WebBrowserTask webBrowserTask = new WebBrowserTask();
-                    webBrowserTask.Uri = new Uri(sItem.Link, UriKind.Absolute);
-                    webBrowserTask.Show();
+                    if (App.ViewModel.Settings[1].IsChecked)// External WebBrowser is in Settings[1]
+                    {
+                        WebBrowserTask webBrowserTask = new WebBrowserTask();
+                        webBrowserTask.Uri = new Uri(sItem.Link, UriKind.Absolute);
+                        webBrowserTask.Show();
+                    }
+                    else
+                    {
+                        NavigationService.Navigate(new Uri(String.Format("/WebPage.xaml?Link={0}", sItem.Link), UriKind.Relative));
+                    }
                     isLinkClick = false;
                 }
 
@@ -265,7 +274,7 @@ namespace KKBOX_News
             MenuItem menuItem = (MenuItem)sender;
             ArticleItem articleItem = (ArticleItem)menuItem.DataContext;
             
-            Debug.WriteLine(articleItem.Title);
+            //Debug.WriteLine(articleItem.Title);
 
             String sDestination = String.Format("/AddMySelectPage.xaml?Title={0}&Content={1}&Link={2}&ImagePath={3}",
                 articleItem.Title, articleItem.Content, articleItem.Link, articleItem.IconImagePath);

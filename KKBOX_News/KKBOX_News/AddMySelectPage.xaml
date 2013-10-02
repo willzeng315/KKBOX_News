@@ -6,15 +6,53 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:KKBOX_News"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d"
     shell:SystemTray.IsVisible="True">
+    <phone:PhoneApplicationPage.Resources>
+        <DataTemplate x:Key="adderSelectedTemplate">
+            <local:AdderTemplateSelector Content="{Binding}" HorizontalContentAlignment="Stretch">
+                <local:AdderTemplateSelector.space>
+                    <DataTemplate>
+                        <Grid>
+                            <Rectangle Fill="Gray" Height="30"/>
+                        </Grid>
+                    </DataTemplate>
+                </local:AdderTemplateSelector.space>
+                <local:AdderTemplateSelector.textbox>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0" Text="{Binding ItemTitle,Mode=TwoWay}" />
+                            <CheckBox Grid.Column="1"  IsChecked="{Binding IsChecked,Mode=TwoWay}"/>
+                        </Grid>
+                    </DataTemplate>
+                </local:AdderTemplateSelector.textbox>
+                <local:AdderTemplateSelector.textblock>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                             <TextBlock Grid.Column="0" Text="{Binding ItemTitle}" FontSize="28" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10"/>
+                            <CheckBox Grid.Column="1"  IsChecked="{Binding IsChecked,Mode=TwoWay}" Click="CheckBox_Click"/>
+                        </Grid>
+                    </DataTemplate>
+                </local:AdderTemplateSelector.textblock>
+            </local:AdderTemplateSelector>
+        </DataTemplate>
+    </phone:PhoneApplicationPage.Resources>
 
-    <!--LayoutRoot 是放置所有頁面的根資料格-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <!--LayoutRoot 是放置所有頁面的根資料格-->
+    <Grid x:Name="LayoutRoot" Background="#00ADDA">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -27,9 +65,25 @@
 
         <!--ContentPanel - 其他內容置於此-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <ListBox>
-                
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <ListBox Grid.Row="0" ItemsSource="{Binding AdderListBox}" ItemTemplate="{StaticResource adderSelectedTemplate}">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" ></Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
             </ListBox>
+            <Grid Grid.Row="1" Height="80">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Content="確認" FontSize="28" Click="OnComfirmClick"/>
+                <Button Grid.Column="1" Content="取消" FontSize="28" Click="OnConcelClick"/>
+            </Grid>
         </Grid>
     </Grid>
 

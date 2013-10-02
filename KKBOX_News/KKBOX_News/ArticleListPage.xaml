@@ -11,16 +11,13 @@
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
+    
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d"
     shell:SystemTray.IsVisible="False">
-
-    <phone:PhoneApplicationPage.Resources>
-        <!--<converter:BooleanToVisibilityConverter xmlns:converter="clr-namespace:KKBOX_News" x:Key="BooleanToVisibility" />-->
-    </phone:PhoneApplicationPage.Resources>
-    
+      
     <!--LayoutRoot 是放置所有頁面的根資料格-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
+    <Grid x:Name="LayoutRoot" Background="#00ADDA" >
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>

@@ -101,6 +101,7 @@
     </Compile>
     <Compile Include="DataTemplateSelector.cs" />
     <Compile Include="MySelectedArticleDirectory.cs" />
+    <Compile Include="SettingListItem.cs" />
     <Compile Include="ViewModels\ArticleListPageModel.cs" />
     <Compile Include="BindableBase.cs" />
     <Compile Include="Converters.cs" />
@@ -116,6 +117,9 @@
     </Compile>
     <Compile Include="ChannelListItem.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="WebPage.xaml.cs">
+      <DependentUpon>WebPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -138,6 +142,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </DesignData>
+    <Page Include="WebPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AppManifest.xml" />

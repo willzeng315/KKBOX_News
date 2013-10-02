@@ -10,6 +10,7 @@ using Microsoft.Phone.Shell;
 using System.Xml.Linq;
 using System.Diagnostics;
 using KKBOX_News.ViewModels;
+using Microsoft.Phone.Tasks;
 
 namespace KKBOX_News
 {
@@ -40,11 +41,46 @@ namespace KKBOX_News
             ListBox topics = sender as ListBox;
             ChannelListItem channelItem = topics.SelectedItem as ChannelListItem;
 
-            String sDestination = String.Format("/ArticleListPage.xaml?XML={0}&Title={1}", channelItem.Url, channelItem.Title);
+            if (topics.SelectedIndex != -1)
+            {
+                String sDestination = String.Format("/ArticleListPage.xaml?XML={0}&Title={1}", channelItem.Url, channelItem.Title);
+                this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
+            }
+            
+            
+            
+            topics.SelectedIndex = -1;
+            
+        }
 
-            this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
-            //topics.SelectedIndex = -1;
-            //Debug.WriteLine(n.LineOne);
+        private void OnSelectedDirectoyClick(Object sender, System.Windows.Input.ManipulationStartedEventArgs e)
+        {
+            Debug.WriteLine(sender.GetType().ToString());
+            Image image = (Image)sender;
+            MySelectedArticleDirectory mySelectedArticleDirectory = (MySelectedArticleDirectory)image.DataContext;
+            if (mySelectedArticleDirectory.ArticleItemList != null)
+            {
+                for(int i = 0 ; i < mySelectedArticleDirectory.ArticleItemList.Count ; i++)
+                {
+                    Debug.WriteLine(mySelectedArticleDirectory.ArticleItemList[i].Title);
+                }
+            }
+            Debug.WriteLine(mySelectedArticleDirectory.Title);
+        }
+
+        private void OnSettingSelectionChanged(Object sender, SelectionChangedEventArgs e)
+        {
+            if (((ListBox)sender).SelectedItem != null)
+            {
+                SettingListItem settingListItem = (SettingListItem)((ListBox)sender).SelectedItem;
+                if (settingListItem.Link != null)
+                {
+                    WebBrowserTask webBrowserTask = new WebBrowserTask();
+                    webBrowserTask.Uri = new Uri(settingListItem.Link, UriKind.Absolute);
+                    webBrowserTask.Show();
+                }
+            }
+            ((ListBox)sender).SelectedItem = null;
         }
 
     }

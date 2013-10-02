@@ -6,6 +6,7 @@ using System.Net;
 using System.Xml.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace KKBOX_News.ViewModels
 {
@@ -19,17 +20,75 @@ namespace KKBOX_News.ViewModels
             
             //SelectTopicParser();
             loadDirectoris();
+            loadSettingList();
         }
 
+
+        private void loadSettingList()
+        {
+            Settings = new ObservableCollection<SettingListItem>();
+            Settings.Add(new SettingListItem() 
+            { 
+                Title = "行為",Type="space"
+            });
+            Settings.Add(new SettingListItem()
+            {
+                Title = "以外部瀏覽器開啟文章",
+                Content = "應用程式內直接顯示網頁",
+                Type = "textblockCheckbox"
+            });
+            Settings.Add(new SettingListItem()
+            {
+                Title = "開始自動更新",
+                Content = "開啟自動更新資訊",
+                Type = "textblockCheckbox"
+            });
+            Settings.Add(new SettingListItem()
+            {
+                Title = "自動更新頻率",
+                Content = "設定每次自動更新的間隔時間",
+                Type = "textblockContent"
+            });
+            Settings.Add(new SettingListItem()
+            {
+                Title = "關於",
+                Type = "space"
+            });
+            Settings.Add(new SettingListItem()
+            {
+                Title = "關於KKBOX",
+                Link = "http://www.kkbox.com/about/tc/",
+                Type = "textblock"
+            });
+            Settings.Add(new SettingListItem()
+            {
+                Title = "關於KKBOX 音樂誌",
+                Link = "http://www.kkbox.com/tw/tc/column/index.html",
+                Type = "textblock"
+            });
+            Settings.Add(new SettingListItem()
+            {
+                Title = "系統",
+                Type = "space"
+            });
+
+            AssemblyName assembly = new AssemblyName(Assembly.GetExecutingAssembly().FullName);
+
+            Settings.Add(new SettingListItem()
+            {
+                Title = "版本",
+                Content = assembly.Version.ToString(),
+                Type = "textblockContent"
+            });
+        }
         private void loadDirectoris()
         {
             ArticleDirectories = new ObservableCollection<MySelectedArticleDirectory>();
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 18; i++)
             {
                 ArticleDirectories.Add(new MySelectedArticleDirectory() 
                 { 
                     Title = String.Format("{0} {1}","個人精選",i),
-                    ImagePath = "Images/green.png"
                 });
             }
             
@@ -61,6 +120,7 @@ namespace KKBOX_News.ViewModels
             IsTopicsXmlLoaded = true;
         }
         #region Property
+
         private Boolean isTopicsXmlLoaded;
         public Boolean IsTopicsXmlLoaded
         {
@@ -98,6 +158,21 @@ namespace KKBOX_News.ViewModels
                 SetProperty(ref articleDirectories, value, "ArticleDirectories");
             }
         }
+
+        private ObservableCollection<SettingListItem> settings;
+        public ObservableCollection<SettingListItem> Settings
+        {
+            get
+            {
+                return settings;
+            }
+            set
+            {
+                SetProperty(ref settings, value, "Settings");
+            }
+        }
+
+
 
         #endregion
     }

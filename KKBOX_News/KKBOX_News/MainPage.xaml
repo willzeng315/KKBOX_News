@@ -20,10 +20,7 @@
 
 
          <!--Panorama 控制項-->
-        <phone:Panorama Title="我的應用程式">
-            <phone:Panorama.Background>
-                <ImageBrush ImageSource="/KKBOX_News;component/Assets/PanoramaBackground.png"/>
-            </phone:Panorama.Background>
+        <phone:Panorama Title="KKBOX NEWS" Background="#00ADDA">
 
             <!--Panorama 項目 1-->
             <phone:PanoramaItem Header="訂閱中心">
@@ -58,8 +55,8 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel Margin="10">
-                                    <Image Source="{Binding ImagePath}" HorizontalAlignment="Center" Width="200" Height="200"/>
+                                <StackPanel Margin="10" >
+                                    <Image Source="{Binding ImagePath}" HorizontalAlignment="Center" Width="200" Height="200" ManipulationStarted="OnSelectedDirectoyClick"/>
                                     <TextBlock Text="{Binding Title}" FontSize="28" HorizontalAlignment="Center"/>
                                 </StackPanel>
 
@@ -72,8 +69,14 @@
             
             <!--Panorama 項目 3-->
             <phone:PanoramaItem Header="設定">
-                <ListBox>
-                    
+                <ListBox ItemsSource="{Binding Settings}" 
+                         ItemTemplate="{StaticResource settingTemplateSelector}"
+                         SelectionChanged="OnSettingSelectionChanged">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" ></Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
                 </ListBox>
             </phone:PanoramaItem>
 

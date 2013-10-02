@@ -14,7 +14,7 @@ namespace KKBOX_News
         {
         }
 
-        public String iconImagePath = "";
+        private String iconImagePath = "";
         public String IconImagePath
         {
             get

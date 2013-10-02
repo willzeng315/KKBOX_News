@@ -6,11 +6,58 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:local="clr-namespace:KKBOX_News"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    xmlns:controlToolkit ="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit">
+    xmlns:controlToolkit ="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    >
     
 
     <!--應用程式資源-->
     <Application.Resources>
+        <DataTemplate x:Key="settingTemplateSelector">
+            <local:SettingTemplateSelector Content="{Binding}" HorizontalContentAlignment="Stretch">
+                <local:SettingTemplateSelector.space>
+                    <DataTemplate>
+                        <Grid>
+                            <Rectangle Fill="Gray" Height="30"/>
+                            <TextBlock Text="{Binding Title}" HorizontalAlignment="Left" Margin="10"/>
+                        </Grid>
+                    </DataTemplate>
+                </local:SettingTemplateSelector.space>
+                <local:SettingTemplateSelector.textblockCheckbox>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Orientation="Vertical">
+                                <TextBlock Text="{Binding Title}" FontSize="28" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10"/>
+                                <TextBlock Text="{Binding Content}" TextWrapping="Wrap" Margin="10,-10" Foreground="LightSlateGray"/>
+                            </StackPanel>
+                           <CheckBox Grid.Column="1"  IsChecked="{Binding IsChecked,Mode=TwoWay}" />
+                        </Grid>
+                    </DataTemplate>
+                </local:SettingTemplateSelector.textblockCheckbox>
+                <local:SettingTemplateSelector.textblockContent>
+                    <DataTemplate>
+                        <Grid>
+                            <StackPanel Grid.Column="0" Orientation="Vertical">
+                                <TextBlock Text="{Binding Title}" FontSize="28" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10"/>
+                                <TextBlock Text="{Binding Content}" TextWrapping="Wrap" Margin="10,-10" Foreground="LightSlateGray"/>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </local:SettingTemplateSelector.textblockContent>
+                <local:SettingTemplateSelector.textblock>
+                    <DataTemplate>
+                        <Grid>
+                            <StackPanel Grid.Column="0" Orientation="Vertical">
+                                <TextBlock Text="{Binding Title}" FontSize="28" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10"/>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </local:SettingTemplateSelector.textblock>
+            </local:SettingTemplateSelector>
+        </DataTemplate>
         
         <sys:Double x:Key="PanoramaItemHeaderFontSize">66</sys:Double>
 
