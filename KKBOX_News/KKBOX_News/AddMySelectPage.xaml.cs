@@ -10,6 +10,10 @@ using Microsoft.Phone.Shell;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 using Community.CsharpSqlite.SQLiteClient;
+using Microsoft.Phone.Tasks;
+using System.Windows.Media.Imaging;
+using System.ComponentModel;
+using System.Windows.Media;
 
 namespace KKBOX_News
 {
@@ -33,6 +37,12 @@ namespace KKBOX_News
             set;
         }
 
+        public DataTemplate selectImage
+        {
+            get;
+            set;
+        }
+
         public override DataTemplate SelectTemplate(Object item, DependencyObject container)
         {
             AdderItem myItem = item as AdderItem;
@@ -46,14 +56,18 @@ namespace KKBOX_News
                         return textbox;
                     case "textblock":
                         return textblock;
+                    case "selectImage":
+                        return selectImage;
                 }
             }
 
             return base.SelectTemplate(item, container);
         }
     }
-    public class AdderItem
+    public class AdderItem : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public String ItemTitle
         {
             set;
@@ -69,6 +83,22 @@ namespace KKBOX_News
             set;
             get;
         }
+
+        private BitmapImage coverImage;
+        public BitmapImage CoverImage
+        {
+            get { return coverImage; }
+            set
+            {
+                coverImage = value;
+
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("CoverImage"));
+                }
+            }
+        }
+
         public AdderItem()
         {
             ItemTitle = "";
@@ -77,22 +107,48 @@ namespace KKBOX_News
         }
 
     }
-    public partial class AddMySelectPage : PhoneApplicationPage
+    public partial class AddMySelectPage : PhoneApplicationPage, INotifyPropertyChanged
     {
+        PhotoChooserTask photoChooserTask;
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public AddMySelectPage()
         {
             InitializeComponent();
             loadDirectoryIntoList();
             DataContext = this;
-            //adderListbox.ItemsSource = AdderListBox;
-            //Debug.WriteLine(App.ViewModel.ArticleDirectories.Count);
+
+            photoChooserTask = new PhotoChooserTask();
+            photoChooserTask.Completed += new EventHandler<PhotoResult>(OnPhotoChooserTaskCompleted);
+        }
+
+        private void OnPhotoChooserTaskCompleted(Object sender, PhotoResult e)
+        {
+            if (e.TaskResult == TaskResult.OK)
+            {
+                BitmapImage bitmap = new BitmapImage();
+                Debug.WriteLine(e.OriginalFileName);
+                bitmap.SetSource(e.ChosenPhoto);
+                AdderListBox[2].CoverImage = bitmap;
+                //CoverImage.Source = bitmap;
+            }
+            else if (e.TaskResult == TaskResult.Cancel)
+                MessageBox.Show("您沒有選擇圖片", "警告", MessageBoxButton.OK);
+            else
+                MessageBox.Show("圖片選擇中發生錯誤:\n" + e.Error.Message, "Fail", MessageBoxButton.OK);
+        }
+
+        private void OnChoosePhotoClick(Object sender, RoutedEventArgs e)
+        {
+            photoChooserTask.Show();
         }
 
         private void loadDirectoryIntoList()
         {
             AdderListBox = new ObservableCollection<AdderItem>();
             AdderListBox.Add(new AdderItem() { ItemTitle = "", Type = "space" });
-            AdderListBox.Add(new AdderItem(){ItemTitle = "新資料夾", Type = "textbox"});
+            AdderListBox.Add(new AdderItem() { ItemTitle = "新資料夾", Type = "textbox"});
+            AdderListBox.Add(new AdderItem() { Type = "selectImage" });
             AdderListBox.Add(new AdderItem(){ItemTitle = "", Type = "space"});
             for (int i = 0; i < App.ViewModel.ArticleDirectories.Count; i++)
             {
@@ -134,11 +190,6 @@ namespace KKBOX_News
             set;
         }
 
-        public ObservableCollection<AdderItem> AdderListBox
-        {
-            set;
-            get;
-        }
         public String SelectedItemTitle
         {
             get;
@@ -161,6 +212,21 @@ namespace KKBOX_News
         {
             get;
             set;
+        }
+
+        private ObservableCollection<AdderItem> adderListBox;
+        public ObservableCollection<AdderItem> AdderListBox
+        {
+            get { return adderListBox; }
+            set
+            {
+                adderListBox = value;
+
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("AdderListBox"));
+                }
+            }
         }
         #endregion 
 
@@ -201,20 +267,6 @@ namespace KKBOX_News
                     }
                     cmd.Transaction.Commit();
                     cmd.Transaction = null;
-                    //cmd.CommandText = "SELECT * FROM directoryArticles WHERE directoryId=1";
-
-                    //using (SqliteDataReader reader = cmd.ExecuteReader())
-                    //{
-                    //    while (reader.Read())
-                    //    {
-                    //        //Debug.WriteLine("id : "+reader.GetInt32(0));
-                    //        Debug.WriteLine("directoryId : "+reader.GetInt32(1));
-                    //        Debug.WriteLine("articleTitle : "+reader.GetString(2));
-                    //        Debug.WriteLine("articleContent : " + reader.GetString(3));
-                    //        Debug.WriteLine("articleIconPath : " + reader.GetString(4));
-                    //        Debug.WriteLine("articleLink : " + reader.GetString(5));
-                    //    }
-                    //}
                 }
 
 
@@ -296,7 +348,9 @@ namespace KKBOX_News
             NavigationService.GoBack();
         }
 
+        
 
+ 
         private void CheckBox_Click(object sender, RoutedEventArgs e)
         {
             //for (int i = 0; i < AdderListBox.Count; i++)

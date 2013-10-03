@@ -47,6 +47,18 @@
                         </Grid>
                     </DataTemplate>
                 </local:AdderTemplateSelector.textblock>
+                <local:AdderTemplateSelector.selectImage>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Button Content="選擇封面" Height="80"  Width="150"  FontSize="20" Click="OnChoosePhotoClick"/>
+                            <Image Grid.Column="1" Source="{Binding CoverImage}" Height="200" Width="200" Visibility="Visible"/>
+                        </Grid>
+                    </DataTemplate>
+                </local:AdderTemplateSelector.selectImage>
             </local:AdderTemplateSelector>
         </DataTemplate>
     </phone:PhoneApplicationPage.Resources>

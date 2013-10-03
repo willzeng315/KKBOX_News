@@ -49,10 +49,10 @@ namespace KKBOX_News
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             IDictionary<String, String> parameters = this.NavigationContext.QueryString;
+
             if (lastSelectedItemIndex != -1 && items != null)
             {
                 items[lastSelectedItemIndex].IsExtended = true;
-                //Debug.WriteLine(lastSelectedItemIndex);
             }
             else if (parameters.ContainsKey("XML") && items ==null)
             {
@@ -106,17 +106,6 @@ namespace KKBOX_News
                                 selectedArticleItem.IconImagePath = reader.GetString(4);
                                 selectedArticleItem.Link = reader.GetString(5);
 
-                                //Debug.WriteLine("directoryId : " + reader.GetInt32(1));
-                                //Debug.WriteLine("articleTitle : " + reader.GetString(2));
-                                //Debug.WriteLine("articleContent : " + reader.GetString(3));
-                                //Debug.WriteLine("articleIconPath : " + reader.GetString(4));
-                                //Debug.WriteLine("articleLink : " + reader.GetString(5));
-                                //Debug.WriteLine(reader.GetInt32(0));
-                                //Debug.WriteLine(reader.GetInt32(1));
-                                //Debug.WriteLine(reader.GetString(2));
-                                //Debug.WriteLine(reader.GetString(3));
-                                //Debug.WriteLine(reader.GetString(4));
-                                //Debug.WriteLine(reader.GetString(5));
                                 items.Add(selectedArticleItem);
                             }
                             Model.Items = items;
@@ -255,7 +244,7 @@ namespace KKBOX_News
 
                 if (isLinkClick)
                 {
-                    if (App.ViewModel.Settings[1].IsChecked)// External WebBrowser is in Settings[1]
+                    if (App.ViewModel.IsOpenExternalWeb)// External WebBrowser is in Settings[1]
                     {
                         WebBrowserTask webBrowserTask = new WebBrowserTask();
                         webBrowserTask.Uri = new Uri(sItem.Link, UriKind.Absolute);
@@ -273,12 +262,11 @@ namespace KKBOX_News
             listBox.SelectedItem = null;
         }
        
-        private void TextBlock_ManipulationStarted(object sender, System.Windows.Input.ManipulationStartedEventArgs e)
+        private void OnTextBlockManipulationStarted(object sender, System.Windows.Input.ManipulationStartedEventArgs e)
         {
             isLinkClick = true;
-            //Debug.WriteLine("Manipulation");  
         }
-
+        #region Property
         private Boolean isNotPageLoaded;
         public Boolean IsNotPageLoaded
         {
@@ -324,7 +312,7 @@ namespace KKBOX_News
                 eventHandler(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
+        #endregion
         private void OnAddMySelectClick(Object sender, RoutedEventArgs e)
         {
            

@@ -49,7 +49,7 @@
                             <StackPanel  Grid.Column="1" Orientation="Vertical">
                                 <TextBlock  Text="{Binding Title}" VerticalAlignment="Top" TextTrimming="WordEllipsis" TextWrapping="{Binding IsExtended,Converter = {StaticResource BooleanToWarp}}" Margin="10,0" Style="{StaticResource PhoneTextExtraLargeStyle}" FontSize="{StaticResource PhoneFontSizeLarge}" />
                                 <TextBlock  Text="{Binding Content}" TextWrapping="Wrap" Margin="10,0" Style="{StaticResource PhoneTextSmallStyle}" Visibility="{Binding IsExtended,Converter = {StaticResource BooleanToVisibility}}"/>
-                                <TextBlock  Text="更多文章及歌曲" TextWrapping="Wrap" Margin="10,0" Foreground="Blue" Style="{StaticResource PhoneTextSmallStyle}"  Visibility="{Binding IsExtended,Converter = {StaticResource BooleanToVisibility}}" ManipulationStarted="TextBlock_ManipulationStarted"/>
+                                <TextBlock  Text="更多文章及歌曲" TextWrapping="Wrap" Margin="10,0" Foreground="Blue" Style="{StaticResource PhoneTextSmallStyle}"  Visibility="{Binding IsExtended,Converter = {StaticResource BooleanToVisibility}}" ManipulationStarted="OnTextBlockManipulationStarted"/>
                             </StackPanel>
                             <toolkit:ContextMenuService.ContextMenu>
                                 <toolkit:ContextMenu>

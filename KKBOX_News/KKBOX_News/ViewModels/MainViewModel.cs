@@ -18,12 +18,9 @@ namespace KKBOX_News.ViewModels
 
         public MainViewModel()
         {
-            
-            //SelectTopicParser();
             loadDirectoris();
             loadSettingList();
         }
-
 
         private void loadSettingList()
         {
@@ -36,13 +33,15 @@ namespace KKBOX_News.ViewModels
             {
                 Title = "以外部瀏覽器開啟文章",
                 Content = "應用程式內直接顯示網頁",
-                Type = "textblockCheckbox"
+                Type = "textblockCheckbox",
+                FunctionOfCheck = "OpenExternalWeb"
             });
             Settings.Add(new SettingListItem()
             {
-                Title = "開始自動更新",
+                Title = "開啟自動更新",
                 Content = "開啟自動更新資訊",
-                Type = "textblockCheckbox"
+                Type = "textblockCheckbox",
+                FunctionOfCheck = "OpenAutoUpdate"
             });
             Settings.Add(new SettingListItem()
             {
@@ -82,6 +81,7 @@ namespace KKBOX_News.ViewModels
                 Type = "textblockContent"
             });
         }
+
         private void loadDirectoris()
         {
             ArticleDirectories = new ObservableCollection<MySelectedArticleDirectory>();
@@ -138,6 +138,32 @@ namespace KKBOX_News.ViewModels
             IsTopicsXmlLoaded = true;
         }
         #region Property
+
+        private Boolean isOpenExternalWeb = false;
+        public Boolean IsOpenExternalWeb
+        {
+            get
+            {
+                return isOpenExternalWeb;
+            }
+            set
+            {
+                isOpenExternalWeb = value;
+            }
+        }
+
+        private Boolean isAutoUpdate = false;
+        public Boolean IsAutoUpdate
+        {
+            get
+            {
+                return isAutoUpdate;
+            }
+            set
+            {
+                isAutoUpdate = value;
+            }
+        }
 
         private Boolean isTopicsXmlLoaded;
         public Boolean IsTopicsXmlLoaded

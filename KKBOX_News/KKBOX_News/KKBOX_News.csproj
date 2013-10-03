@@ -102,7 +102,7 @@
     <Compile Include="DataTemplateSelector.cs" />
     <Compile Include="LoadMySelectedSqlite.cs" />
     <Compile Include="MySelectedArticleDirectory.cs" />
-    <Compile Include="SettingListItem.cs" />
+    <Compile Include="ViewModels\SettingListItem.cs" />
     <Compile Include="ViewModels\ArticleListPageModel.cs" />
     <Compile Include="BindableBase.cs" />
     <Compile Include="Converters.cs" />
