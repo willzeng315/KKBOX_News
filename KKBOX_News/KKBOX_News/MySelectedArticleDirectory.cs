@@ -10,8 +10,13 @@ namespace KKBOX_News
 
     public class MySelectedArticleDirectory 
     {
-        public List<ArticleItem> ArticleItemList;
-       
+        //public List<ArticleItem> ArticleItemList;
+
+        public Int32 DirectoryIndex
+        {
+            get;
+            set;
+        }
 
         public String ImagePath
         {
@@ -28,7 +33,7 @@ namespace KKBOX_News
 
         public MySelectedArticleDirectory()
         {
-            ArticleItemList = new List<ArticleItem>();
+            //ArticleItemList = new List<ArticleItem>();
             Title = "新個人精選";
             ImagePath = "Images/green.png";
         }

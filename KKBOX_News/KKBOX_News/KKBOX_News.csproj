@@ -100,6 +100,7 @@
       <DependentUpon>ArticleListPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="DataTemplateSelector.cs" />
+    <Compile Include="LoadMySelectedSqlite.cs" />
     <Compile Include="MySelectedArticleDirectory.cs" />
     <Compile Include="SettingListItem.cs" />
     <Compile Include="ViewModels\ArticleListPageModel.cs" />
@@ -148,6 +149,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
@@ -183,6 +185,12 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Community.CsharpSqlite.SqlLiteClient.WP7">
+      <HintPath>..\packages\wp7sqlite.0.1.1\lib\sl4-windowsphone71\Community.CsharpSqlite.SqlLiteClient.WP7.dll</HintPath>
+    </Reference>
+    <Reference Include="Community.CsharpSqlite.WP7">
+      <HintPath>..\packages\wp7sqlite.0.1.1\lib\sl4-windowsphone71\Community.CsharpSqlite.WP7.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Phone.Controls.Toolkit, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b772ad94eb9ca604, processorArchitecture=MSIL" />
     <Reference Include="System.ServiceModel.Syndication">
       <HintPath>DLL\System.ServiceModel.Syndication.dll</HintPath>

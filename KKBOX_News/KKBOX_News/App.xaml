@@ -69,6 +69,7 @@
         
         <local:LocalizedStrings xmlns:local="clr-namespace:KKBOX_News" x:Key="LocalizedStrings"/>
         <local:BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
+        <local:BooleanToTextWarpConverter x:Key="BooleanToWarp"/>
         
     </Application.Resources>
 

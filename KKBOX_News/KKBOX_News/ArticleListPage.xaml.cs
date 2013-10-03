@@ -14,6 +14,7 @@ using Microsoft.Phone.Tasks;
 using System.Diagnostics;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Community.CsharpSqlite.SQLiteClient;
 
 namespace KKBOX_News
 {
@@ -39,7 +40,7 @@ namespace KKBOX_News
         public ArticleListPage()
         {
             InitializeComponent();
-            IsNotRssPageLoaded = true;
+            
             LoadingText.DataContext = this;
             TopicPageTitle.DataContext = this;
             DataContext = Model;
@@ -47,14 +48,15 @@ namespace KKBOX_News
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
+            IDictionary<String, String> parameters = this.NavigationContext.QueryString;
             if (lastSelectedItemIndex != -1 && items != null)
             {
                 items[lastSelectedItemIndex].IsExtended = true;
                 //Debug.WriteLine(lastSelectedItemIndex);
             }
-            else
+            else if (parameters.ContainsKey("XML") && items ==null)
             {
-                IDictionary<String, String> parameters = this.NavigationContext.QueryString;
+                
                 String xmlValue = "";
                 if (parameters.ContainsKey("XML"))
                 {
@@ -64,21 +66,75 @@ namespace KKBOX_News
                 {
                     PageTitle = parameters["Title"];
                 }
-
+                
+                IsNotPageLoaded = true;
+                
                 Uri uri = new Uri(xmlValue, UriKind.Absolute); ;
                 WebClient webClient = new WebClient();
                 webClient.DownloadStringCompleted += OnDownloadStringCompleted;
                 webClient.DownloadStringAsync(uri);
             }
+            else if (parameters.ContainsKey("DirectoryIndex"))
+            {
+                IsNotPageLoaded = true;
+                
+                if (parameters.ContainsKey("DirectoryTitle"))
+                {
+                    PageTitle = parameters["DirectoryTitle"];
+                }
+                using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+                {
+                    conn.Open();
+                    using (SqliteCommand cmd = conn.CreateCommand())
+                    {
+                        String querySrting = "";
+                        Int32 DirectoryIndex = Int32.Parse(parameters["DirectoryIndex"]);
+  
+                        querySrting = String.Format("SELECT * FROM directoryArticles WHERE directoryId={0}", DirectoryIndex);
+
+                        cmd.CommandText = querySrting;
+
+                        using (SqliteDataReader reader = cmd.ExecuteReader())
+                        {
+                            items = new ObservableCollection<ArticleItem>();
+                            
+                            while (reader.Read())
+                            {
+                                ArticleItem selectedArticleItem = new ArticleItem();
+                                selectedArticleItem.Title = reader.GetString(2);
+                                selectedArticleItem.Content = reader.GetString(3);
+                                selectedArticleItem.IconImagePath = reader.GetString(4);
+                                selectedArticleItem.Link = reader.GetString(5);
+
+                                //Debug.WriteLine("directoryId : " + reader.GetInt32(1));
+                                //Debug.WriteLine("articleTitle : " + reader.GetString(2));
+                                //Debug.WriteLine("articleContent : " + reader.GetString(3));
+                                //Debug.WriteLine("articleIconPath : " + reader.GetString(4));
+                                //Debug.WriteLine("articleLink : " + reader.GetString(5));
+                                //Debug.WriteLine(reader.GetInt32(0));
+                                //Debug.WriteLine(reader.GetInt32(1));
+                                //Debug.WriteLine(reader.GetString(2));
+                                //Debug.WriteLine(reader.GetString(3));
+                                //Debug.WriteLine(reader.GetString(4));
+                                //Debug.WriteLine(reader.GetString(5));
+                                items.Add(selectedArticleItem);
+                            }
+                            Model.Items = items;
+                        }
+                    }
+                }
+                IsNotPageLoaded = false;
+            }
+
        }
 
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
         {
-            
+
         }
 
 
-        private void OnDownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
+        private void OnDownloadStringCompleted(Object sender, DownloadStringCompletedEventArgs e)
         {
             String sXML = e.Result;
             XDocument root = XDocument.Parse(sXML);
@@ -102,7 +158,7 @@ namespace KKBOX_News
             }
             Model.Items = items;
 
-            IsNotRssPageLoaded = false;
+            IsNotPageLoaded = false;
         }
         #region LoadArticles
         private String ImageRetriever(String sDescription)
@@ -146,7 +202,7 @@ namespace KKBOX_News
                     ContentString = ContentString.Substring(0, ContentLenth);
                 }
 
-                ContentString = String.Format("{0},{1}", ContentString, "...");
+                ContentString = ContentString;// String.Format("{0},{1}", ContentString, "...");
                 
             }
             return ContentString;
@@ -223,18 +279,19 @@ namespace KKBOX_News
             //Debug.WriteLine("Manipulation");  
         }
 
-        private Boolean isNotRssPageLoaded;
-        public Boolean IsNotRssPageLoaded
+        private Boolean isNotPageLoaded;
+        public Boolean IsNotPageLoaded
         {
             get
             {
-                return isNotRssPageLoaded;
+                return isNotPageLoaded;
             }
             set
             {
-                SetProperty(ref isNotRssPageLoaded, value, "IsNotRssPageLoaded");
+                SetProperty(ref isNotPageLoaded, value, "IsNotPageLoaded");
             }
         }
+
         private String pageTitle;
         public String PageTitle
         {
@@ -274,7 +331,6 @@ namespace KKBOX_News
             MenuItem menuItem = (MenuItem)sender;
             ArticleItem articleItem = (ArticleItem)menuItem.DataContext;
             
-            //Debug.WriteLine(articleItem.Title);
 
             String sDestination = String.Format("/AddMySelectPage.xaml?Title={0}&Content={1}&Link={2}&ImagePath={3}",
                 articleItem.Title, articleItem.Content, articleItem.Link, articleItem.IconImagePath);

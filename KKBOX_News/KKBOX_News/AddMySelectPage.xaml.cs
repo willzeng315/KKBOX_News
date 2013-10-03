@@ -9,6 +9,7 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using Community.CsharpSqlite.SQLiteClient;
 
 namespace KKBOX_News
 {
@@ -144,8 +145,6 @@ namespace KKBOX_News
             set;
         }
 
-
-
         public String SelectedItemContent
         {
             get;
@@ -167,32 +166,131 @@ namespace KKBOX_News
 
         private void OnComfirmClick(Object sender, RoutedEventArgs e)
         {
-
-            for (int i = 3; i < AdderListBox.Count; i++) //start with my select because i=0 is space, i=1 is new directory,i=2 is space
+            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
             {
-                if(AdderListBox[i].Type == "sapce")
+                conn.Open();
+                using (SqliteCommand cmd = conn.CreateCommand())
                 {
-                    continue;
+                    cmd.Transaction = conn.BeginTransaction();
+                    cmd.CommandText = "INSERT INTO directoryArticles (directoryId, articleTitle, articleContent, articleIconPath, articleLink) VALUES(@directoryId, @articleTitle, @articleContent, @articleIconPath, @articleLink);SELECT last_insert_rowid();";
+                    cmd.Parameters.Add("@directoryId", null);
+                    cmd.Parameters.Add("@articleTitle", null);
+                    cmd.Parameters.Add("@articleContent", null);
+                    cmd.Parameters.Add("@articleIconPath", null);
+                    cmd.Parameters.Add("@articleLink", null);
+                    for (int i = 3; i < AdderListBox.Count; i++) //start with my select because i=0 is space, i=1 is new directory,i=2 is space
+                    {
+                        if (AdderListBox[i].Type == "sapce")
+                        {
+                            continue;
+                        }
+
+                        if (AdderListBox[i].IsChecked)
+                        {
+                            //App.ViewModel.ArticleDirectories[i - 3].ArticleItemList.Add(myArticleItem);
+
+                            cmd.Parameters["@directoryId"].Value = i - 2; //ID start with 1
+                            cmd.Parameters["@articleTitle"].Value = myArticleItem.Title;
+                            cmd.Parameters["@articleContent"].Value = myArticleItem.Content;
+                            cmd.Parameters["@articleIconPath"].Value = myArticleItem.IconImagePath;
+                            cmd.Parameters["@articleLink"].Value = myArticleItem.Link;
+
+                            cmd.ExecuteNonQuery();
+                            
+                        }
+                    }
+                    cmd.Transaction.Commit();
+                    cmd.Transaction = null;
+                    //cmd.CommandText = "SELECT * FROM directoryArticles WHERE directoryId=1";
+
+                    //using (SqliteDataReader reader = cmd.ExecuteReader())
+                    //{
+                    //    while (reader.Read())
+                    //    {
+                    //        //Debug.WriteLine("id : "+reader.GetInt32(0));
+                    //        Debug.WriteLine("directoryId : "+reader.GetInt32(1));
+                    //        Debug.WriteLine("articleTitle : "+reader.GetString(2));
+                    //        Debug.WriteLine("articleContent : " + reader.GetString(3));
+                    //        Debug.WriteLine("articleIconPath : " + reader.GetString(4));
+                    //        Debug.WriteLine("articleLink : " + reader.GetString(5));
+                    //    }
+                    //}
                 }
 
-                if (AdderListBox[i].IsChecked)
+
+                if (AdderListBox[1].IsChecked) //new directory 
                 {
-                    App.ViewModel.ArticleDirectories[i - 3].ArticleItemList.Add(myArticleItem);
+                    MySelectedArticleDirectory mySelectedArticleDirectory = new MySelectedArticleDirectory();
+                    mySelectedArticleDirectory.Title = AdderListBox[1].ItemTitle;
+                    mySelectedArticleDirectory.DirectoryIndex = App.ViewModel.ArticleDirectories.Count+1;
+                    App.ViewModel.ArticleDirectories.Add(mySelectedArticleDirectory);
+
+                    Int32 TotalArticleDirectories = App.ViewModel.ArticleDirectories.Count;
+                    //App.ViewModel.ArticleDirectories[TotalArticleDirectories - 1].ArticleItemList.Add(myArticleItem);
+
+                    using (SqliteCommand cmd = conn.CreateCommand())
+                    {
+                        cmd.Transaction = conn.BeginTransaction();
+                        cmd.CommandText = "INSERT INTO directoryTable (directoryName, imagePath) VALUES(@directoryName, @imagePath);SELECT last_insert_rowid();";
+
+                        cmd.Parameters.Add("@directoryName", null);
+                        cmd.Parameters.Add("@imagePath", null);
+
+                        cmd.Parameters["@directoryName"].Value = AdderListBox[1].ItemTitle;
+                        cmd.Parameters["@imagePath"].Value = "123";
+
+                        cmd.ExecuteNonQuery();
+                        cmd.Transaction.Commit();
+                        cmd.Transaction = null;
+                        //cmd.CommandText = "SELECT * FROM directoryTable";
+                        //using (SqliteDataReader reader = cmd.ExecuteReader())
+                        //{
+                        //    while (reader.Read())
+                        //    {
+                        //        Debug.WriteLine(reader.GetInt32(0));
+                        //        Debug.WriteLine(reader.GetString(1));
+                        //        Debug.WriteLine(reader.GetString(2));
+                        //    }
+                        //}
+
+                        cmd.Transaction = conn.BeginTransaction();
+                        cmd.CommandText = "INSERT INTO directoryArticles (directoryId, articleTitle, articleContent, articleIconPath, articleLink) VALUES(@directoryId, @articleTitle, @articleContent, @articleIconPath, @articleLink);SELECT last_insert_rowid();";
+                        cmd.Parameters.Add("@directoryId", null);
+                        cmd.Parameters.Add("@articleTitle", null);
+                        cmd.Parameters.Add("@articleContent", null);
+                        cmd.Parameters.Add("@articleIconPath", null);
+                        cmd.Parameters.Add("@articleLink", null);
+
+                        cmd.Parameters["@directoryId"].Value = TotalArticleDirectories; //ID start with 1
+                        cmd.Parameters["@articleTitle"].Value = myArticleItem.Title;
+                        cmd.Parameters["@articleContent"].Value = myArticleItem.Content;
+                        cmd.Parameters["@articleIconPath"].Value = myArticleItem.IconImagePath;
+                        cmd.Parameters["@articleLink"].Value = myArticleItem.Link;
+
+                        cmd.ExecuteNonQuery();
+                        cmd.Transaction.Commit();
+                        cmd.Transaction = null;
+                        //cmd.CommandText = "SELECT * FROM directoryArticles";
+
+                        //using (SqliteDataReader reader = cmd.ExecuteReader())
+                        //{
+                        //    while (reader.Read())
+                        //    {
+                        //        Debug.WriteLine(reader.GetInt32(0));
+                        //        Debug.WriteLine(reader.GetInt32(1));
+                        //        Debug.WriteLine(reader.GetString(2));
+                        //        Debug.WriteLine(reader.GetString(3));
+                        //        Debug.WriteLine(reader.GetString(4));
+                        //        Debug.WriteLine(reader.GetString(5));
+                        //    }
+                        //}
+                    }
                 }
-            }
 
-            if (AdderListBox[1].IsChecked)
-            {
-                MySelectedArticleDirectory mySelectedArticleDirectory = new MySelectedArticleDirectory();
-                mySelectedArticleDirectory.Title = AdderListBox[1].ItemTitle;
-                App.ViewModel.ArticleDirectories.Add(mySelectedArticleDirectory);
-
-                Int32 TotalArticleDirectories = App.ViewModel.ArticleDirectories.Count;
-                App.ViewModel.ArticleDirectories[TotalArticleDirectories - 1].ArticleItemList.Add(myArticleItem);
             }
             NavigationService.GoBack();
-        }
 
+        }
         private void OnConcelClick(Object sender, RoutedEventArgs e)
         {
             NavigationService.GoBack();
@@ -201,11 +299,11 @@ namespace KKBOX_News
 
         private void CheckBox_Click(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < AdderListBox.Count; i++)
-            {
-                Debug.WriteLine(String.Format("{0} {1}", i, AdderListBox[i].IsChecked));
-            }
-            Debug.WriteLine(AdderListBox[1].ItemTitle);
+            //for (int i = 0; i < AdderListBox.Count; i++)
+            //{
+            //    Debug.WriteLine(String.Format("{0} {1}", i, AdderListBox[i].IsChecked));
+            //}
+            //Debug.WriteLine(AdderListBox[1].ItemTitle);
         }
     }
 }

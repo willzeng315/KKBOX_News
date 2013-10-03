@@ -7,6 +7,7 @@ using System.Xml.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using Community.CsharpSqlite.SQLiteClient;
 
 namespace KKBOX_News.ViewModels
 {
@@ -84,14 +85,31 @@ namespace KKBOX_News.ViewModels
         private void loadDirectoris()
         {
             ArticleDirectories = new ObservableCollection<MySelectedArticleDirectory>();
-            for (int i = 0; i < 18; i++)
+
+            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
             {
-                ArticleDirectories.Add(new MySelectedArticleDirectory() 
-                { 
-                    Title = String.Format("{0} {1}","個人精選",i),
-                });
+                conn.Open();
+                using (SqliteCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM directoryTable";
+                    using (SqliteDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            ArticleDirectories.Add(new MySelectedArticleDirectory()
+                            {
+                                DirectoryIndex = reader.GetInt32(0),
+                                Title = String.Format("{0}", reader.GetString(1)),
+                            });
+                            //Debug.WriteLine(reader.GetInt32(0));
+                            //Debug.WriteLine(reader.GetString(1));
+                            //Debug.WriteLine(reader.GetInt32(2));
+                            //Debug.WriteLine(reader.GetString(3));
+                        }
+                    }
+                }
+                conn.Close();
             }
-            
                 
         }
 

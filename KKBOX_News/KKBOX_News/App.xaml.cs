@@ -29,9 +29,13 @@ namespace KKBOX_News
         {
             get
             {
+                
                 // 延遲建立檢視模型，直到必要為止
                 if (viewModel == null)
+                {
+                    LoadMySelectedSqlite.CreateTables();
                     viewModel = new MainViewModel();
+                }
 
                 return viewModel;
             }

@@ -22,4 +22,18 @@ namespace KKBOX_News
             return (Visibility)value == Visibility.Visible;
         }
     }
+
+    public class BooleanToTextWarpConverter : IValueConverter
+    {
+        public object Convert(Object value, Type targetType, Object parameter, CultureInfo culture)
+        {
+            
+            return (Boolean)value ? TextWrapping.Wrap : TextWrapping.NoWrap;
+        }
+
+        public object ConvertBack(Object value, Type targetType, Object parameter, CultureInfo culture)
+        {
+            return value;
+        }
+    }
 }

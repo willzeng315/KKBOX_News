@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -101,6 +102,8 @@ namespace KKBOX_News
         {
             get
             {
+                //Debug.WriteLine(Title);
+                //.WriteLine(isChecked.ToString());
                 return isChecked;
             }
             set
@@ -116,6 +119,7 @@ namespace KKBOX_News
             Type = "";
             IsChecked = false;
         }
+
 
     }
 }

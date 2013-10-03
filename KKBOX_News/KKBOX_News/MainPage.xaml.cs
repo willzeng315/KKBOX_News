@@ -11,6 +11,7 @@ using System.Xml.Linq;
 using System.Diagnostics;
 using KKBOX_News.ViewModels;
 using Microsoft.Phone.Tasks;
+using Community.CsharpSqlite.SQLiteClient;
 
 namespace KKBOX_News
 {
@@ -29,6 +30,7 @@ namespace KKBOX_News
         // 載入 ViewModel 項目的資料
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            
             if (!App.ViewModel.IsTopicsXmlLoaded)
             {
                 App.ViewModel.SelectTopicParser();
@@ -58,14 +60,16 @@ namespace KKBOX_News
             Debug.WriteLine(sender.GetType().ToString());
             Image image = (Image)sender;
             MySelectedArticleDirectory mySelectedArticleDirectory = (MySelectedArticleDirectory)image.DataContext;
-            if (mySelectedArticleDirectory.ArticleItemList != null)
-            {
-                for(int i = 0 ; i < mySelectedArticleDirectory.ArticleItemList.Count ; i++)
-                {
-                    Debug.WriteLine(mySelectedArticleDirectory.ArticleItemList[i].Title);
-                }
-            }
-            Debug.WriteLine(mySelectedArticleDirectory.Title);
+            //if (mySelectedArticleDirectory.ArticleItemList != null)
+            //{
+            //    for(int i = 0 ; i < mySelectedArticleDirectory.ArticleItemList.Count ; i++)
+            //    {
+            //        Debug.WriteLine(mySelectedArticleDirectory.ArticleItemList[i].Title);
+            //    }
+            //}
+            String sDestination = String.Format("/ArticleListPage.xaml?DirectoryIndex={0}&DirectoryTitle={1}", mySelectedArticleDirectory.DirectoryIndex, mySelectedArticleDirectory.Title);
+            this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
+            //Debug.WriteLine(mySelectedArticleDirectory.DirectoryIndex);
         }
 
         private void OnSettingSelectionChanged(Object sender, SelectionChangedEventArgs e)
@@ -81,6 +85,13 @@ namespace KKBOX_News
                 }
             }
             ((ListBox)sender).SelectedItem = null;
+        }
+
+        private void OnPhoneApplicationPageLoaded(object sender, RoutedEventArgs e)
+        {
+            //SqliteConnection connection = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db");
+            
+            //Debug.WriteLine( LoadMySelectedSqlite.CreateTables().ToString());
         }
 
     }
