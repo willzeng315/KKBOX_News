@@ -24,7 +24,6 @@ namespace KKBOX_News
 
             // 將清單方塊控制項的資料內容設為範例資料
             DataContext = App.ViewModel;
-            
         }
 
         // 載入 ViewModel 項目的資料
@@ -46,11 +45,8 @@ namespace KKBOX_News
                 String sDestination = String.Format("/ArticleListPage.xaml?XML={0}&Title={1}", channelItem.Url, channelItem.Title);
                 this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
             }
-            
-            
-            
+
             topics.SelectedIndex = -1;
-            
         }
 
         private void OnSelectedDirectoyClick(Object sender, System.Windows.Input.ManipulationStartedEventArgs e)
@@ -78,9 +74,13 @@ namespace KKBOX_News
             ((ListBox)sender).SelectedItem = null;
         }
 
-        private void OnPhoneApplicationPageLoaded(object sender, RoutedEventArgs e)
+        private void OnCoverEditClick(Object sender, RoutedEventArgs e)
         {
+            MenuItem menuItem = (MenuItem)sender;
+            MySelectedArticleDirectory mySelectedArticleDirectory = (MySelectedArticleDirectory)menuItem.DataContext;
+            String sDestination = String.Format("/CoverInformationEditPage.xaml?Title={0}&DirectoryIndex={1}", mySelectedArticleDirectory.Title, mySelectedArticleDirectory.DirectoryIndex);
 
+            this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
         }
 
     }

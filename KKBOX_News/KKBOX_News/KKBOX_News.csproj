@@ -99,8 +99,15 @@
     <Compile Include="ArticleListPage.xaml.cs">
       <DependentUpon>ArticleListPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ChoseLocalJpgPage.xaml.cs">
+      <DependentUpon>ChoseLocalJpgPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CoverInformationEditPage.xaml.cs">
+      <DependentUpon>CoverInformationEditPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DataTemplateSelector.cs" />
     <Compile Include="LoadMySelectedSqlite.cs" />
+    <Compile Include="LocalImageManipulation.cs" />
     <Compile Include="MySelectedArticleDirectory.cs" />
     <Compile Include="ViewModels\SettingListItem.cs" />
     <Compile Include="ViewModels\ArticleListPageModel.cs" />
@@ -135,6 +142,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ChoseLocalJpgPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CoverInformationEditPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -156,7 +171,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Images\A.jpg" />
+    <Content Include="Images\B.jpg" />
+    <Content Include="Images\C.jpg" />
+    <Content Include="Images\D.jpg" />
+    <Content Include="Images\E.jpg" />
+    <Content Include="Images\F.jpg" />
     <Content Include="Images\green.png" />
+    <Content Include="Images\KKBOX.jpg" />
     <Resource Include="Assets\PanoramaBackground.png" />
     <Content Include="Assets\AlignmentGrid.png" />
     <Content Include="Assets\ApplicationIcon.png">

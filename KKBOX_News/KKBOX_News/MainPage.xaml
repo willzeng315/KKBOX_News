@@ -13,7 +13,7 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait"  Orientation="Portrait"
-    shell:SystemTray.IsVisible="False" Loaded="OnPhoneApplicationPageLoaded">
+    shell:SystemTray.IsVisible="False">
 
     <!--LayoutRoot 是放置所有頁面的根資料格-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
@@ -55,11 +55,17 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel Margin="10" >
-                                    <Image Source="{Binding ImagePath}" HorizontalAlignment="Center" Width="200" Height="200" ManipulationStarted="OnSelectedDirectoyClick"/>
-                                    <TextBlock Text="{Binding Title}" FontSize="28" HorizontalAlignment="Center"/>
-                                </StackPanel>
-
+                                <Grid>
+                                    <StackPanel Margin="10" >
+                                        <Image Source="{Binding CoverImage}" HorizontalAlignment="Center" Width="200" Height="200" ManipulationStarted="OnSelectedDirectoyClick"/>
+                                        <TextBlock Text="{Binding Title}" FontSize="28" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                    <toolkit:ContextMenuService.ContextMenu>
+                                        <toolkit:ContextMenu>
+                                            <toolkit:MenuItem Header="編輯封面資訊" Click="OnCoverEditClick"/>
+                                        </toolkit:ContextMenu>
+                                    </toolkit:ContextMenuService.ContextMenu>
+                                </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

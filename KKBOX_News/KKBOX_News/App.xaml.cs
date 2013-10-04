@@ -14,6 +14,7 @@ using System.IO;
 using System.ServiceModel.Syndication;
 using System.Xml;
 using Microsoft.Phone.Tasks;
+using System.IO.IsolatedStorage;
 namespace KKBOX_News
 {
     public partial class App : Application
@@ -34,6 +35,7 @@ namespace KKBOX_News
                 if (viewModel == null)
                 {
                     LoadMySelectedSqlite.CreateTables();
+                    LocalImageManipulation.SaveJpgsToLocalData();
                     viewModel = new MainViewModel();
                 }
 
@@ -89,6 +91,7 @@ namespace KKBOX_News
         // 重新啟動應用程式時不會執行這段程式碼
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            LoadSettings();
         }
 
         // 啟動應用程式 (帶到前景) 時要執行的程式碼
@@ -100,19 +103,48 @@ namespace KKBOX_News
             //{
             //    App.ViewModel.LoadData();
             //}
+            LoadSettings();
         }
 
         // 停用應用程式 (移到背景) 時要執行的程式碼
         // 關閉應用程式時不會執行這段程式碼
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
-            // 確定此處已保存必要的應用程式狀態。
+            SaveSettings();
         }
 
         // 關閉應用程式 (例如，使用者按 [上一頁]) 時要執行的程式碼
         // 停用應用程式時不會執行這段程式碼
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
+            SaveSettings();
+        }
+
+        void LoadSettings()
+        {
+            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
+
+            Boolean openExternalWeb;
+            Boolean openAutoUpdate;
+            if (settings.TryGetValue<Boolean>("OpenExternalWeb", out openExternalWeb))
+            {
+                ViewModel.Settings[1].IsChecked = openExternalWeb;
+            }
+            if (settings.TryGetValue<Boolean>("OpenAutoUpdate", out openAutoUpdate))
+            {
+                ViewModel.Settings[2].IsChecked = openAutoUpdate;
+            }
+                
+        }
+
+        void SaveSettings()
+        {
+            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
+
+            settings["OpenExternalWeb"] = ViewModel.Settings[1].IsChecked;
+            settings["OpenAutoUpdate"] = ViewModel.Settings[2].IsChecked;
+            settings.Save();
+
         }
 
         // 巡覽失敗時要執行的程式碼

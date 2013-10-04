@@ -13,7 +13,7 @@ namespace KKBOX_News
         public ArticleItem()
         {
         }
-
+        #region Property
         private String iconImagePath = "";
         public String IconImagePath
         {
@@ -78,7 +78,7 @@ namespace KKBOX_News
             }
         }
     }
-
+#endregion
     public class ArticleListPageModel : BindableBase
     {
         public ArticleListPageModel()

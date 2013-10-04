@@ -1,0 +1,63 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="KKBOX_News.CoverInformationEditPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit ="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d"
+    shell:SystemTray.IsVisible="True">
+
+    <!--LayoutRoot 是放置所有頁面的根資料格-->
+    <Grid x:Name="LayoutRoot" Background="#00ADDA">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel 包含應用程式的名稱和頁面標題-->
+        <StackPanel Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock Text="編輯" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock Text="封面資訊" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+        </StackPanel>
+
+        <!--ContentPanel - 其他內容置於此-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Rectangle Height="30" Fill="Gray"/>
+                <TextBlock Text="資料夾名稱" Margin="10"/>
+            </Grid>
+            <TextBox Text="{Binding CoverTitle,Mode=TwoWay}" Grid.Row="1"/>
+            <Grid Grid.Row="2">
+                <Rectangle Height="30" Fill="Gray"/>
+                <TextBlock Text="封面圖片" Margin="10"/>
+            </Grid>
+            <StackPanel Grid.Row="3" >
+                <Button Content="從相簿選擇封面圖片" FontSize="28" VerticalAlignment="Top" Height="80" Click="OnChoosePhotoClick"/>
+                <Image Source="{Binding CoverImage}" Width="200" Height="200" Margin="0,10"/>
+            </StackPanel>
+            <Grid Grid.Row="4" Height="80">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Content="確認" FontSize="28" Click="OnComfirmClick"/>
+                <Button Grid.Column="1" Content="取消" FontSize="28" Click="OnCancelClick"/>
+            </Grid>
+        </Grid>
+    </Grid>
+
+</phone:PhoneApplicationPage>

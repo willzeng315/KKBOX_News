@@ -14,6 +14,8 @@ using Microsoft.Phone.Tasks;
 using System.Windows.Media.Imaging;
 using System.ComponentModel;
 using System.Windows.Media;
+using System.IO.IsolatedStorage;
+using System.IO;
 
 namespace KKBOX_News
 {
@@ -64,10 +66,8 @@ namespace KKBOX_News
             return base.SelectTemplate(item, container);
         }
     }
-    public class AdderItem : INotifyPropertyChanged
+    public class AdderItem :BindableBase
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public String ItemTitle
         {
             set;
@@ -87,15 +87,13 @@ namespace KKBOX_News
         private BitmapImage coverImage;
         public BitmapImage CoverImage
         {
-            get { return coverImage; }
+            get
+            {
+                return coverImage;
+            }
             set
             {
-                coverImage = value;
-
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs("CoverImage"));
-                }
+                SetProperty(ref coverImage, value, "CoverImage");
             }
         }
 
@@ -107,40 +105,13 @@ namespace KKBOX_News
         }
 
     }
-    public partial class AddMySelectPage : PhoneApplicationPage, INotifyPropertyChanged
+    public partial class AddMySelectPage : PhoneApplicationPage
     {
-        PhotoChooserTask photoChooserTask;
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public AddMySelectPage()
         {
             InitializeComponent();
             loadDirectoryIntoList();
             DataContext = this;
-
-            photoChooserTask = new PhotoChooserTask();
-            photoChooserTask.Completed += new EventHandler<PhotoResult>(OnPhotoChooserTaskCompleted);
-        }
-
-        private void OnPhotoChooserTaskCompleted(Object sender, PhotoResult e)
-        {
-            if (e.TaskResult == TaskResult.OK)
-            {
-                BitmapImage bitmap = new BitmapImage();
-                Debug.WriteLine(e.OriginalFileName);
-                bitmap.SetSource(e.ChosenPhoto);
-                AdderListBox[2].CoverImage = bitmap;
-                //CoverImage.Source = bitmap;
-            }
-            else if (e.TaskResult == TaskResult.Cancel)
-                MessageBox.Show("您沒有選擇圖片", "警告", MessageBoxButton.OK);
-            else
-                MessageBox.Show("圖片選擇中發生錯誤:\n" + e.Error.Message, "Fail", MessageBoxButton.OK);
-        }
-
-        private void OnChoosePhotoClick(Object sender, RoutedEventArgs e)
-        {
-            photoChooserTask.Show();
         }
 
         private void loadDirectoryIntoList()
@@ -163,7 +134,6 @@ namespace KKBOX_News
 
             myArticleItem = new ArticleItem();
             
-
             if (parameters.ContainsKey("Title"))
             {
                 myArticleItem.Title = parameters["Title"];
@@ -181,54 +151,65 @@ namespace KKBOX_News
                 myArticleItem.IconImagePath = parameters["ImagePath"];
             }
 
-
-        }
-        #region property
-        private ArticleItem myArticleItem
-        {
-            get;
-            set;
-        }
-
-        public String SelectedItemTitle
-        {
-            get;
-            set;
-        }
-
-        public String SelectedItemContent
-        {
-            get;
-            set;
-        }
-
-        public String SelectedItemLink
-        {
-            get;
-            set;
-        }
-
-        public String SelectedItemImagePath
-        {
-            get;
-            set;
-        }
-
-        private ObservableCollection<AdderItem> adderListBox;
-        public ObservableCollection<AdderItem> AdderListBox
-        {
-            get { return adderListBox; }
-            set
+            Debug.WriteLine(selectedImageName);
+            if (selectedImageName != null)
             {
-                adderListBox = value;
-
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs("AdderListBox"));
-                }
+                AdderListBox[2].CoverImage = LocalImageManipulation.ReadJpgFromLocal(selectedImageName);
             }
         }
-        #endregion 
+
+        private void OnPhotoChooserTaskCompleted(object sender, PhotoResult e)
+        {
+            if (e.TaskResult == TaskResult.OK)
+            {
+                using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    BitmapImage bitmap = new BitmapImage();
+                    bitmap.SetSource(e.ChosenPhoto);
+
+                    Int32 imageNameBeginIndex = 0;
+                    for (int i = e.OriginalFileName.Length - 1; i > 0; i--)
+                    {
+                        if (e.OriginalFileName[i] == '\\')
+                        {
+                            imageNameBeginIndex = i;
+                            break;
+                        }
+                    }
+                    selectedImageName = e.OriginalFileName.Substring(imageNameBeginIndex + 1, (e.OriginalFileName.Length - imageNameBeginIndex) - 4);
+
+                    selectedImageName = String.Format("{0}{1}", selectedImageName, "jpg");
+                
+
+                    if (!myIsolatedStorage.FileExists(selectedImageName))
+                    {
+                        IsolatedStorageFileStream fileStream = myIsolatedStorage.CreateFile(selectedImageName);
+
+                        WriteableBitmap wb = new WriteableBitmap(bitmap);
+
+                        Extensions.SaveJpeg(wb, fileStream, wb.PixelWidth, wb.PixelHeight, 0, 100);
+
+                        fileStream.Close();
+                    }
+                }
+            }
+            //else if (e.TaskResult == TaskResult.Cancel)
+            //{
+            //    MessageBox.Show("No photo was chosen - operation was cancelled", "Photo not chosen", MessageBoxButton.OK);
+            //}
+            //else
+            //{
+            //    MessageBox.Show("Error while choosing photo:\n" + e.Error.Message, "Fail", MessageBoxButton.OK);
+            //}
+        }
+
+        private void OnChoosePhotoClick(Object sender, RoutedEventArgs e)
+        {
+            PhotoChooserTask photoChooserTask;
+            photoChooserTask = new PhotoChooserTask();
+            photoChooserTask.Completed += new EventHandler<PhotoResult>(OnPhotoChooserTaskCompleted);
+            photoChooserTask.Show();
+        }
 
         private void OnComfirmClick(Object sender, RoutedEventArgs e)
         {
@@ -255,7 +236,7 @@ namespace KKBOX_News
                         {
                             //App.ViewModel.ArticleDirectories[i - 3].ArticleItemList.Add(myArticleItem);
 
-                            cmd.Parameters["@directoryId"].Value = i - 2; //ID start with 1
+                            cmd.Parameters["@directoryId"].Value = i - 3; //ID start with 1
                             cmd.Parameters["@articleTitle"].Value = myArticleItem.Title;
                             cmd.Parameters["@articleContent"].Value = myArticleItem.Content;
                             cmd.Parameters["@articleIconPath"].Value = myArticleItem.IconImagePath;
@@ -273,8 +254,16 @@ namespace KKBOX_News
                 if (AdderListBox[1].IsChecked) //new directory 
                 {
                     MySelectedArticleDirectory mySelectedArticleDirectory = new MySelectedArticleDirectory();
+
                     mySelectedArticleDirectory.Title = AdderListBox[1].ItemTitle;
+                    if (selectedImageName == null)
+                    {
+                        selectedImageName = "KKBOX.jpg"; // prevent user want to create new folder but not choose image 
+                    }
+                    mySelectedArticleDirectory.CoverImage = LocalImageManipulation.ReadJpgFromLocal(selectedImageName);
+
                     mySelectedArticleDirectory.DirectoryIndex = App.ViewModel.ArticleDirectories.Count+1;
+
                     App.ViewModel.ArticleDirectories.Add(mySelectedArticleDirectory);
 
                     Int32 TotalArticleDirectories = App.ViewModel.ArticleDirectories.Count;
@@ -289,7 +278,8 @@ namespace KKBOX_News
                         cmd.Parameters.Add("@imagePath", null);
 
                         cmd.Parameters["@directoryName"].Value = AdderListBox[1].ItemTitle;
-                        cmd.Parameters["@imagePath"].Value = "123";
+
+                        cmd.Parameters["@imagePath"].Value = selectedImageName;
 
                         cmd.ExecuteNonQuery();
                         cmd.Transaction.Commit();
@@ -343,14 +333,12 @@ namespace KKBOX_News
             NavigationService.GoBack();
 
         }
+
         private void OnConcelClick(Object sender, RoutedEventArgs e)
         {
             NavigationService.GoBack();
         }
 
-        
-
- 
         private void CheckBox_Click(object sender, RoutedEventArgs e)
         {
             //for (int i = 0; i < AdderListBox.Count; i++)
@@ -359,5 +347,49 @@ namespace KKBOX_News
             //}
             //Debug.WriteLine(AdderListBox[1].ItemTitle);
         }
+        #region property
+        private ArticleItem myArticleItem
+        {
+            get;
+            set;
+        }
+
+        public String SelectedItemTitle
+        {
+            get;
+            set;
+        }
+
+        public String SelectedItemContent
+        {
+            get;
+            set;
+        }
+
+        public String SelectedItemLink
+        {
+            get;
+            set;
+        }
+
+        public String SelectedItemImagePath
+        {
+            get;
+            set;
+        }
+
+        private String selectedImageName
+        {
+            get;
+            set;
+        }
+
+
+        public ObservableCollection<AdderItem> AdderListBox
+        {
+            get;
+            set;
+        }
+        #endregion 
     }
 }

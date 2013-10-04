@@ -45,6 +45,74 @@ namespace KKBOX_News
             TopicPageTitle.DataContext = this;
             DataContext = Model;
         }
+        #region LoadArticles
+        private String ImageRetriever(String sDescription)
+        {
+            String ImageSource = "";
+            const Int32 IndexShift = 9; //Length of "img src='"
+
+            if (sDescription != null)
+            {
+                Int32 startIndex = sDescription.ToString().IndexOf("img src='");
+                Int32 EndIndex = sDescription.ToString().IndexOf("jpg");
+                Int32 srcLen = EndIndex - startIndex;
+
+                if (startIndex > EndIndex || srcLen < 0)
+                {
+                    return null;
+                }
+
+                ImageSource = sDescription.ToString().Substring(startIndex + IndexShift, srcLen);
+                return ImageSource;
+            }
+            return ImageSource;
+        }
+
+        private String ContentRetriever(String sDescription)
+        {
+            String ContentString = "";
+
+            if (sDescription != null)
+            {
+                ContentString = Regex.Replace(sDescription.ToString(), "<[^>]+>", String.Empty);
+
+                ContentString = ContentString.Replace("\r", "").Replace("\n", "");
+
+                ContentString = HttpUtility.HtmlDecode(ContentString);
+
+                Int32 ContentLenth = ContentString.IndexOf("更多文章");
+
+                if (ContentLenth != -1)
+                {
+                    ContentString = ContentString.Substring(0, ContentLenth);
+                }
+
+                //ContentString = ContentString;// String.Format("{0},{1}", ContentString, "...");
+
+            }
+            return ContentString;
+        }
+
+        private String LinkRetriever(String sDescription)
+        {
+            String LinkSource = "";
+            const Int32 IndexShift = 4; // Length of "http"
+
+            if (sDescription != null)
+            {
+                Int32 startIndex = sDescription.ToString().IndexOf("http");
+                Int32 EndIndex = sDescription.ToString().IndexOf("html");
+                Int32 srcLen = EndIndex - startIndex;
+
+                if (startIndex < EndIndex && srcLen > 0)
+                {
+                    LinkSource = sDescription.ToString().Substring(startIndex, srcLen + IndexShift);
+                }
+            }
+            return LinkSource;
+
+        }
+        #endregion
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
@@ -122,7 +190,6 @@ namespace KKBOX_News
 
         }
 
-
         private void OnDownloadStringCompleted(Object sender, DownloadStringCompletedEventArgs e)
         {
             String sXML = e.Result;
@@ -149,74 +216,7 @@ namespace KKBOX_News
 
             IsNotPageLoaded = false;
         }
-        #region LoadArticles
-        private String ImageRetriever(String sDescription)
-        {
-            String ImageSource = "";
-            const Int32 IndexShift = 9; //Length of "img src='"
 
-            if (sDescription != null)
-            {
-                Int32 startIndex = sDescription.ToString().IndexOf("img src='");
-                Int32 EndIndex = sDescription.ToString().IndexOf("jpg");
-                Int32 srcLen = EndIndex - startIndex;
-
-                if (startIndex > EndIndex || srcLen < 0)
-                {
-                    return null;
-                }
-
-                ImageSource = sDescription.ToString().Substring(startIndex + IndexShift, srcLen);
-                return ImageSource;
-            }
-            return ImageSource;
-        }
-
-        private String ContentRetriever(String sDescription)
-        {
-            String ContentString = "";
-            
-            if (sDescription != null)
-            {
-                ContentString = Regex.Replace(sDescription.ToString(), "<[^>]+>", String.Empty);
-
-                ContentString = ContentString.Replace("\r", "").Replace("\n", "");
-
-                ContentString = HttpUtility.HtmlDecode(ContentString);
-
-                Int32 ContentLenth = ContentString.IndexOf("更多文章");
-
-                if (ContentLenth != -1)
-                {
-                    ContentString = ContentString.Substring(0, ContentLenth);
-                }
-
-                ContentString = ContentString;// String.Format("{0},{1}", ContentString, "...");
-                
-            }
-            return ContentString;
-        }
-
-        private String LinkRetriever(String sDescription)
-        {
-            String LinkSource = "";
-            const Int32 IndexShift = 4; // Length of "http"
-
-            if (sDescription != null)
-            {
-                Int32 startIndex = sDescription.ToString().IndexOf("http");
-                Int32 EndIndex = sDescription.ToString().IndexOf("html");
-                Int32 srcLen = EndIndex - startIndex;
-
-                if (startIndex < EndIndex && srcLen > 0)
-                {
-                    LinkSource = sDescription.ToString().Substring(startIndex, srcLen + IndexShift);
-                }
-            }
-            return LinkSource;
-
-        }
-#endregion
         private void OnListBoxSelectionChanged(Object sender, SelectionChangedEventArgs e)
         {
             ListBox listBox = sender as ListBox;
@@ -266,6 +266,20 @@ namespace KKBOX_News
         {
             isLinkClick = true;
         }
+
+        private void OnAddMySelectClick(Object sender, RoutedEventArgs e)
+        {
+           
+            MenuItem menuItem = (MenuItem)sender;
+            ArticleItem articleItem = (ArticleItem)menuItem.DataContext;
+            
+
+            String sDestination = String.Format("/AddMySelectPage.xaml?Title={0}&Content={1}&Link={2}&ImagePath={3}",
+                articleItem.Title, articleItem.Content, articleItem.Link, articleItem.IconImagePath);
+
+            this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
+        }
+
         #region Property
         private Boolean isNotPageLoaded;
         public Boolean IsNotPageLoaded
@@ -313,17 +327,5 @@ namespace KKBOX_News
             }
         }
         #endregion
-        private void OnAddMySelectClick(Object sender, RoutedEventArgs e)
-        {
-           
-            MenuItem menuItem = (MenuItem)sender;
-            ArticleItem articleItem = (ArticleItem)menuItem.DataContext;
-            
-
-            String sDestination = String.Format("/AddMySelectPage.xaml?Title={0}&Content={1}&Link={2}&ImagePath={3}",
-                articleItem.Title, articleItem.Content, articleItem.Link, articleItem.IconImagePath);
-
-            this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
-        }
     }
 }

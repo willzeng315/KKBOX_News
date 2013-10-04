@@ -99,12 +99,9 @@ namespace KKBOX_News.ViewModels
                             ArticleDirectories.Add(new MySelectedArticleDirectory()
                             {
                                 DirectoryIndex = reader.GetInt32(0),
-                                Title = String.Format("{0}", reader.GetString(1)),
+                                Title = reader.GetString(1),
+                                CoverImage = LocalImageManipulation.ReadJpgFromLocal(reader.GetString(2))
                             });
-                            //Debug.WriteLine(reader.GetInt32(0));
-                            //Debug.WriteLine(reader.GetString(1));
-                            //Debug.WriteLine(reader.GetInt32(2));
-                            //Debug.WriteLine(reader.GetString(3));
                         }
                     }
                 }
@@ -123,7 +120,7 @@ namespace KKBOX_News.ViewModels
             webClient.DownloadStringAsync(uri);
         }
 
-        void OnDownloadTopicXmlCompleted(object sender, DownloadStringCompletedEventArgs args)
+        void OnDownloadTopicXmlCompleted(Object sender, DownloadStringCompletedEventArgs args)//loadTipics
         {
             Topics = new ObservableCollection<ChannelListItem>();
 

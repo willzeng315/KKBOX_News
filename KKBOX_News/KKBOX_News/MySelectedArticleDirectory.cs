@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace KKBOX_News
 {
 
-    public class MySelectedArticleDirectory 
+    public class MySelectedArticleDirectory : BindableBase
     {
+        #region Property
         //public List<ArticleItem> ArticleItemList;
 
         public Int32 DirectoryIndex
@@ -24,18 +26,37 @@ namespace KKBOX_News
             set;
         }
 
-      
+        private String title ="";
         public String Title
         {
-            get;
-            set;
+            get
+            {
+                return title;
+            }
+            set
+            {
+                SetProperty(ref title, value, "Title");
+            }
         }
 
+        private BitmapImage coverImage;
+        public BitmapImage CoverImage
+        {
+            get
+            {
+                return coverImage;
+            }
+            set
+            {
+                SetProperty(ref coverImage, value, "CoverImage");
+            }
+        }
+        #endregion
         public MySelectedArticleDirectory()
         {
             //ArticleItemList = new List<ArticleItem>();
-            Title = "新個人精選";
-            ImagePath = "Images/green.png";
+            //Title = "新個人精選";
+            //ImagePath = "Images/green.png";
         }
     }
 }

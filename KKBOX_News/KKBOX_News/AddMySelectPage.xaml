@@ -43,7 +43,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                              <TextBlock Grid.Column="0" Text="{Binding ItemTitle}" FontSize="28" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10"/>
-                            <CheckBox Grid.Column="1"  IsChecked="{Binding IsChecked,Mode=TwoWay}" Click="CheckBox_Click"/>
+                            <CheckBox Grid.Column="1"  IsChecked="{Binding IsChecked,Mode=TwoWay}" Click="CheckBox_Click" />
                         </Grid>
                     </DataTemplate>
                 </local:AdderTemplateSelector.textblock>
@@ -51,11 +51,11 @@
                     <DataTemplate>
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
+                                <ColumnDefinition /> 
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
                             <Button Content="選擇封面" Height="80"  Width="150"  FontSize="20" Click="OnChoosePhotoClick"/>
-                            <Image Grid.Column="1" Source="{Binding CoverImage}" Height="200" Width="200" Visibility="Visible"/>
+                            <Image Grid.Column="1" Source="{Binding CoverImage}" Height="150" Width="150" />
                         </Grid>
                     </DataTemplate>
                 </local:AdderTemplateSelector.selectImage>

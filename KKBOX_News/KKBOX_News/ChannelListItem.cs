@@ -9,6 +9,7 @@ namespace KKBOX_News.ViewModels
 {
     public class ChannelListItem : BindableBase
     {
+        #region Property
         private String title = "";
         public String Title
         {
@@ -49,7 +50,7 @@ namespace KKBOX_News.ViewModels
                 SetProperty(ref url, value, "Url");
             }
         }
-
+        #endregion
         public ChannelListItem() { }
     }
     

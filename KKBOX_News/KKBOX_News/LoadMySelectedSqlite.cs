@@ -34,7 +34,7 @@ namespace KKBOX_News
                         for (int i = 0; i < 3; i++)
                         {
                             cmd.Parameters["@directoryName"].Value = "個人精選" + i;
-                            cmd.Parameters["@imagePath"].Value = "123";
+                            cmd.Parameters["@imagePath"].Value = "KKBOX.jpg"; //Default Image
 
                             cmd.ExecuteNonQuery();
                         }
@@ -92,9 +92,7 @@ namespace KKBOX_News
             {
                 return false;
             }
-            
-            
-        }
+         }
         public LoadMySelectedSqlite()
         {
             

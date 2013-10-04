@@ -53,7 +53,8 @@
                             </StackPanel>
                             <toolkit:ContextMenuService.ContextMenu>
                                 <toolkit:ContextMenu>
-                                    <toolkit:MenuItem Header="加到我的精選" Click="OnAddMySelectClick"/>
+                                    <toolkit:MenuItem Header="加到我的精選" Click="OnAddMySelectClick" />
+                                    <toolkit:MenuItem Header="刪除" Visibility="Collapsed" />
                                 </toolkit:ContextMenu>
                             </toolkit:ContextMenuService.ContextMenu>
                         </Grid>
