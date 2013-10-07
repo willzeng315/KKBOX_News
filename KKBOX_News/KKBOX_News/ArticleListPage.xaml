@@ -22,8 +22,6 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
-
         <!--TitlePanel 包含應用程式的名稱和頁面標題-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28">
             <TextBlock Text="KKBOX NEWS" Style="{StaticResource PhoneTextNormalStyle}"/>
@@ -37,34 +35,63 @@
                    Foreground="Red"
                    Visibility="{Binding IsNotPageLoaded,Converter = {StaticResource BooleanToVisibility}}"/>
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0" >
-            <ListBox ItemsSource="{Binding Items}" SelectionChanged="OnListBoxSelectionChanged">
+           <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <ListBox Grid.Row="0" ItemsSource="{Binding Items}" SelectionChanged="OnListBoxSelectionChanged" HorizontalContentAlignment="Stretch">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" ></Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="0,5">
+                        <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
+                            <Grid Grid.Column="0" Margin="0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
 
-                            <Image Grid.Column="0" Source="{Binding IconImagePath}" Width="60" Height="60" VerticalAlignment="Top"/>
-                            <StackPanel  Grid.Column="1" Orientation="Vertical">
-                                <TextBlock  Text="{Binding Title}" VerticalAlignment="Top" TextTrimming="WordEllipsis" TextWrapping="{Binding IsExtended,Converter = {StaticResource BooleanToWarp}}" Margin="10,0" Style="{StaticResource PhoneTextExtraLargeStyle}" FontSize="{StaticResource PhoneFontSizeLarge}" />
-                                <TextBlock  Text="{Binding Content}" TextWrapping="Wrap" Margin="10,0" Style="{StaticResource PhoneTextSmallStyle}" Visibility="{Binding IsExtended,Converter = {StaticResource BooleanToVisibility}}"/>
-                                <TextBlock  Text="更多文章及歌曲" TextWrapping="Wrap" Margin="10,0" Foreground="Blue" Style="{StaticResource PhoneTextSmallStyle}"  Visibility="{Binding IsExtended,Converter = {StaticResource BooleanToVisibility}}" ManipulationStarted="OnTextBlockManipulationStarted"/>
-                            </StackPanel>
-                            <toolkit:ContextMenuService.ContextMenu>
-                                <toolkit:ContextMenu>
-                                    <toolkit:MenuItem Header="加到我的精選" Click="OnAddMySelectClick" />
-                                    <toolkit:MenuItem Header="刪除" Visibility="Collapsed" />
-                                </toolkit:ContextMenu>
-                            </toolkit:ContextMenuService.ContextMenu>
+                                <Image Grid.Column="0" Source="{Binding IconImagePath}" Width="60" Height="60" VerticalAlignment="Top"/>
+                                <StackPanel  Grid.Column="1" Orientation="Vertical">
+                                    <TextBlock  Text="{Binding Title}" VerticalAlignment="Top" TextTrimming="WordEllipsis" TextWrapping="{Binding IsExtended,Converter = {StaticResource BooleanToWarp}}" Margin="10,0" Style="{StaticResource PhoneTextExtraLargeStyle}" FontSize="{StaticResource PhoneFontSizeLarge}" />
+                                    <TextBlock  Text="{Binding Content}" TextWrapping="Wrap" Margin="10,0" Style="{StaticResource PhoneTextSmallStyle}" Visibility="{Binding IsExtended,Converter = {StaticResource BooleanToVisibility}}"/>
+                                    <TextBlock  Text="更多文章及歌曲" TextWrapping="Wrap" Margin="10,0" Foreground="Blue" Style="{StaticResource PhoneTextSmallStyle}"  Visibility="{Binding IsExtended,Converter = {StaticResource BooleanToVisibility}}" ManipulationStarted="OnTextBlockManipulationStarted"/>
+                                </StackPanel>
+                                <toolkit:ContextMenuService.ContextMenu>
+                                    <toolkit:ContextMenu>
+                                        <toolkit:MenuItem Header="加到我的精選" Click="OnAddMySelectClick" />
+                                        <toolkit:MenuItem Header="刪除" Visibility="Collapsed" />
+                                    </toolkit:ContextMenu>
+                                </toolkit:ContextMenuService.ContextMenu>
+                            </Grid>
+                            <CheckBox Grid.Column="1" HorizontalAlignment="Right" IsChecked="{Binding IsSelected,Mode=TwoWay}" Visibility="{Binding CheckBoxVisiblity}"/>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-
+            <Grid x:Name="ButtonSet" Grid.Row="1" Height="80" Visibility="{Binding MultipleAdd}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Content="確認" FontSize="28" Click="OnComfirmClick"/>
+                <Button Grid.Column="1" Content="取消" FontSize="28" Click="OnConcelClick"/>
+            </Grid>
         </Grid>
     </Grid>
-
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar x:Name="appbarAdd" Opacity="0.7" Mode="Minimized">
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Text="加入我的精選" Click="OnAddMySelectMenuItemClick"/>
+            </shell:ApplicationBar.MenuItems>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>

@@ -42,9 +42,9 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="0" Orientation="Vertical">
-                                <TextBlock Text="{Binding Title}" FontSize="28" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10"/>
-                                <TextBlock Text="{Binding Content}" TextWrapping="Wrap" Margin="10,-10" Foreground="LightSlateGray"/>
+                            <StackPanel Grid.Column="0" Orientation="Vertical" Margin="10">
+                                <TextBlock Text="{Binding Title}" FontSize="28" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding Content}" TextWrapping="Wrap" Foreground="LightSlateGray"/>
                             </StackPanel>
                             <TextBlock Grid.Column="1" Text="{Binding UpdateInterval}" FontSize="28" Margin="30,15"/>
                         </Grid>

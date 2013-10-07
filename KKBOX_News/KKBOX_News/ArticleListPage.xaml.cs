@@ -31,6 +31,7 @@ namespace KKBOX_News
             defaultSetting();
             LoadingText.DataContext = this;
             TopicPageTitle.DataContext = this;
+            ButtonSet.DataContext = this;
             DataContext = Model;
             
         }
@@ -40,6 +41,10 @@ namespace KKBOX_News
         {
             isLinkClick = false;
             lastSelectedItemIndex = -1;
+            MultipleAdd = Visibility.Collapsed;
+
+            appbarAdd = this.ApplicationBar as ApplicationBar;
+
             Timer = new DispatcherTimer();
             Timer.Interval = TimeSpan.FromMinutes(ArticleUpdateTimeInterval);
             Timer.Tick += OnTimerTick;
@@ -344,6 +349,33 @@ namespace KKBOX_News
             this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
         }
 
+
+
+        private void setArticleCheckBoxVisibility(Visibility visibility)
+        {
+            if (Model.Items != null)
+            {
+                for (int i = 0; i < Model.Items.Count; i++)
+                {
+                    Model.Items[i].CheckBoxVisiblity = visibility;
+                }
+            }
+        }
+
+        private void OnComfirmClick(Object sender, RoutedEventArgs e)
+        {
+            MultipleAdd = Visibility.Collapsed;
+            setArticleCheckBoxVisibility(Visibility.Collapsed);
+            appbarAdd.IsVisible = true;
+        }
+        
+        private void OnConcelClick(Object sender, RoutedEventArgs e)
+        {
+            MultipleAdd = Visibility.Collapsed;
+            setArticleCheckBoxVisibility(Visibility.Collapsed);
+            appbarAdd.IsVisible = true;
+        }
+
         public static DispatcherTimer Timer;
 
         #region Property
@@ -435,6 +467,19 @@ namespace KKBOX_News
             }
         }
 
+        private Visibility multipleAdd;
+        public Visibility MultipleAdd
+        {
+            get
+            {
+                return multipleAdd;
+            }
+            set
+            {
+                SetProperty(ref multipleAdd, value, "MultipleAdd");
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected Boolean SetProperty<T>(ref T storage, T value, [CallerMemberName] String propertyName = null)
@@ -455,5 +500,12 @@ namespace KKBOX_News
             }
         }
         #endregion
+
+        private void OnAddMySelectMenuItemClick(Object sender, EventArgs e)
+        {
+            MultipleAdd = Visibility.Visible;
+            setArticleCheckBoxVisibility(Visibility.Visible);
+            appbarAdd.IsVisible = false;
+        }
     }
 }

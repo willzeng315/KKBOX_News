@@ -33,7 +33,7 @@
                     <ListBox x:Name="TopicListBox" ItemsSource="{Binding Topics}" SelectionChanged="OnListBoxSelectionChanged">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Horizontal" Margin="0,5" >
+                                <StackPanel Orientation="Horizontal" Margin="10,5" >
                                     <Image Source="{Binding IconImagePath}"/>
                                     <TextBlock Text="{Binding Title}" FontSize="35" VerticalAlignment="Center" Margin="10,0"/>
                                 </StackPanel>

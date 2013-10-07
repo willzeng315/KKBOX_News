@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace KKBOX_News
 {
@@ -12,6 +13,8 @@ namespace KKBOX_News
     {
         public ArticleItem()
         {
+            CheckBoxVisiblity = Visibility.Collapsed;
+            IsSelected = true;
         }
         #region Property
         private String iconImagePath = "";
@@ -77,6 +80,33 @@ namespace KKBOX_News
                 SetProperty(ref isExtended, value, "IsExtended");
             }
         }
+
+        private Boolean isSelected;
+        public Boolean IsSelected
+        {
+            get
+            {
+                return isSelected;
+            }
+            set
+            {
+                SetProperty(ref isSelected, value, "IsSelected");
+            }
+        }
+
+        private Visibility checkBoxVisiblity;
+        public Visibility CheckBoxVisiblity
+        {
+            get
+            {
+                return checkBoxVisiblity;
+            }
+            set
+            {
+                SetProperty(ref checkBoxVisiblity, value, "CheckBoxVisiblity");
+            }
+        }
+
     }
 #endregion
     public class ArticleListPageModel : BindableBase
