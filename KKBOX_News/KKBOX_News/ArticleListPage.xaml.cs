@@ -349,8 +349,6 @@ namespace KKBOX_News
             this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
         }
 
-
-
         private void setArticleCheckBoxVisibility(Visibility visibility)
         {
             if (Model.Items != null)
@@ -374,6 +372,13 @@ namespace KKBOX_News
             MultipleAdd = Visibility.Collapsed;
             setArticleCheckBoxVisibility(Visibility.Collapsed);
             appbarAdd.IsVisible = true;
+        }
+
+        private void OnAddMySelectMenuItemClick(Object sender, EventArgs e)
+        {
+            MultipleAdd = Visibility.Visible;
+            setArticleCheckBoxVisibility(Visibility.Visible);
+            appbarAdd.IsVisible = false;
         }
 
         public static DispatcherTimer Timer;
@@ -501,11 +506,6 @@ namespace KKBOX_News
         }
         #endregion
 
-        private void OnAddMySelectMenuItemClick(Object sender, EventArgs e)
-        {
-            MultipleAdd = Visibility.Visible;
-            setArticleCheckBoxVisibility(Visibility.Visible);
-            appbarAdd.IsVisible = false;
-        }
+
     }
 }

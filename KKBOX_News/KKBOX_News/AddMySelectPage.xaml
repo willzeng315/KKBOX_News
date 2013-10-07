@@ -81,7 +81,7 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <ListBox Grid.Row="0" ItemsSource="{Binding AdderListBox}" ItemTemplate="{StaticResource adderSelectedTemplate}">
+            <ListBox Grid.Row="0" ItemsSource="{Binding AdderListBox}" ItemTemplate="{StaticResource adderSelectedTemplate}" SelectionChanged="OnListBoxSelectionChanged">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" ></Setter>

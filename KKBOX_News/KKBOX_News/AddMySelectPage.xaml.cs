@@ -398,5 +398,11 @@ namespace KKBOX_News
             set;
         }
         #endregion 
+
+        private void OnListBoxSelectionChanged(Object sender, SelectionChangedEventArgs e)
+        {
+            ListBox listbox = (ListBox)sender;
+            listbox.SelectedIndex = -1;
+        }
     }
 }
