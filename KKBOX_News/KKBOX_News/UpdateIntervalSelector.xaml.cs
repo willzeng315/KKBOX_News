@@ -20,6 +20,7 @@ namespace KKBOX_News
             loadMinutesSet();
             DataContext = this;
         }
+
         private void loadMinutesSet()
         {
             Minutes = new ObservableCollection<string>();
@@ -27,11 +28,13 @@ namespace KKBOX_News
             Minutes.Add("3");
             Minutes.Add("5");
         }
+
         public ObservableCollection<String> Minutes
         {
             get;
             set;
         }
+
         private void OnComfirmClick(Object sender, RoutedEventArgs e)
         {
             if(minuteSelector.SelectedItem !=null)
@@ -39,10 +42,9 @@ namespace KKBOX_News
                 Debug.WriteLine(Int32.Parse(minuteSelector.SelectedItem.ToString()));
                 ArticleListPage.ArticleUpdateTimeInterval = Int32.Parse(minuteSelector.SelectedItem.ToString());
             }
-            //ArticleListPage.ArticleUpdateTimeInterval
-            //ArticleListPage.ArticleUpdateTimeInterval = 1;
             NavigationService.GoBack();
         }
+
         private void OnConcelClick(Object sender, RoutedEventArgs e)
         {
             NavigationService.GoBack();

@@ -60,7 +60,7 @@ namespace KKBOX_News
                     webBrowserTask.Uri = new Uri(settingListItem.Link, UriKind.Absolute);
                     webBrowserTask.Show();
                 }
-                else if (settingListItem.PageLink != "")
+                else if (settingListItem.PageLink != null)
                 {
                     this.NavigationService.Navigate(new Uri(settingListItem.PageLink, UriKind.Relative));
                 }

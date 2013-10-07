@@ -161,7 +161,10 @@ namespace KKBOX_News
         private void OnComfirmClick(object sender, RoutedEventArgs e)
         {
             App.ViewModel.ArticleDirectories[directoryIndex - 1].Title = CoverTitle;
-            App.ViewModel.ArticleDirectories[directoryIndex - 1].CoverImage = LocalImageManipulation.ReadJpgFromLocal(selectedImageName);
+            if (selectedImageName != null)
+            {
+                App.ViewModel.ArticleDirectories[directoryIndex - 1].CoverImage = LocalImageManipulation.ReadJpgFromLocal(selectedImageName);
+            }
             NavigationService.GoBack();
         }
 
