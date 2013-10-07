@@ -243,14 +243,17 @@ namespace KKBOX_News
                         {
                             //App.ViewModel.ArticleDirectories[i - 3].ArticleItemList.Add(myArticleItem);
 
-                            cmd.Parameters["@directoryId"].Value = i - 3; //ID start with 1
-                            cmd.Parameters["@articleTitle"].Value = myArticleItem.Title;
-                            cmd.Parameters["@articleContent"].Value = myArticleItem.Content;
-                            cmd.Parameters["@articleIconPath"].Value = myArticleItem.IconImagePath;
-                            cmd.Parameters["@articleLink"].Value = myArticleItem.Link;
+                            for (int j = 0; j < ArticleNavigationPasser.Articles.Count; j++)
+                            {
 
-                            cmd.ExecuteNonQuery();
-                          
+                                cmd.Parameters["@directoryId"].Value = i - 3; //ID start with 1
+                                cmd.Parameters["@articleTitle"].Value = ArticleNavigationPasser.Articles[j].Title;
+                                cmd.Parameters["@articleContent"].Value = ArticleNavigationPasser.Articles[j].Content;
+                                cmd.Parameters["@articleIconPath"].Value = ArticleNavigationPasser.Articles[j].IconImagePath;
+                                cmd.Parameters["@articleLink"].Value = ArticleNavigationPasser.Articles[j].Link;
+
+                                cmd.ExecuteNonQuery();
+                            }
                         }
                     }
                     cmd.Transaction.Commit();
@@ -310,13 +313,16 @@ namespace KKBOX_News
                         cmd.Parameters.Add("@articleIconPath", null);
                         cmd.Parameters.Add("@articleLink", null);
 
-                        cmd.Parameters["@directoryId"].Value = TotalArticleDirectories; //ID start with 1
-                        cmd.Parameters["@articleTitle"].Value = myArticleItem.Title;
-                        cmd.Parameters["@articleContent"].Value = myArticleItem.Content;
-                        cmd.Parameters["@articleIconPath"].Value = myArticleItem.IconImagePath;
-                        cmd.Parameters["@articleLink"].Value = myArticleItem.Link;
+                        for (int i = 0; i < ArticleNavigationPasser.Articles.Count ; i++)
+                        {
+                            cmd.Parameters["@directoryId"].Value = TotalArticleDirectories; //ID start with 1
+                            cmd.Parameters["@articleTitle"].Value = ArticleNavigationPasser.Articles[i].Title;
+                            cmd.Parameters["@articleContent"].Value = ArticleNavigationPasser.Articles[i].Content;
+                            cmd.Parameters["@articleIconPath"].Value = ArticleNavigationPasser.Articles[i].IconImagePath;
+                            cmd.Parameters["@articleLink"].Value = ArticleNavigationPasser.Articles[i].Link;
 
-                        cmd.ExecuteNonQuery();
+                            cmd.ExecuteNonQuery();
+                        }
                         cmd.Transaction.Commit();
                         cmd.Transaction = null;
                         //cmd.CommandText = "SELECT * FROM directoryArticles";

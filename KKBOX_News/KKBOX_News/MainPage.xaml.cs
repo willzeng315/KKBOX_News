@@ -77,7 +77,6 @@ namespace KKBOX_News
             this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
         }
 
-
         private Boolean isDirectoryHasContent(Int32 DirIndex)
         {
 
@@ -109,7 +108,6 @@ namespace KKBOX_News
 
         private void OnSelectedDirectoyClick(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine(sender.GetType().ToString());
             Button image = (Button)sender;
             MySelectedArticleDirectory mySelectedArticleDirectory = (MySelectedArticleDirectory)image.DataContext;
 
@@ -118,6 +116,7 @@ namespace KKBOX_News
                 String sDestination = String.Format("/ArticleListPage.xaml?DirectoryIndex={0}&DirectoryTitle={1}", mySelectedArticleDirectory.DirectoryIndex, mySelectedArticleDirectory.Title);
                 this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
             }
+            
         }
 
     }

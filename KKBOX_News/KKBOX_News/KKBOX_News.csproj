@@ -99,6 +99,7 @@
     <Compile Include="ArticleListPage.xaml.cs">
       <DependentUpon>ArticleListPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ArticleNavigationPasser.cs" />
     <Compile Include="ChoseLocalJpgPage.xaml.cs">
       <DependentUpon>ChoseLocalJpgPage.xaml</DependentUpon>
     </Compile>

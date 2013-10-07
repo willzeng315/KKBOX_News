@@ -67,8 +67,8 @@
                                 </StackPanel>
                                 <toolkit:ContextMenuService.ContextMenu>
                                     <toolkit:ContextMenu>
-                                        <toolkit:MenuItem Header="加到我的精選" Click="OnAddMySelectClick" />
-                                        <toolkit:MenuItem Header="刪除" Visibility="Collapsed" />
+                                        <toolkit:MenuItem Header="加到我的精選" Click="OnMenuItemAddMySelectClick" />
+                                        <toolkit:MenuItem Header="刪除" Click="OnMenuItemDeleteClick" Visibility="{Binding DeleteMenuVisiblity}" />
                                     </toolkit:ContextMenu>
                                 </toolkit:ContextMenuService.ContextMenu>
                             </Grid>
@@ -91,6 +91,7 @@
         <shell:ApplicationBar x:Name="appbarAdd" Opacity="0.7" Mode="Minimized">
             <shell:ApplicationBar.MenuItems>
                 <shell:ApplicationBarMenuItem Text="加入我的精選" Click="OnAddMySelectMenuItemClick"/>
+                <shell:ApplicationBarMenuItem x:Name="menuMultipleDelete" Text="刪除多個文章" Click="OnAddMyDeleteMenuItemClick"/>           
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
