@@ -49,26 +49,20 @@ namespace KKBOX_News
             topics.SelectedIndex = -1;
         }
 
-        private void OnSelectedDirectoyClick(Object sender, System.Windows.Input.ManipulationStartedEventArgs e)
-        {
-            Debug.WriteLine(sender.GetType().ToString());
-            Image image = (Image)sender;
-            MySelectedArticleDirectory mySelectedArticleDirectory = (MySelectedArticleDirectory)image.DataContext;
-
-            String sDestination = String.Format("/ArticleListPage.xaml?DirectoryIndex={0}&DirectoryTitle={1}", mySelectedArticleDirectory.DirectoryIndex, mySelectedArticleDirectory.Title);
-            this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
-        }
-
         private void OnSettingSelectionChanged(Object sender, SelectionChangedEventArgs e)
         {
             if (((ListBox)sender).SelectedItem != null)
             {
                 SettingListItem settingListItem = (SettingListItem)((ListBox)sender).SelectedItem;
-                if (settingListItem.Link != null)
+                if (settingListItem.Link != "")
                 {
                     WebBrowserTask webBrowserTask = new WebBrowserTask();
                     webBrowserTask.Uri = new Uri(settingListItem.Link, UriKind.Absolute);
                     webBrowserTask.Show();
+                }
+                else if (settingListItem.PageLink != "")
+                {
+                    this.NavigationService.Navigate(new Uri(settingListItem.PageLink, UriKind.Relative));
                 }
             }
             ((ListBox)sender).SelectedItem = null;
@@ -80,6 +74,16 @@ namespace KKBOX_News
             MySelectedArticleDirectory mySelectedArticleDirectory = (MySelectedArticleDirectory)menuItem.DataContext;
             String sDestination = String.Format("/CoverInformationEditPage.xaml?Title={0}&DirectoryIndex={1}", mySelectedArticleDirectory.Title, mySelectedArticleDirectory.DirectoryIndex);
 
+            this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
+        }
+
+        private void OnSelectedDirectoyClick(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine(sender.GetType().ToString());
+            Button image = (Button)sender;
+            MySelectedArticleDirectory mySelectedArticleDirectory = (MySelectedArticleDirectory)image.DataContext;
+
+            String sDestination = String.Format("/ArticleListPage.xaml?DirectoryIndex={0}&DirectoryTitle={1}", mySelectedArticleDirectory.DirectoryIndex, mySelectedArticleDirectory.Title);
             this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
         }
 

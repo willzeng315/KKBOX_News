@@ -22,7 +22,7 @@ namespace KKBOX_News
             set;
         }
 
-        public DataTemplate textblockListpicker
+        public DataTemplate checkUpdateChose
         {
             get;
             set;
@@ -57,8 +57,8 @@ namespace KKBOX_News
                         return space;
                     case "textblockCheckbox":
                         return textblockCheckbox;
-                    case "textblockListpicker":
-                        return textblockListpicker;
+                    case "checkUpdateChose":
+                        return checkUpdateChose;
                     case "textblocklink":
                         return textblockLink;
                     case "textblockContent":
@@ -91,6 +91,12 @@ namespace KKBOX_News
             get;
         }
 
+        public String PageLink
+        {
+            set;
+            get;
+        }
+
         public String FunctionOfCheck
         {
             set;
@@ -101,6 +107,32 @@ namespace KKBOX_News
         {
             set;
             get;
+        }
+
+        private String updateInterval;
+        public String UpdateInterval
+        {
+            get
+            {
+                return updateInterval;
+            }
+            set
+            {
+                SetProperty(ref updateInterval, value, "UpdateInterval");
+            }
+        }
+
+        private Boolean isAutoUpdateOpen;
+        public Boolean IsAutoUpdateOpen
+        {
+            get
+            {
+                return isAutoUpdateOpen;
+            }
+            set
+            {
+                SetProperty(ref isAutoUpdateOpen, value, "IsAutoUpdateOpen");
+            }
         }
 
         private Boolean isChecked;
@@ -123,6 +155,7 @@ namespace KKBOX_News
                 isChecked = value;
             }
         }
+
         public SettingListItem()
         {
             Title = "";

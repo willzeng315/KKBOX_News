@@ -15,36 +15,48 @@ using System.Diagnostics;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Community.CsharpSqlite.SQLiteClient;
+using System.Windows.Threading;
 
 namespace KKBOX_News
 {
     public partial class ArticleListPage : PhoneApplicationPage,INotifyPropertyChanged
     {
+        public enum PageMode { NULL,READ_FROM_DIR, READ_FROM_XML};
 
-        private Boolean isLinkClick = false;
-        private ObservableCollection<ArticleItem> items;
-        private Int32 lastSelectedItemIndex = -1;
-        private ArticleListPageModel model;
-        public ArticleListPageModel Model
-        {
-            get
-            {
-                if (model == null)
-                {
-                    model = new ArticleListPageModel();
-                }
-                return model;
-            }
-        }
-
+        private PageMode currentPageMode;
+       
         public ArticleListPage()
         {
             InitializeComponent();
-            
+            defaultSetting();
             LoadingText.DataContext = this;
             TopicPageTitle.DataContext = this;
             DataContext = Model;
+            
         }
+
+
+        private void defaultSetting()
+        {
+            isLinkClick = false;
+            lastSelectedItemIndex = -1;
+            Timer = new DispatcherTimer();
+            Timer.Interval = TimeSpan.FromMinutes(ArticleUpdateTimeInterval);
+            Timer.Tick += OnTimerTick;
+        }
+
+        private void OnTimerTick(Object sender, EventArgs e)
+        {
+            Debug.WriteLine("更新文章中...");
+            Debug.WriteLine("ArticleUpdateTimeInterval");
+            Debug.WriteLine(ArticleUpdateTimeInterval);
+            if (currentPageMode == PageMode.READ_FROM_XML)
+            {
+                LoadingText.Text = "更新文章中...";
+                webClientXmlDownload(xmlString);
+            }
+        }
+
         #region LoadArticles
         private String ImageRetriever(String sDescription)
         {
@@ -114,85 +126,133 @@ namespace KKBOX_News
         }
         #endregion
 
+        private void webClientXmlDownload(String xmlValue)
+        {
+
+            IsNotPageLoaded = true;
+
+            Uri uri = new Uri(xmlValue, UriKind.Absolute); ;
+            WebClient webClient = new WebClient();
+            webClient.DownloadStringCompleted += OnDownloadStringCompleted;
+            webClient.DownloadStringAsync(uri);
+        }
+
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             IDictionary<String, String> parameters = this.NavigationContext.QueryString;
+
+            Debug.WriteLine("go back!");
+
+            if (currentPageMode == PageMode.READ_FROM_XML)
+            {
+                Debug.WriteLine("startUpdateArticle");
+
+                if (App.ViewModel.IsAutoUpdate)
+                {
+                    startUpdateArticle();
+                }
+            }
 
             if (lastSelectedItemIndex != -1 && items != null)
             {
                 items[lastSelectedItemIndex].IsExtended = true;
             }
-            else if (parameters.ContainsKey("XML") && items ==null)
+            else if (parameters.ContainsKey("XML") && items == null)
             {
-                
-                String xmlValue = "";
+
+                Debug.WriteLine("XML");
+
+                currentPageMode = PageMode.READ_FROM_XML;
+
                 if (parameters.ContainsKey("XML"))
                 {
-                    xmlValue = parameters["XML"];
+                    xmlString = parameters["XML"];
                 }
-                if(parameters.ContainsKey("Title"))
+                if (parameters.ContainsKey("Title"))
                 {
                     PageTitle = parameters["Title"];
                 }
+
+                LoadingText.Text = "載入中...";
+
+                webClientXmlDownload(xmlString);
+
+                if (App.ViewModel.IsAutoUpdate)
+                {
+                    startUpdateArticle();
+                }
                 
-                IsNotPageLoaded = true;
-                
-                Uri uri = new Uri(xmlValue, UriKind.Absolute); ;
-                WebClient webClient = new WebClient();
-                webClient.DownloadStringCompleted += OnDownloadStringCompleted;
-                webClient.DownloadStringAsync(uri);
             }
             else if (parameters.ContainsKey("DirectoryIndex"))
             {
-                IsNotPageLoaded = true;
-                
+                currentPageMode = PageMode.READ_FROM_DIR;
+
                 if (parameters.ContainsKey("DirectoryTitle"))
                 {
                     PageTitle = parameters["DirectoryTitle"];
                 }
-                using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+                if (parameters.ContainsKey("DirectoryIndex"))
                 {
-                    conn.Open();
-                    using (SqliteCommand cmd = conn.CreateCommand())
-                    {
-                        String querySrting = "";
-                        Int32 DirectoryIndex = Int32.Parse(parameters["DirectoryIndex"]);
-  
-                        querySrting = String.Format("SELECT * FROM directoryArticles WHERE directoryId={0}", DirectoryIndex);
-
-                        cmd.CommandText = querySrting;
-
-                        using (SqliteDataReader reader = cmd.ExecuteReader())
-                        {
-                            items = new ObservableCollection<ArticleItem>();
-                            
-                            while (reader.Read())
-                            {
-                                ArticleItem selectedArticleItem = new ArticleItem();
-                                selectedArticleItem.Title = reader.GetString(2);
-                                selectedArticleItem.Content = reader.GetString(3);
-                                selectedArticleItem.IconImagePath = reader.GetString(4);
-                                selectedArticleItem.Link = reader.GetString(5);
-
-                                items.Add(selectedArticleItem);
-                            }
-                            Model.Items = items;
-                        }
-                    }
+                    IsNotPageLoaded = true;
+                    LoadDirectoryArticlesFromDB(Int32.Parse(parameters["DirectoryIndex"]));
+                    IsNotPageLoaded = false;
                 }
-                IsNotPageLoaded = false;
+
             }
-
-       }
-
-        protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
-        {
 
         }
 
-        private void OnDownloadStringCompleted(Object sender, DownloadStringCompletedEventArgs e)
+        private void startUpdateArticle()
         {
-            String sXML = e.Result;
+            Timer.Start();
+        }
+
+        private void stopUpdateArticle()
+        {
+            Timer.Stop();
+        }
+
+        private void LoadDirectoryArticlesFromDB(Int32 DirectoryIndex)
+        {
+            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            {
+                conn.Open();
+                using (SqliteCommand cmd = conn.CreateCommand())
+                {
+                    String querySrting = "";
+
+                    querySrting = String.Format("SELECT * FROM directoryArticles WHERE directoryId={0}", DirectoryIndex);
+
+                    cmd.CommandText = querySrting;
+
+                    using (SqliteDataReader reader = cmd.ExecuteReader())
+                    {
+                        items = new ObservableCollection<ArticleItem>();
+
+                        while (reader.Read())
+                        {
+                            ArticleItem selectedArticleItem = new ArticleItem();
+                            selectedArticleItem.Title = reader.GetString(2);
+                            selectedArticleItem.Content = reader.GetString(3);
+                            selectedArticleItem.IconImagePath = reader.GetString(4);
+                            selectedArticleItem.Link = reader.GetString(5);
+
+                            items.Add(selectedArticleItem);
+                        }
+                        Model.Items = items;
+                    }
+                }
+            }
+        }
+
+        protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            stopUpdateArticle();
+        }
+
+        private void loadXmlParserResult(DownloadStringCompletedEventArgs EventArgs)
+        {
+            String sXML = EventArgs.Result;
             XDocument root = XDocument.Parse(sXML);
             XElement channelRoot = root.Element("rss").Element("channel");
             IEnumerable<XElement> elements = channelRoot.Elements("item");
@@ -213,7 +273,11 @@ namespace KKBOX_News
                 items.Add(newItem);
             }
             Model.Items = items;
+        }
 
+        private void OnDownloadStringCompleted(Object sender, DownloadStringCompletedEventArgs EventArgs)
+        {
+            loadXmlParserResult(EventArgs);
             IsNotPageLoaded = false;
         }
 
@@ -280,7 +344,71 @@ namespace KKBOX_News
             this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
         }
 
+        public static DispatcherTimer Timer;
+
         #region Property
+
+        private String xmlString
+        {
+            get;
+            set;
+        }
+
+        private Boolean isLinkClick
+        {
+            get;
+            set;
+        }
+
+        private ObservableCollection<ArticleItem> items
+        {
+            get;
+            set;
+        }
+
+        private Int32 lastSelectedItemIndex
+        {
+            get;
+            set;
+        }
+
+        private static Int32 articleUpdateTimeInterval;
+        public static Int32 ArticleUpdateTimeInterval
+        {
+            get
+            {
+                return articleUpdateTimeInterval;
+            }
+            set
+            {
+                if (App.ViewModel.Settings != null)
+                {
+                    if (value == 0)
+                    {
+                        App.ViewModel.Settings[3].UpdateInterval = "";
+                    }
+                    else
+                    {
+                        App.ViewModel.Settings[3].UpdateInterval = value.ToString() + "分"; // UpdateInterval
+                    }
+                }
+                articleUpdateTimeInterval = value;
+            }
+        }
+
+        private ArticleListPageModel model;
+        public ArticleListPageModel Model
+        {
+            get
+            {
+                if (model == null)
+                {
+                    model = new ArticleListPageModel();
+                }
+                return model;
+            }
+        }
+
         private Boolean isNotPageLoaded;
         public Boolean IsNotPageLoaded
         {

@@ -154,53 +154,60 @@ namespace KKBOX_News
             Debug.WriteLine(selectedImageName);
             if (selectedImageName != null)
             {
-                AdderListBox[2].CoverImage = LocalImageManipulation.ReadJpgFromLocal(selectedImageName);
+                displayChooseImage();
             }
         }
 
-        private void OnPhotoChooserTaskCompleted(object sender, PhotoResult e)
+        private void displayChooseImage()
         {
-            if (e.TaskResult == TaskResult.OK)
+            AdderListBox[2].CoverImage = LocalImageManipulation.ReadJpgFromLocal(selectedImageName);
+        }
+
+        private void OnPhotoChooserTaskCompleted(object sender, PhotoResult args)
+        {
+            if (args.TaskResult == TaskResult.OK)
             {
-                using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+
+                BitmapImage bitmap = new BitmapImage();
+                bitmap.SetSource(args.ChosenPhoto);
+
+                retrieveImageName(args);
+
+                writeJpgToIsolateStorage(bitmap);
+            }
+        }
+
+        private void retrieveImageName(PhotoResult args)
+        {
+            Int32 imageNameBeginIndex = 0;
+            for (int i = args.OriginalFileName.Length - 1; i > 0; i--)
+            {
+                if (args.OriginalFileName[i] == '\\')
                 {
-                    BitmapImage bitmap = new BitmapImage();
-                    bitmap.SetSource(e.ChosenPhoto);
-
-                    Int32 imageNameBeginIndex = 0;
-                    for (int i = e.OriginalFileName.Length - 1; i > 0; i--)
-                    {
-                        if (e.OriginalFileName[i] == '\\')
-                        {
-                            imageNameBeginIndex = i;
-                            break;
-                        }
-                    }
-                    selectedImageName = e.OriginalFileName.Substring(imageNameBeginIndex + 1, (e.OriginalFileName.Length - imageNameBeginIndex) - 4);
-
-                    selectedImageName = String.Format("{0}{1}", selectedImageName, "jpg");
-                
-
-                    if (!myIsolatedStorage.FileExists(selectedImageName))
-                    {
-                        IsolatedStorageFileStream fileStream = myIsolatedStorage.CreateFile(selectedImageName);
-
-                        WriteableBitmap wb = new WriteableBitmap(bitmap);
-
-                        Extensions.SaveJpeg(wb, fileStream, wb.PixelWidth, wb.PixelHeight, 0, 100);
-
-                        fileStream.Close();
-                    }
+                    imageNameBeginIndex = i;
+                    break;
                 }
             }
-            //else if (e.TaskResult == TaskResult.Cancel)
-            //{
-            //    MessageBox.Show("No photo was chosen - operation was cancelled", "Photo not chosen", MessageBoxButton.OK);
-            //}
-            //else
-            //{
-            //    MessageBox.Show("Error while choosing photo:\n" + e.Error.Message, "Fail", MessageBoxButton.OK);
-            //}
+            selectedImageName = args.OriginalFileName.Substring(imageNameBeginIndex + 1, (args.OriginalFileName.Length - imageNameBeginIndex) - 4);
+
+            selectedImageName = String.Format("{0}{1}", selectedImageName, "jpg");
+        }
+
+        private void writeJpgToIsolateStorage(BitmapImage bitmap)
+        {
+            using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (!myIsolatedStorage.FileExists(selectedImageName))
+                {
+                    IsolatedStorageFileStream fileStream = myIsolatedStorage.CreateFile(selectedImageName);
+
+                    WriteableBitmap wb = new WriteableBitmap(bitmap);
+
+                    Extensions.SaveJpeg(wb, fileStream, wb.PixelWidth, wb.PixelHeight, 0, 100);
+
+                    fileStream.Close();
+                }
+            }
         }
 
         private void OnChoosePhotoClick(Object sender, RoutedEventArgs e)
@@ -243,7 +250,7 @@ namespace KKBOX_News
                             cmd.Parameters["@articleLink"].Value = myArticleItem.Link;
 
                             cmd.ExecuteNonQuery();
-                            
+                          
                         }
                     }
                     cmd.Transaction.Commit();
@@ -339,7 +346,7 @@ namespace KKBOX_News
             NavigationService.GoBack();
         }
 
-        private void CheckBox_Click(object sender, RoutedEventArgs e)
+        private void CheckBox_Click(Object sender, RoutedEventArgs e)
         {
             //for (int i = 0; i < AdderListBox.Count; i++)
             //{

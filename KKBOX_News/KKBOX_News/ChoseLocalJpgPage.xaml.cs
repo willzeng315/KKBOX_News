@@ -58,8 +58,6 @@ namespace KKBOX_News
         {
             Button button = (Button)sender;
             BitmapImageProperty bitmapImageProperty = (BitmapImageProperty)button.DataContext;
-
-            //AddMySelectPage.SelectedImageName = bitmapImageProperty.ImageName;
             NavigationService.GoBack();
 
         }
@@ -69,7 +67,5 @@ namespace KKBOX_News
             set;
             get;
         }
-
-
     }
 }

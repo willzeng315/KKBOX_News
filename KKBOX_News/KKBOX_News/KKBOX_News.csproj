@@ -109,6 +109,9 @@
     <Compile Include="LoadMySelectedSqlite.cs" />
     <Compile Include="LocalImageManipulation.cs" />
     <Compile Include="MySelectedArticleDirectory.cs" />
+    <Compile Include="UpdateIntervalSelector.xaml.cs">
+      <DependentUpon>UpdateIntervalSelector.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\SettingListItem.cs" />
     <Compile Include="ViewModels\ArticleListPageModel.cs" />
     <Compile Include="BindableBase.cs" />
@@ -158,6 +161,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </DesignData>
+    <Page Include="UpdateIntervalSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="WebPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -126,6 +126,7 @@ namespace KKBOX_News
 
             Boolean openExternalWeb;
             Boolean openAutoUpdate;
+            Int32 articleUpdateTimeInterval;
             if (settings.TryGetValue<Boolean>("OpenExternalWeb", out openExternalWeb))
             {
                 ViewModel.Settings[1].IsChecked = openExternalWeb;
@@ -133,6 +134,10 @@ namespace KKBOX_News
             if (settings.TryGetValue<Boolean>("OpenAutoUpdate", out openAutoUpdate))
             {
                 ViewModel.Settings[2].IsChecked = openAutoUpdate;
+            }
+            if (settings.TryGetValue<Int32>("UpdateInterval", out articleUpdateTimeInterval))
+            {
+                ArticleListPage.ArticleUpdateTimeInterval = articleUpdateTimeInterval;
             }
                 
         }
@@ -143,6 +148,7 @@ namespace KKBOX_News
 
             settings["OpenExternalWeb"] = ViewModel.Settings[1].IsChecked;
             settings["OpenAutoUpdate"] = ViewModel.Settings[2].IsChecked;
+            settings["UpdateInterval"] = ArticleListPage.ArticleUpdateTimeInterval;
             settings.Save();
 
         }

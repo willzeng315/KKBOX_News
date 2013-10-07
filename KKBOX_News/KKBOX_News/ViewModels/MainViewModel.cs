@@ -13,9 +13,6 @@ namespace KKBOX_News.ViewModels
 {
     public class MainViewModel : BindableBase
     {
-        private IEnumerable<XElement> TopicsInXml;
-
-
         public MainViewModel()
         {
             loadDirectoris();
@@ -43,10 +40,14 @@ namespace KKBOX_News.ViewModels
                 Type = "textblockCheckbox",
                 FunctionOfCheck = "OpenAutoUpdate"
             });
+
+
             Settings.Add(new SettingListItem()
             {
                 Title = "自動更新頻率",
                 Content = "設定每次自動更新的間隔時間",
+                PageLink = "/UpdateIntervalSelector.xaml",
+                UpdateInterval = checkTimeIntervalIsZero(),
                 Type = "textblockContent"
             });
             Settings.Add(new SettingListItem()
@@ -82,6 +83,18 @@ namespace KKBOX_News.ViewModels
             });
         }
 
+        private String checkTimeIntervalIsZero()
+        {
+            if (ArticleListPage.ArticleUpdateTimeInterval == 0)
+            {
+                return "";
+            }
+            else
+            {
+                return String.Format("{0}{1}", ArticleListPage.ArticleUpdateTimeInterval, "分");
+            }
+        }
+
         private void loadDirectoris()
         {
             ArticleDirectories = new ObservableCollection<MySelectedArticleDirectory>();
@@ -110,6 +123,21 @@ namespace KKBOX_News.ViewModels
                 
         }
 
+        private void loadTopics(DownloadStringCompletedEventArgs args) 
+        {
+            Topics = new ObservableCollection<ChannelListItem>();
+
+            XDocument ParsedTopic = XDocument.Parse(args.Result);
+            TopicsInXml = ParsedTopic.Element("kkbox_news").Elements("channel");
+
+            foreach (XElement channel in TopicsInXml)
+            {
+                Topics.Add(new ChannelListItem() { Title = channel.Element("title").Value, IconImagePath = channel.Element("icon").Value, Url = channel.Element("url").Value });
+            }
+
+            IsTopicsXmlLoaded = true;
+        }
+
         public void SelectTopicParser()
         {
             IsTopicsXmlLoaded = false;
@@ -122,19 +150,11 @@ namespace KKBOX_News.ViewModels
 
         void OnDownloadTopicXmlCompleted(Object sender, DownloadStringCompletedEventArgs args)//loadTipics
         {
-            Topics = new ObservableCollection<ChannelListItem>();
-
-            XDocument ParsedTopic = XDocument.Parse(args.Result);
-            TopicsInXml = ParsedTopic.Element("kkbox_news").Elements("channel");
-            
-            foreach (XElement channel in TopicsInXml)
-            {
-                Topics.Add(new ChannelListItem() { Title = channel.Element("title").Value, IconImagePath = channel.Element("icon").Value, Url = channel.Element("url").Value });
-            }
-
-            IsTopicsXmlLoaded = true;
+            loadTopics(args);
         }
         #region Property
+
+        private IEnumerable<XElement> TopicsInXml;
 
         private Boolean isOpenExternalWeb = false;
         public Boolean IsOpenExternalWeb
