@@ -54,8 +54,8 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Content="確認" FontSize="28" Click="OnComfirmClick"/>
-                <Button Grid.Column="1" Content="取消" FontSize="28" Click="OnCancelClick"/>
+                <Button Grid.Column="0" Content="確認" FontSize="28" Click="OnConfirmButtonClick"/>
+                <Button Grid.Column="1" Content="取消" FontSize="28" Click="OnCancelButtonClick"/>
             </Grid>
         </Grid>
     </Grid>

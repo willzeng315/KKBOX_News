@@ -21,6 +21,10 @@ namespace KKBOX_News
 {
     public partial class CoverInformationEditPage : PhoneApplicationPage,INotifyPropertyChanged
     {
+        const Int32 ImageLength = 200;
+
+        public enum PageMode { NULL, READ_FROM_DIR, READ_FROM_XML };
+
         public CoverInformationEditPage()
         {
             InitializeComponent();
@@ -31,13 +35,13 @@ namespace KKBOX_News
         {
             if (e.TaskResult == TaskResult.OK)
             {
-
                 using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     BitmapImage bitmap = new BitmapImage();
                     bitmap.SetSource(e.ChosenPhoto);
-                    CoverImage = bitmap;
+
                     Int32 imageNameBeginIndex = 0;
+
                     for (int i = e.OriginalFileName.Length - 1; i > 0; i--)
                     {
                         if (e.OriginalFileName[i] == '\\')
@@ -50,17 +54,18 @@ namespace KKBOX_News
 
                     selectedImageName = String.Format("{0}{1}", selectedImageName, "jpg");
 
-
                     if (!myIsolatedStorage.FileExists(selectedImageName))
                     {
                         IsolatedStorageFileStream fileStream = myIsolatedStorage.CreateFile(selectedImageName);
 
                         WriteableBitmap wb = new WriteableBitmap(bitmap);
 
-                        Extensions.SaveJpeg(wb, fileStream, wb.PixelWidth, wb.PixelHeight, 0, 100);
+                        Extensions.SaveJpeg(wb, fileStream, ImageLength, ImageLength, 0, 100);
 
                         fileStream.Close();
                     }
+
+                    CoverImage = LocalImageManipulation.ReadJpgFromLocal(selectedImageName);
                 }
             }
         }
@@ -81,6 +86,13 @@ namespace KKBOX_News
         }
 
         #region Property
+
+        private Boolean isReturnFromPhotoChooser
+        {
+            set;
+            get;
+        }
+
         private Int32 directoryIndex
         {
             get;
@@ -188,7 +200,7 @@ namespace KKBOX_News
             photoChooserTask.Show();
         }
 
-        private void OnComfirmClick(object sender, RoutedEventArgs e)
+        private void OnConfirmButtonClick(object sender, RoutedEventArgs e)
         {
             for (int i = 0; i < App.ViewModel.ArticleDirectories.Count; i++)
             {
@@ -207,7 +219,7 @@ namespace KKBOX_News
             NavigationService.GoBack();
         }
 
-        private void OnCancelClick(Object sender, RoutedEventArgs e)
+        private void OnCancelButtonClick(Object sender, RoutedEventArgs e)
         {
             NavigationService.GoBack();
         }

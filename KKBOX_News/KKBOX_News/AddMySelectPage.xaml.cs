@@ -113,6 +113,8 @@ namespace KKBOX_News
     }
     public partial class AddMySelectPage : PhoneApplicationPage
     {
+        const Int32 ImageLength = 200;
+
         public AddMySelectPage()
         {
             InitializeComponent();
@@ -161,8 +163,6 @@ namespace KKBOX_News
             {
                 myArticleItem.IconImagePath = parameters["ImagePath"];
             }
-
-            Debug.WriteLine(selectedImageName);
             if (selectedImageName != null)
             {
                 displayChooseImage();
@@ -214,7 +214,7 @@ namespace KKBOX_News
 
                     WriteableBitmap wb = new WriteableBitmap(bitmap);
 
-                    Extensions.SaveJpeg(wb, fileStream, wb.PixelWidth, wb.PixelHeight, 0, 100);
+                    Extensions.SaveJpeg(wb, fileStream, ImageLength, ImageLength, 0, 100);
 
                     fileStream.Close();
                 }
@@ -241,7 +241,13 @@ namespace KKBOX_News
             }
         }
 
-        private void OnComfirmClick(Object sender, RoutedEventArgs e)
+        private void OnListBoxSelectionChanged(Object sender, SelectionChangedEventArgs e)
+        {
+            ListBox listbox = (ListBox)sender;
+            listbox.SelectedIndex = -1;
+        }
+
+        private void OnConfirmButtonClick(Object sender, RoutedEventArgs e)
         {
             using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
             {
@@ -300,7 +306,6 @@ namespace KKBOX_News
                     App.ViewModel.ArticleDirectories.Add(mySelectedArticleDirectory);
 
                     Int32 TotalArticleDirectories = App.ViewModel.ArticleDirectories.Count;
-                    //App.ViewModel.ArticleDirectories[TotalArticleDirectories - 1].ArticleItemList.Add(myArticleItem);
 
                     using (SqliteCommand cmd = conn.CreateCommand())
                     {
@@ -317,16 +322,6 @@ namespace KKBOX_News
                         cmd.ExecuteNonQuery();
                         cmd.Transaction.Commit();
                         cmd.Transaction = null;
-                        //cmd.CommandText = "SELECT * FROM directoryTable";
-                        //using (SqliteDataReader reader = cmd.ExecuteReader())
-                        //{
-                        //    while (reader.Read())
-                        //    {
-                        //        Debug.WriteLine(reader.GetInt32(0));
-                        //        Debug.WriteLine(reader.GetString(1));
-                        //        Debug.WriteLine(reader.GetString(2));
-                        //    }
-                        //}
 
                         cmd.Transaction = conn.BeginTransaction();
                         cmd.CommandText = "INSERT INTO directoryArticles (directoryId, articleTitle, articleContent, articleIconPath, articleLink) VALUES(@directoryId, @articleTitle, @articleContent, @articleIconPath, @articleLink);SELECT last_insert_rowid();";
@@ -339,7 +334,6 @@ namespace KKBOX_News
                         for (int i = 0; i < ArticleNavigationPasser.Articles.Count ; i++)
                         {
                             cmd.Parameters["@directoryId"].Value = mySelectedArticleDirectory.DirectoryIndex; //ID start with 1
-                            Debug.WriteLine(getLastDirectoryIndex());
                             cmd.Parameters["@articleTitle"].Value = ArticleNavigationPasser.Articles[i].Title;
                             cmd.Parameters["@articleContent"].Value = ArticleNavigationPasser.Articles[i].Content;
                             cmd.Parameters["@articleIconPath"].Value = ArticleNavigationPasser.Articles[i].IconImagePath;
@@ -349,41 +343,19 @@ namespace KKBOX_News
                         }
                         cmd.Transaction.Commit();
                         cmd.Transaction = null;
-                        //cmd.CommandText = "SELECT * FROM directoryArticles";
 
-                        //using (SqliteDataReader reader = cmd.ExecuteReader())
-                        //{
-                        //    while (reader.Read())
-                        //    {
-                        //        Debug.WriteLine(reader.GetInt32(0));
-                        //        Debug.WriteLine(reader.GetInt32(1));
-                        //        Debug.WriteLine(reader.GetString(2));
-                        //        Debug.WriteLine(reader.GetString(3));
-                        //        Debug.WriteLine(reader.GetString(4));
-                        //        Debug.WriteLine(reader.GetString(5));
-                        //    }
-                        //}
                     }
                 }
 
             }
             NavigationService.GoBack();
-
         }
 
-        private void OnConcelClick(Object sender, RoutedEventArgs e)
+        private void OnConcelButtonClick(Object sender, RoutedEventArgs e)
         {
             NavigationService.GoBack();
         }
 
-        private void CheckBox_Click(Object sender, RoutedEventArgs e)
-        {
-            //for (int i = 0; i < AdderListBox.Count; i++)
-            //{
-            //    Debug.WriteLine(String.Format("{0} {1}", i, AdderListBox[i].IsChecked));
-            //}
-            //Debug.WriteLine(AdderListBox[1].ItemTitle);
-        }
         #region property
         private ArticleItem myArticleItem
         {
@@ -429,10 +401,6 @@ namespace KKBOX_News
         }
         #endregion 
 
-        private void OnListBoxSelectionChanged(Object sender, SelectionChangedEventArgs e)
-        {
-            ListBox listbox = (ListBox)sender;
-            listbox.SelectedIndex = -1;
-        }
+        
     }
 }

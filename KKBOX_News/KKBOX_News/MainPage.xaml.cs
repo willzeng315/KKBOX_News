@@ -102,45 +102,18 @@ namespace KKBOX_News
             }
         }
 
-        private Boolean isDirectoryHasContent(Int32 DirIndex)
-        {
 
-            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
-            {
-                conn.Open();
-                using (SqliteCommand cmd = conn.CreateCommand())
-                {
-                    String querySrting = "";
-
-                    querySrting = String.Format("SELECT * FROM directoryArticles WHERE directoryId={0}", DirIndex);
-
-                    cmd.CommandText = querySrting;
-
-                    using (SqliteDataReader reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
 
         private void OnSelectedDirectoyClick(object sender, RoutedEventArgs e)
         {
             Button image = (Button)sender;
             MySelectedArticleDirectory mySelectedArticleDirectory = (MySelectedArticleDirectory)image.DataContext;
 
-            if (isDirectoryHasContent(mySelectedArticleDirectory.DirectoryIndex))
-            {
+            //if (isDirectoryHasContent(mySelectedArticleDirectory.DirectoryIndex))
+            //{
                 String sDestination = String.Format("/ArticleListPage.xaml?DirectoryIndex={0}&DirectoryTitle={1}", mySelectedArticleDirectory.DirectoryIndex, mySelectedArticleDirectory.Title);
                 this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
-            }
+            //}
             
         }
 

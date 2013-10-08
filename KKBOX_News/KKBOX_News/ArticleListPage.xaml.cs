@@ -50,7 +50,6 @@ namespace KKBOX_News
             ButtonSet.DataContext = this;
             selectAllGrid.DataContext = this;
             DataContext = ArticleModel;
-          
         }
 
 
@@ -61,7 +60,7 @@ namespace KKBOX_News
             MultipleAdd = Visibility.Collapsed;
             simpleArticles = new List<SimpleArticleItem>();
 
-            appbarAdd = this.ApplicationBar as ApplicationBar;
+            appbarMultipleManipulation = this.ApplicationBar as ApplicationBar;
             menuMultipleDelete = this.ApplicationBar.MenuItems[1] as ApplicationBarMenuItem;
             menuMultipleDelete.IsEnabled = false;
 
@@ -73,8 +72,6 @@ namespace KKBOX_News
         private void OnTimerTick(Object sender, EventArgs e)
         {
             Debug.WriteLine("更新文章中...");
-            Debug.WriteLine("ArticleUpdateTimeInterval");
-            Debug.WriteLine(ArticleUpdateTimeInterval);
             if (currentPageMode == PageMode.READ_FROM_XML)
             {
                 LoadingText.Text = "更新文章中...";
@@ -205,6 +202,8 @@ namespace KKBOX_News
             {
                 directoryIndex = Int32.Parse(parameters["DirectoryIndex"]);
 
+                determineAppBarVisibility();
+
                 currentPageMode = PageMode.READ_FROM_DIR;
 
                 menuMultipleDelete.IsEnabled = true;
@@ -222,6 +221,23 @@ namespace KKBOX_News
 
             }
 
+        }
+
+        protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            stopUpdateArticle();
+        }
+
+        private void determineAppBarVisibility()
+        {
+            if (!isDirectoryHasContent(directoryIndex))
+            {
+                appbarMultipleManipulation.IsMenuEnabled = false;
+            }
+            else
+            {
+                appbarMultipleManipulation.IsMenuEnabled = true;
+            }
         }
 
         private void startUpdateArticle()
@@ -266,11 +282,6 @@ namespace KKBOX_News
                     }
                 }
             }
-        }
-
-        protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
-        {
-            stopUpdateArticle();
         }
 
         private void loadXmlParserResult(DownloadStringCompletedEventArgs EventArgs)
@@ -412,6 +423,35 @@ namespace KKBOX_News
             }
         }
 
+        private Boolean isDirectoryHasContent(Int32 DirIndex)
+        {
+
+            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            {
+                conn.Open();
+                using (SqliteCommand cmd = conn.CreateCommand())
+                {
+                    String querySrting = "";
+
+                    querySrting = String.Format("SELECT * FROM directoryArticles WHERE directoryId={0}", DirIndex);
+
+                    cmd.CommandText = querySrting;
+
+                    using (SqliteDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
         private void concelAllSelect()
         {
             for (int i = 0; i < ArticleModel.KKBOXArticles.Count; i++)
@@ -438,7 +478,7 @@ namespace KKBOX_News
         {
             MultipleAdd = Visibility.Collapsed;
             setArticleCheckBoxVisibility(Visibility.Collapsed);
-            appbarAdd.IsVisible = true;
+            appbarMultipleManipulation.IsVisible = true;
             loadArticleIntoPasser();
             if (currentConfirmButtonMode == ConfirmButtonMode.ADD_ARTICLE && IsAnyArticleSelected())
             {
@@ -456,7 +496,7 @@ namespace KKBOX_News
         {
             MultipleAdd = Visibility.Collapsed;
             setArticleCheckBoxVisibility(Visibility.Collapsed);
-            appbarAdd.IsVisible = true;
+            appbarMultipleManipulation.IsVisible = true;
             resetAllSelect();
         }
 
@@ -464,7 +504,7 @@ namespace KKBOX_News
         {
             MultipleAdd = Visibility.Visible;
             setArticleCheckBoxVisibility(Visibility.Visible);
-            appbarAdd.IsVisible = false;
+            appbarMultipleManipulation.IsVisible = false;
             currentConfirmButtonMode = ConfirmButtonMode.ADD_ARTICLE;
         }
 
@@ -472,7 +512,7 @@ namespace KKBOX_News
         {
             MultipleAdd = Visibility.Visible;
             setArticleCheckBoxVisibility(Visibility.Visible);
-            appbarAdd.IsVisible = false;
+            appbarMultipleManipulation.IsVisible = false;
             currentConfirmButtonMode = ConfirmButtonMode.DELETE_ARTICLE;
         }
 

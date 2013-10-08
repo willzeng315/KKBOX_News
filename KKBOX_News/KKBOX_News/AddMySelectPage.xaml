@@ -42,7 +42,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                              <TextBlock Grid.Column="0" Text="{Binding ItemTitle}" FontSize="28" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10"/>
-                            <CheckBox Grid.Column="1"  IsChecked="{Binding IsChecked,Mode=TwoWay}" Click="CheckBox_Click" />
+                            <CheckBox Grid.Column="1"  IsChecked="{Binding IsChecked,Mode=TwoWay}" />
                         </Grid>
                     </DataTemplate>
                 </local:AdderTemplateSelector.textblock>
@@ -92,8 +92,8 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Content="確認" FontSize="28" Click="OnComfirmClick"/>
-                <Button Grid.Column="1" Content="取消" FontSize="28" Click="OnConcelClick"/>
+                <Button Grid.Column="0" Content="確認" FontSize="28" Click="OnConfirmButtonClick"/>
+                <Button Grid.Column="1" Content="取消" FontSize="28" Click="OnConcelButtonClick"/>
             </Grid>
         </Grid>
     </Grid>

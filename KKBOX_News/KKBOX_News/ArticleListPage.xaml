@@ -98,7 +98,7 @@
         </Grid>
     </Grid>
     <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar x:Name="appbarAdd" Opacity="0.7" Mode="Minimized">
+        <shell:ApplicationBar x:Name="appbarMultipleManipulation" Opacity="0.7" Mode="Minimized">
             <shell:ApplicationBar.MenuItems>
                 <shell:ApplicationBarMenuItem Text="加入我的精選" Click="OnAddMyMultiSelectMenuClick"/>
                 <shell:ApplicationBarMenuItem x:Name="menuMultipleDelete" Text="刪除多個文章" Click="OnAddMyMultiDeleteMenuClick"/>           
