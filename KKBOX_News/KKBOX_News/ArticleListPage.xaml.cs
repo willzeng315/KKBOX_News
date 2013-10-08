@@ -19,6 +19,21 @@ using System.Windows.Threading;
 
 namespace KKBOX_News
 {
+    public class SimpleArticleItem
+    {
+        public String Title
+        {
+            get;
+            set;
+        }
+
+        public Int32 DeleteId
+        {
+            get;
+            set;
+        }
+    }
+
     public partial class ArticleListPage : PhoneApplicationPage,INotifyPropertyChanged
     {
         public enum PageMode { NULL,READ_FROM_DIR, READ_FROM_XML};
@@ -33,8 +48,9 @@ namespace KKBOX_News
             LoadingText.DataContext = this;
             TopicPageTitle.DataContext = this;
             ButtonSet.DataContext = this;
-            DataContext = Model;
-            
+            selectAllGrid.DataContext = this;
+            DataContext = ArticleModel;
+          
         }
 
 
@@ -43,6 +59,7 @@ namespace KKBOX_News
             isLinkClick = false;
             lastSelectedItemIndex = -1;
             MultipleAdd = Visibility.Collapsed;
+            simpleArticles = new List<SimpleArticleItem>();
 
             appbarAdd = this.ApplicationBar as ApplicationBar;
             menuMultipleDelete = this.ApplicationBar.MenuItems[1] as ApplicationBarMenuItem;
@@ -65,7 +82,7 @@ namespace KKBOX_News
             }
         }
 
-        #region LoadArticles
+        #region LoadArticlesFromXml
         private String ImageRetriever(String sDescription)
         {
             String ImageSource = "";
@@ -245,7 +262,7 @@ namespace KKBOX_News
 
                             items.Add(selectedArticleItem);
                         }
-                        Model.Items = items;
+                        ArticleModel.KKBOXArticles = items;
                     }
                 }
             }
@@ -278,7 +295,20 @@ namespace KKBOX_News
                 newItem.IsExtended = false;
                 items.Add(newItem);
             }
-            Model.Items = items;
+            ArticleModel.KKBOXArticles = items;
+        }
+
+        private void loadArticleIntoPasser()
+        {
+            ArticleNavigationPasser.Articles.Clear();
+
+            for (int i = 0; i < ArticleModel.KKBOXArticles.Count; i++)
+            {
+                if (ArticleModel.KKBOXArticles[i].IsSelected)
+                {
+                    ArticleNavigationPasser.Articles.Add(ArticleModel.KKBOXArticles[i]);
+                }
+            }
         }
 
         private void OnDownloadStringCompleted(Object sender, DownloadStringCompletedEventArgs EventArgs)
@@ -346,43 +376,71 @@ namespace KKBOX_News
             ArticleNavigationPasser.Articles.Clear();
             ArticleNavigationPasser.Articles.Add(articleItem);
 
-            //String sDestination = String.Format("/AddMySelectPage.xaml?Title={0}&Content={1}&Link={2}&ImagePath={3}",
-            //    articleItem.Title, articleItem.Content, articleItem.Link, articleItem.IconImagePath);
-
             this.NavigationService.Navigate(new Uri("/AddMySelectPage.xaml", UriKind.Relative));
+        }
+
+        private void OnMenuItemDeleteClick(Object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            ArticleItem articleItem = (ArticleItem)menuItem.DataContext;
+
+            ArticleNavigationPasser.Articles.Clear();
+            ArticleNavigationPasser.Articles.Add(articleItem);
+            deleteDirectoryArticlesFormDB();
         }
 
         private void setArticleCheckBoxVisibility(Visibility visibility)
         {
-            if (Model.Items != null)
+            if (ArticleModel.KKBOXArticles != null)
             {
-                for (int i = 0; i < Model.Items.Count; i++)
+                for (int i = 0; i < ArticleModel.KKBOXArticles.Count; i++)
                 {
-                    Model.Items[i].CheckBoxVisiblity = visibility;
+                    ArticleModel.KKBOXArticles[i].CheckBoxVisiblity = visibility;
                 }
             }
         }
 
-        private void loadArticleIntoPasser()
+        private Boolean IsAnyArticleSelected()
         {
-            ArticleNavigationPasser.Articles.Clear();
-
-            for (int i = 0; i < Model.Items.Count; i++)
+            if (ArticleNavigationPasser.Articles.Count == 0)
             {
-                if (Model.Items[i].IsSelected)
-                {
-                    ArticleNavigationPasser.Articles.Add(Model.Items[i]);
-                }
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
 
-        private void OnComfirmClick(Object sender, RoutedEventArgs e)
+        private void concelAllSelect()
+        {
+            for (int i = 0; i < ArticleModel.KKBOXArticles.Count; i++)
+            {
+                ArticleModel.KKBOXArticles[i].IsSelected = false;
+            }
+        }
+
+        private void checkAllSelect()
+        {
+            for (int i = 0; i < ArticleModel.KKBOXArticles.Count; i++)
+            {
+                ArticleModel.KKBOXArticles[i].IsSelected = true;
+            }
+        }
+
+        private void resetAllSelect()
+        {
+            concelAllSelect();
+            checkBoxSelectAll.IsChecked = false;
+        }
+
+        private void OnComfirmButtonClick(Object sender, RoutedEventArgs e)
         {
             MultipleAdd = Visibility.Collapsed;
             setArticleCheckBoxVisibility(Visibility.Collapsed);
             appbarAdd.IsVisible = true;
             loadArticleIntoPasser();
-            if (currentConfirmButtonMode == ConfirmButtonMode.ADD_ARTICLE)
+            if (currentConfirmButtonMode == ConfirmButtonMode.ADD_ARTICLE && IsAnyArticleSelected())
             {
                 this.NavigationService.Navigate(new Uri("/AddMySelectPage.xaml", UriKind.Relative));
             }
@@ -390,17 +448,19 @@ namespace KKBOX_News
             {
                 deleteDirectoryArticlesFormDB();
             }
+            resetAllSelect();
 
         }
         
-        private void OnConcelClick(Object sender, RoutedEventArgs e)
+        private void OnConcelButtonClick(Object sender, RoutedEventArgs e)
         {
             MultipleAdd = Visibility.Collapsed;
             setArticleCheckBoxVisibility(Visibility.Collapsed);
             appbarAdd.IsVisible = true;
+            resetAllSelect();
         }
 
-        private void OnAddMySelectMenuItemClick(Object sender, EventArgs e)
+        private void OnAddMyMultiSelectMenuClick(Object sender, EventArgs e)
         {
             MultipleAdd = Visibility.Visible;
             setArticleCheckBoxVisibility(Visibility.Visible);
@@ -408,7 +468,7 @@ namespace KKBOX_News
             currentConfirmButtonMode = ConfirmButtonMode.ADD_ARTICLE;
         }
 
-        private void OnAddMyDeleteMenuItemClick(Object sender, EventArgs e)
+        private void OnAddMyMultiDeleteMenuClick(Object sender, EventArgs e)
         {
             MultipleAdd = Visibility.Visible;
             setArticleCheckBoxVisibility(Visibility.Visible);
@@ -416,8 +476,37 @@ namespace KKBOX_News
             currentConfirmButtonMode = ConfirmButtonMode.DELETE_ARTICLE;
         }
 
+        private void loadSimpleArticlesFromDB()
+        {
+            simpleArticles.Clear();
+
+            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            {
+                conn.Open();
+                using (SqliteCommand cmd = conn.CreateCommand())
+                {
+                    String querySrting = "";
+                    querySrting = String.Format("SELECT * FROM directoryArticles WHERE directoryId={0}", directoryIndex);
+                    cmd.CommandText = querySrting;
+                    using (SqliteDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            simpleArticles.Add(new SimpleArticleItem()
+                            {
+                                DeleteId = reader.GetInt32(0),
+                                Title = reader.GetString(2)
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
         private void deleteDirectoryArticlesFormDB()
         {
+            loadSimpleArticlesFromDB();
+
             using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
             {
                 conn.Open();
@@ -425,30 +514,14 @@ namespace KKBOX_News
                 {
                     for (int i = 0; i < ArticleNavigationPasser.Articles.Count; i++)
                     {
-                        String querySrting = "";
-                        querySrting = String.Format("SELECT * FROM directoryArticles WHERE directoryId={0}", directoryIndex);
-                        cmd.CommandText = querySrting;
-                        using (SqliteDataReader reader = cmd.ExecuteReader())
+                        for (int j = 0; j < simpleArticles.Count; j++)
                         {
-                            while (reader.Read())
+                            if (ArticleNavigationPasser.Articles[i].Title == simpleArticles[j].Title)
                             {
-                                for (int j = 0; j < ArticleNavigationPasser.Articles.Count; j++)
-                                {
-                                    if (ArticleNavigationPasser.Articles[j].Title == reader.GetString(2))
-                                    {
-                                        Debug.WriteLine(reader.GetInt32(0));
-                                        cmd.CommandText = String.Format("DELETE FROM directoryArticles WHERE id={0}", reader.GetInt32(0));
-                                        int n = cmd.ExecuteNonQuery();
-                                        Model.Items.Remove(ArticleNavigationPasser.Articles[j]);
-                                        break;
-                                        //Debug.WriteLine(reader.GetInt32(1));
-                                        //Debug.WriteLine(reader.GetString(2));
-                                        //Debug.WriteLine(reader.GetString(3));
-                                        //Debug.WriteLine(reader.GetString(4));
-                                        //Debug.WriteLine(reader.GetString(5));
-                                    }
-                                }
-                                
+                                cmd.CommandText = String.Format("DELETE FROM directoryArticles WHERE id={0}", simpleArticles[j].DeleteId);
+                                cmd.ExecuteNonQuery();
+                                ArticleModel.KKBOXArticles.Remove(ArticleNavigationPasser.Articles[i]);
+                                break;
                             }
                         }
                     }
@@ -490,6 +563,12 @@ namespace KKBOX_News
             set;
         }
 
+        private List<SimpleArticleItem> simpleArticles
+        {
+            get;
+            set;
+        }
+
         private static Int32 articleUpdateTimeInterval;
         public static Int32 ArticleUpdateTimeInterval
         {
@@ -514,16 +593,16 @@ namespace KKBOX_News
             }
         }
 
-        private ArticleListPageModel model;
-        public ArticleListPageModel Model
+        private ArticleListPageModel articleModel;
+        public ArticleListPageModel ArticleModel
         {
             get
             {
-                if (model == null)
+                if (articleModel == null)
                 {
-                    model = new ArticleListPageModel();
+                    articleModel = new ArticleListPageModel();
                 }
-                return model;
+                return articleModel;
             }
         }
 
@@ -587,16 +666,17 @@ namespace KKBOX_News
         }
         #endregion
 
-        private void OnMenuItemDeleteClick(Object sender, RoutedEventArgs e)
+        private void OnSelectAllCheckBoxClick(Object sender, RoutedEventArgs e)
         {
-            MenuItem menuItem = (MenuItem)sender;
-            ArticleItem articleItem = (ArticleItem)menuItem.DataContext;
-
-            ArticleNavigationPasser.Articles.Clear();
-            ArticleNavigationPasser.Articles.Add(articleItem);
-            deleteDirectoryArticlesFormDB();
+            CheckBox checkBox = (CheckBox)sender;
+            if ((Boolean)checkBox.IsChecked)
+            {
+                checkAllSelect();
+            }
+            else
+            {
+                concelAllSelect();
+            }
         }
-
-
     }
 }

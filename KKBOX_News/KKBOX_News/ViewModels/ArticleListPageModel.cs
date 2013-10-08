@@ -15,7 +15,7 @@ namespace KKBOX_News
         {
             CheckBoxVisiblity = Visibility.Collapsed;
             DeleteMenuVisiblity = Visibility.Collapsed;
-            IsSelected = true;
+            IsSelected = false;
         }
         #region Property
         private String iconImagePath = "";
@@ -127,19 +127,19 @@ namespace KKBOX_News
     {
         public ArticleListPageModel()
         {
-            Items = new ObservableCollection<ArticleItem>();
+            KKBOXArticles = new ObservableCollection<ArticleItem>();
         }
-        
-        private ObservableCollection<ArticleItem> items = null;
-        public ObservableCollection<ArticleItem> Items
+
+        private ObservableCollection<ArticleItem> kkboxArticles = null;
+        public ObservableCollection<ArticleItem> KKBOXArticles
         {
             get
             {
-                return items;
+                return kkboxArticles;
             }
             set
             {
-                SetProperty(ref items, value, "Items");
+                SetProperty(ref kkboxArticles, value, "KKBOXArticles");
             }
         }
         
