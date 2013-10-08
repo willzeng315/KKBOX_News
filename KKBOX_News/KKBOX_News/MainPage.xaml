@@ -46,33 +46,40 @@
 
             <!--Panorama 項目 2-->
             <phone:PanoramaItem Header="我的精選" Orientation="Horizontal">
-                <ScrollViewer MaxWidth="700">
-                    <ItemsControl ItemsSource="{Binding ArticleDirectories}"  >
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <toolkit:WrapPanel/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Button Click="OnSelectedDirectoyClick" BorderThickness="0">
-                                    <ContentPresenter>
-                                        <StackPanel>
-                                            <Image Source="{Binding CoverImage}" HorizontalAlignment="Center" Width="150" Height="150"/>
-                                            <TextBlock Text="{Binding Title}" FontSize="28" HorizontalAlignment="Center"/>
-                                        </StackPanel>
-                                    </ContentPresenter>
-                                    <toolkit:ContextMenuService.ContextMenu>
-                                        <toolkit:ContextMenu>
-                                            <toolkit:MenuItem Header="編輯封面資訊" Click="OnDirectoryEditMenuClick"/>
-                                            <toolkit:MenuItem Header="刪除此目錄" Click="OnDirectoryDeleteMenuClick"/>
-                                        </toolkit:ContextMenu>
-                                    </toolkit:ContextMenuService.ContextMenu>
-                                </Button>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Button Content="搜尋儲存文章" Width="200" HorizontalAlignment="Left" Click="OnSearchArticleButtonClick"/>
+                    <ScrollViewer Grid.Row="1" MaxWidth="700">
+                        <ItemsControl ItemsSource="{Binding ArticleDirectories}"  >
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <toolkit:WrapPanel/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Click="OnSelectedDirectoyClick" BorderThickness="0">
+                                        <ContentPresenter>
+                                            <StackPanel>
+                                                <Image Source="{Binding CoverImage}" HorizontalAlignment="Center" Width="150" Height="150"/>
+                                                <TextBlock Text="{Binding Title}" FontSize="28" HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </ContentPresenter>
+                                        <toolkit:ContextMenuService.ContextMenu>
+                                            <toolkit:ContextMenu>
+                                                <toolkit:MenuItem Header="編輯封面資訊" Click="OnDirectoryEditMenuClick"/>
+                                                <toolkit:MenuItem Header="刪除此目錄" Click="OnDirectoryDeleteMenuClick"/>
+                                            </toolkit:ContextMenu>
+                                        </toolkit:ContextMenuService.ContextMenu>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
             </phone:PanoramaItem>
 
 

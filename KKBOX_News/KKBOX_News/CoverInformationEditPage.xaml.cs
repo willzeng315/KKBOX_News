@@ -28,6 +28,7 @@ namespace KKBOX_News
         public CoverInformationEditPage()
         {
             InitializeComponent();
+            isReturnFromPhotoChooser = false;
             DataContext = this;
         }
 
@@ -66,6 +67,8 @@ namespace KKBOX_News
                     }
 
                     CoverImage = LocalImageManipulation.ReadJpgFromLocal(selectedImageName);
+
+                    
                 }
             }
         }
@@ -73,15 +76,18 @@ namespace KKBOX_News
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             IDictionary<String, String> parameters = this.NavigationContext.QueryString;
-
-            if (parameters.ContainsKey("Title"))
+            if (!isReturnFromPhotoChooser)
             {
-                CoverTitle = parameters["Title"];
+                if (parameters.ContainsKey("Title"))
+                {
+                    CoverTitle = parameters["Title"];
+                }
+                if (parameters.ContainsKey("DirectoryIndex"))
+                {
+                    directoryIndex = Int32.Parse(parameters["DirectoryIndex"]);
+                }
             }
-            if (parameters.ContainsKey("DirectoryIndex"))
-            {
-                directoryIndex = Int32.Parse(parameters["DirectoryIndex"]);
-            }
+            isReturnFromPhotoChooser = false;
 
         }
 
@@ -194,6 +200,7 @@ namespace KKBOX_News
 
         private void OnChoosePhotoClick(Object sender, RoutedEventArgs e)
         {
+            isReturnFromPhotoChooser = true;
             PhotoChooserTask photoChooserTask;
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.Completed += new EventHandler<PhotoResult>(OnPhotoChooserTaskCompleted);

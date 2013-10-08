@@ -36,7 +36,7 @@ namespace KKBOX_News
 
     public partial class ArticleListPage : PhoneApplicationPage,INotifyPropertyChanged
     {
-        public enum PageMode { NULL,READ_FROM_DIR, READ_FROM_XML};
+        public enum PageMode { NULL,READ_FROM_DIR, READ_FROM_XML, SEARCH_ARTICLES};
         public enum ConfirmButtonMode { NULL, ADD_ARTICLE, DELETE_ARTICLE };
         private PageMode currentPageMode;
         private ConfirmButtonMode currentConfirmButtonMode;
@@ -49,15 +49,16 @@ namespace KKBOX_News
             TopicPageTitle.DataContext = this;
             ButtonSet.DataContext = this;
             selectAllGrid.DataContext = this;
+            searchTexBoxGrid.DataContext = this;
             DataContext = ArticleModel;
         }
-
 
         private void defaultSetting()
         {
             isLinkClick = false;
             lastSelectedItemIndex = -1;
-            MultipleAdd = Visibility.Collapsed;
+            MultipleManipulation = Visibility.Collapsed;
+            SearchManipulation = Visibility.Collapsed;
             simpleArticles = new List<SimpleArticleItem>();
 
             appbarMultipleManipulation = this.ApplicationBar as ApplicationBar;
@@ -218,7 +219,11 @@ namespace KKBOX_News
                     LoadDirectoryArticlesFromDB(directoryIndex);
                     IsNotPageLoaded = false;
                 }
-
+            }
+            else if (parameters.ContainsKey("SearchArticle"))
+            {
+                PageTitle = "搜尋文章";
+                SearchManipulation = Visibility.Visible;
             }
 
         }
@@ -476,7 +481,7 @@ namespace KKBOX_News
 
         private void OnComfirmButtonClick(Object sender, RoutedEventArgs e)
         {
-            MultipleAdd = Visibility.Collapsed;
+            MultipleManipulation = Visibility.Collapsed;
             setArticleCheckBoxVisibility(Visibility.Collapsed);
             appbarMultipleManipulation.IsVisible = true;
             loadArticleIntoPasser();
@@ -494,7 +499,7 @@ namespace KKBOX_News
         
         private void OnConcelButtonClick(Object sender, RoutedEventArgs e)
         {
-            MultipleAdd = Visibility.Collapsed;
+            MultipleManipulation = Visibility.Collapsed;
             setArticleCheckBoxVisibility(Visibility.Collapsed);
             appbarMultipleManipulation.IsVisible = true;
             resetAllSelect();
@@ -502,7 +507,7 @@ namespace KKBOX_News
 
         private void OnAddMyMultiSelectMenuClick(Object sender, EventArgs e)
         {
-            MultipleAdd = Visibility.Visible;
+            MultipleManipulation = Visibility.Visible;
             setArticleCheckBoxVisibility(Visibility.Visible);
             appbarMultipleManipulation.IsVisible = false;
             currentConfirmButtonMode = ConfirmButtonMode.ADD_ARTICLE;
@@ -510,7 +515,7 @@ namespace KKBOX_News
 
         private void OnAddMyMultiDeleteMenuClick(Object sender, EventArgs e)
         {
-            MultipleAdd = Visibility.Visible;
+            MultipleManipulation = Visibility.Visible;
             setArticleCheckBoxVisibility(Visibility.Visible);
             appbarMultipleManipulation.IsVisible = false;
             currentConfirmButtonMode = ConfirmButtonMode.DELETE_ARTICLE;
@@ -672,16 +677,29 @@ namespace KKBOX_News
             }
         }
 
-        private Visibility multipleAdd;
-        public Visibility MultipleAdd
+        private Visibility searchManipulation;
+        public Visibility SearchManipulation
         {
             get
             {
-                return multipleAdd;
+                return searchManipulation;
             }
             set
             {
-                SetProperty(ref multipleAdd, value, "MultipleAdd");
+                SetProperty(ref searchManipulation, value, "SearchManipulation");
+            }
+        }
+
+        private Visibility multipleManipulation;
+        public Visibility MultipleManipulation
+        {
+            get
+            {
+                return multipleManipulation;
+            }
+            set
+            {
+                SetProperty(ref multipleManipulation, value, "MultipleManipulation");
             }
         }
 

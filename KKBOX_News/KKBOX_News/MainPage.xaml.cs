@@ -104,17 +104,19 @@ namespace KKBOX_News
 
 
 
-        private void OnSelectedDirectoyClick(object sender, RoutedEventArgs e)
+        private void OnSelectedDirectoyClick(Object sender, RoutedEventArgs e)
         {
             Button image = (Button)sender;
             MySelectedArticleDirectory mySelectedArticleDirectory = (MySelectedArticleDirectory)image.DataContext;
 
-            //if (isDirectoryHasContent(mySelectedArticleDirectory.DirectoryIndex))
-            //{
-                String sDestination = String.Format("/ArticleListPage.xaml?DirectoryIndex={0}&DirectoryTitle={1}", mySelectedArticleDirectory.DirectoryIndex, mySelectedArticleDirectory.Title);
-                this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
-            //}
-            
+            String sDestination = String.Format("/ArticleListPage.xaml?DirectoryIndex={0}&DirectoryTitle={1}", mySelectedArticleDirectory.DirectoryIndex, mySelectedArticleDirectory.Title);
+            this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
+        }
+
+        private void OnSearchArticleButtonClick(Object sender, RoutedEventArgs e)
+        {
+            String sDestination = String.Format("/ArticleListPage.xaml?SearchArticle={0}", true);
+            this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
         }
 
     }

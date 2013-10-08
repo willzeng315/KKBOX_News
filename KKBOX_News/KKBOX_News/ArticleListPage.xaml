@@ -40,12 +40,19 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Grid x:Name="selectAllGrid" Grid.Row="0" Visibility="{Binding MultipleAdd}" Background="Gray">
+            <Grid x:Name="searchTexBoxGrid" Grid.Row="0" Visibility="{Binding SearchManipulation}" Background="Gray">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Rectangle Fill="Gray"/>
+                <TextBox Grid.Column="0"/>
+                <Button Grid.Column="1" Content="搜尋"/>
+            </Grid>
+            <Grid x:Name="selectAllGrid" Grid.Row="0" Visibility="{Binding MultipleManipulation}" Background="Gray">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Text="全選" FontSize="28" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 <CheckBox x:Name="checkBoxSelectAll" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Click="OnSelectAllCheckBoxClick" IsChecked="false"/>
             </Grid>
@@ -87,7 +94,7 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <Grid x:Name="ButtonSet" Grid.Row="2" Height="80" Visibility="{Binding MultipleAdd}">
+            <Grid x:Name="ButtonSet" Grid.Row="2" Height="80" Visibility="{Binding MultipleManipulation}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
