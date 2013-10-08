@@ -58,13 +58,14 @@
                                 <Button Click="OnSelectedDirectoyClick" BorderThickness="0">
                                     <ContentPresenter>
                                         <StackPanel>
-                                            <Image Source="{Binding CoverImage}" HorizontalAlignment="Center" Width="200" Height="200"/>
+                                            <Image Source="{Binding CoverImage}" HorizontalAlignment="Center" Width="150" Height="150"/>
                                             <TextBlock Text="{Binding Title}" FontSize="28" HorizontalAlignment="Center"/>
                                         </StackPanel>
                                     </ContentPresenter>
                                     <toolkit:ContextMenuService.ContextMenu>
                                         <toolkit:ContextMenu>
-                                            <toolkit:MenuItem Header="編輯封面資訊" Click="OnCoverEditClick"/>
+                                            <toolkit:MenuItem Header="編輯封面資訊" Click="OnDirectoryEditMenuClick"/>
+                                            <toolkit:MenuItem Header="刪除此目錄" Click="OnDirectoryDeleteMenuClick"/>
                                         </toolkit:ContextMenu>
                                     </toolkit:ContextMenuService.ContextMenu>
                                 </Button>

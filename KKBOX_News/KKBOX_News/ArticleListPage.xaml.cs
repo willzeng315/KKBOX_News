@@ -22,9 +22,10 @@ namespace KKBOX_News
     public partial class ArticleListPage : PhoneApplicationPage,INotifyPropertyChanged
     {
         public enum PageMode { NULL,READ_FROM_DIR, READ_FROM_XML};
-
+        public enum ConfirmButtonMode { NULL, ADD_ARTICLE, DELETE_ARTICLE };
         private PageMode currentPageMode;
-       
+        private ConfirmButtonMode currentConfirmButtonMode;
+
         public ArticleListPage()
         {
             InitializeComponent();
@@ -48,7 +49,7 @@ namespace KKBOX_News
             menuMultipleDelete.IsEnabled = false;
 
             Timer = new DispatcherTimer();
-            Timer.Interval = TimeSpan.FromMinutes(ArticleUpdateTimeInterval);
+            Timer.Interval = TimeSpan.FromSeconds(ArticleUpdateTimeInterval);
             Timer.Tick += OnTimerTick;
         }
 
@@ -330,8 +331,8 @@ namespace KKBOX_News
 
             listBox.SelectedItem = null;
         }
-       
-        private void OnTextBlockManipulationStarted(object sender, System.Windows.Input.ManipulationStartedEventArgs e)
+
+        private void OnTextBlockManipulationStarted(Object sender, System.Windows.Input.ManipulationStartedEventArgs e)
         {
             isLinkClick = true;
         }
@@ -381,7 +382,14 @@ namespace KKBOX_News
             setArticleCheckBoxVisibility(Visibility.Collapsed);
             appbarAdd.IsVisible = true;
             loadArticleIntoPasser();
-            this.NavigationService.Navigate(new Uri("/AddMySelectPage.xaml", UriKind.Relative));
+            if (currentConfirmButtonMode == ConfirmButtonMode.ADD_ARTICLE)
+            {
+                this.NavigationService.Navigate(new Uri("/AddMySelectPage.xaml", UriKind.Relative));
+            }
+            else if (currentConfirmButtonMode == ConfirmButtonMode.DELETE_ARTICLE)
+            {
+                deleteDirectoryArticlesFormDB();
+            }
 
         }
         
@@ -397,6 +405,7 @@ namespace KKBOX_News
             MultipleAdd = Visibility.Visible;
             setArticleCheckBoxVisibility(Visibility.Visible);
             appbarAdd.IsVisible = false;
+            currentConfirmButtonMode = ConfirmButtonMode.ADD_ARTICLE;
         }
 
         private void OnAddMyDeleteMenuItemClick(Object sender, EventArgs e)
@@ -404,26 +413,47 @@ namespace KKBOX_News
             MultipleAdd = Visibility.Visible;
             setArticleCheckBoxVisibility(Visibility.Visible);
             appbarAdd.IsVisible = false;
+            currentConfirmButtonMode = ConfirmButtonMode.DELETE_ARTICLE;
         }
-
 
         private void deleteDirectoryArticlesFormDB()
         {
-            //using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
-            //{
-            //    conn.Open();
-            //    using (SqliteCommand cmd = conn.CreateCommand())
-            //    {
-            //        for (int i = 0; i < ArticleNavigationPasser.Articles.Count; i++)
-            //        {
-            //            String querySrting = "";
-            //            querySrting = String.Format("SELECT * FROM directoryArticles WHERE directoryId={0} AND articleLink='{1}'", directoryIndex, ArticleNavigationPasser.Articles[i].Link);
-
-            //            cmd.CommandText = querySrting;
-            //            cmd.ExecuteNonQuery();
-            //        }
-            //    }
-            //}
+            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            {
+                conn.Open();
+                using (SqliteCommand cmd = conn.CreateCommand())
+                {
+                    for (int i = 0; i < ArticleNavigationPasser.Articles.Count; i++)
+                    {
+                        String querySrting = "";
+                        querySrting = String.Format("SELECT * FROM directoryArticles WHERE directoryId={0}", directoryIndex);
+                        cmd.CommandText = querySrting;
+                        using (SqliteDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                for (int j = 0; j < ArticleNavigationPasser.Articles.Count; j++)
+                                {
+                                    if (ArticleNavigationPasser.Articles[j].Title == reader.GetString(2))
+                                    {
+                                        Debug.WriteLine(reader.GetInt32(0));
+                                        cmd.CommandText = String.Format("DELETE FROM directoryArticles WHERE id={0}", reader.GetInt32(0));
+                                        int n = cmd.ExecuteNonQuery();
+                                        Model.Items.Remove(ArticleNavigationPasser.Articles[j]);
+                                        break;
+                                        //Debug.WriteLine(reader.GetInt32(1));
+                                        //Debug.WriteLine(reader.GetString(2));
+                                        //Debug.WriteLine(reader.GetString(3));
+                                        //Debug.WriteLine(reader.GetString(4));
+                                        //Debug.WriteLine(reader.GetString(5));
+                                    }
+                                }
+                                
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         public static DispatcherTimer Timer;

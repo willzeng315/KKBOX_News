@@ -68,13 +68,38 @@ namespace KKBOX_News
             ((ListBox)sender).SelectedItem = null;
         }
 
-        private void OnCoverEditClick(Object sender, RoutedEventArgs e)
+        private void OnDirectoryEditMenuClick(Object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = (MenuItem)sender;
             MySelectedArticleDirectory mySelectedArticleDirectory = (MySelectedArticleDirectory)menuItem.DataContext;
             String sDestination = String.Format("/CoverInformationEditPage.xaml?Title={0}&DirectoryIndex={1}", mySelectedArticleDirectory.Title, mySelectedArticleDirectory.DirectoryIndex);
 
             this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
+        }
+
+        private void OnDirectoryDeleteMenuClick(Object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            MySelectedArticleDirectory mySelectedArticleDirectory = (MySelectedArticleDirectory)menuItem.DataContext;
+            deleteDirectoryFromDB(mySelectedArticleDirectory.DirectoryIndex, mySelectedArticleDirectory);
+            
+        }
+
+        private void deleteDirectoryFromDB(Int32 DirIndex, MySelectedArticleDirectory mySelectedArticleDirectory)
+        {
+            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            {
+                conn.Open();
+                using (SqliteCommand cmd = conn.CreateCommand())
+                {
+
+                    cmd.CommandText = String.Format("DELETE FROM directoryArticles WHERE directoryId={0}", DirIndex);
+                    cmd.ExecuteNonQuery();
+                    cmd.CommandText = String.Format("DELETE FROM directoryTable WHERE id={0}", DirIndex);
+                    cmd.ExecuteNonQuery();
+                    App.ViewModel.ArticleDirectories.Remove(mySelectedArticleDirectory);
+                }
+            }
         }
 
         private Boolean isDirectoryHasContent(Int32 DirIndex)

@@ -84,6 +84,12 @@ namespace KKBOX_News
             get;
         }
 
+        public Int32 DirectoryId
+        {
+            set;
+            get;
+        }
+
         private BitmapImage coverImage;
         public BitmapImage CoverImage
         {
@@ -123,7 +129,12 @@ namespace KKBOX_News
             AdderListBox.Add(new AdderItem(){ItemTitle = "", Type = "space"});
             for (int i = 0; i < App.ViewModel.ArticleDirectories.Count; i++)
             {
-                AdderListBox.Add(new AdderItem() { ItemTitle = App.ViewModel.ArticleDirectories[i].Title, Type = "textblock" });
+                AdderListBox.Add(new AdderItem() 
+                { 
+                    ItemTitle = App.ViewModel.ArticleDirectories[i].Title, 
+                    DirectoryId = App.ViewModel.ArticleDirectories[i].DirectoryIndex,
+                    Type = "textblock" 
+                });
             }
 
         }
@@ -218,6 +229,18 @@ namespace KKBOX_News
             photoChooserTask.Show();
         }
 
+        private Int32 getLastDirectoryIndex()
+        {
+            if (App.ViewModel.ArticleDirectories.Count > 0)
+            {
+                return App.ViewModel.ArticleDirectories[App.ViewModel.ArticleDirectories.Count - 1].DirectoryIndex + 1;
+            }
+            else
+            {
+                return 1;
+            }
+        }
+
         private void OnComfirmClick(Object sender, RoutedEventArgs e)
         {
             using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
@@ -246,7 +269,7 @@ namespace KKBOX_News
                             for (int j = 0; j < ArticleNavigationPasser.Articles.Count; j++)
                             {
 
-                                cmd.Parameters["@directoryId"].Value = i - 3; //ID start with 1
+                                cmd.Parameters["@directoryId"].Value = AdderListBox[i].DirectoryId; //ID start with 1
                                 cmd.Parameters["@articleTitle"].Value = ArticleNavigationPasser.Articles[j].Title;
                                 cmd.Parameters["@articleContent"].Value = ArticleNavigationPasser.Articles[j].Content;
                                 cmd.Parameters["@articleIconPath"].Value = ArticleNavigationPasser.Articles[j].IconImagePath;
@@ -272,7 +295,7 @@ namespace KKBOX_News
                     }
                     mySelectedArticleDirectory.CoverImage = LocalImageManipulation.ReadJpgFromLocal(selectedImageName);
 
-                    mySelectedArticleDirectory.DirectoryIndex = App.ViewModel.ArticleDirectories.Count+1;
+                    mySelectedArticleDirectory.DirectoryIndex = getLastDirectoryIndex();
 
                     App.ViewModel.ArticleDirectories.Add(mySelectedArticleDirectory);
 
@@ -315,7 +338,8 @@ namespace KKBOX_News
 
                         for (int i = 0; i < ArticleNavigationPasser.Articles.Count ; i++)
                         {
-                            cmd.Parameters["@directoryId"].Value = TotalArticleDirectories; //ID start with 1
+                            cmd.Parameters["@directoryId"].Value = mySelectedArticleDirectory.DirectoryIndex; //ID start with 1
+                            Debug.WriteLine(getLastDirectoryIndex());
                             cmd.Parameters["@articleTitle"].Value = ArticleNavigationPasser.Articles[i].Title;
                             cmd.Parameters["@articleContent"].Value = ArticleNavigationPasser.Articles[i].Content;
                             cmd.Parameters["@articleIconPath"].Value = ArticleNavigationPasser.Articles[i].IconImagePath;

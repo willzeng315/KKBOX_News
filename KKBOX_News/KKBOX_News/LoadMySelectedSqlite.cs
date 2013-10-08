@@ -14,7 +14,7 @@ namespace KKBOX_News
         public static Boolean CreateTables()
         {
             IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication();
-            isf.DeleteFile("KKBOX_NEWS.db");
+            //isf.DeleteFile("KKBOX_NEWS.db");
             try
             {
                 using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
@@ -33,7 +33,7 @@ namespace KKBOX_News
 
                         for (int i = 0; i < 3; i++)
                         {
-                            cmd.Parameters["@directoryName"].Value = "個人精選" + i;
+                            cmd.Parameters["@directoryName"].Value = "個人精選" + (i+1);
                             cmd.Parameters["@imagePath"].Value = "KKBOX.jpg"; //Default Image
 
                             cmd.ExecuteNonQuery();

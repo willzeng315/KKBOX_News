@@ -15,6 +15,7 @@ using System.Windows.Controls.Primitives;
 using Microsoft.Phone.Tasks;
 using System.IO.IsolatedStorage;
 using System.Windows.Media.Imaging;
+using Community.CsharpSqlite.SQLiteClient;
 
 namespace KKBOX_News
 {
@@ -150,6 +151,35 @@ namespace KKBOX_News
         }
         #endregion
 
+        private void updateDirectoryInfoToDB()
+        {
+            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            {
+                conn.Open();
+
+                using (SqliteCommand cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = conn.BeginTransaction();
+                    cmd.CommandText = String.Format("UPDATE directoryTable SET directoryName=@directoryName WHERE id={0}", directoryIndex);
+                    cmd.Parameters.Add("@directoryName", CoverTitle);
+                    cmd.ExecuteNonQuery();
+                    cmd.Transaction.Commit();
+                    cmd.Transaction = null;
+
+
+                    if (selectedImageName != null)
+                    {
+                        cmd.Transaction = conn.BeginTransaction();
+                        cmd.CommandText = String.Format("UPDATE directoryTable SET imagePath=@imagePath WHERE id={0}", directoryIndex);
+                        cmd.Parameters.Add("@imagePath", selectedImageName);
+                        cmd.ExecuteNonQuery();
+                        cmd.Transaction.Commit();
+                        cmd.Transaction = null;
+                    }
+                }
+            }
+        }
+
         private void OnChoosePhotoClick(Object sender, RoutedEventArgs e)
         {
             PhotoChooserTask photoChooserTask;
@@ -160,11 +190,20 @@ namespace KKBOX_News
 
         private void OnComfirmClick(object sender, RoutedEventArgs e)
         {
-            App.ViewModel.ArticleDirectories[directoryIndex - 1].Title = CoverTitle;
-            if (selectedImageName != null)
+            for (int i = 0; i < App.ViewModel.ArticleDirectories.Count; i++)
             {
-                App.ViewModel.ArticleDirectories[directoryIndex - 1].CoverImage = LocalImageManipulation.ReadJpgFromLocal(selectedImageName);
+                if (App.ViewModel.ArticleDirectories[i].DirectoryIndex == directoryIndex)
+                {
+                    App.ViewModel.ArticleDirectories[i].Title = CoverTitle;
+                    if (selectedImageName != null)
+                    {
+                        App.ViewModel.ArticleDirectories[i].CoverImage = LocalImageManipulation.ReadJpgFromLocal(selectedImageName);
+                    }
+                    updateDirectoryInfoToDB();
+                    break;
+                }
             }
+                
             NavigationService.GoBack();
         }
 
