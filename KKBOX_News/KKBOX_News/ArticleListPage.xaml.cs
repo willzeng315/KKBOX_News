@@ -172,11 +172,11 @@ namespace KKBOX_News
                 }
             }
 
-            if (lastSelectedItemIndex != -1 && items != null)
+            if (lastSelectedItemIndex != -1 && ArticleModel.KKBOXArticles != null && lastSelectedItemIndex < ArticleModel.KKBOXArticles.Count)
             {
-                items[lastSelectedItemIndex].IsExtended = true;
+                ArticleModel.KKBOXArticles[lastSelectedItemIndex].IsExtended = true;
             }
-            else if (parameters.ContainsKey("XML") && items == null)
+            else if (parameters.ContainsKey("XML") && selectedArticles == null)
             {
                 currentPageMode = PageMode.READ_FROM_XML;
 
@@ -270,7 +270,7 @@ namespace KKBOX_News
 
                     using (SqliteDataReader reader = cmd.ExecuteReader())
                     {
-                        items = new ObservableCollection<ArticleItem>();
+                        selectedArticles = new ObservableCollection<ArticleItem>();
 
                         while (reader.Read())
                         {
@@ -281,9 +281,9 @@ namespace KKBOX_News
                             selectedArticleItem.Link = reader.GetString(5);
                             selectedArticleItem.DeleteMenuVisiblity = Visibility.Visible;
 
-                            items.Add(selectedArticleItem);
+                            selectedArticles.Add(selectedArticleItem);
                         }
-                        ArticleModel.KKBOXArticles = items;
+                        ArticleModel.KKBOXArticles = selectedArticles;
                     }
                 }
             }
@@ -295,7 +295,7 @@ namespace KKBOX_News
             XDocument root = XDocument.Parse(sXML);
             XElement channelRoot = root.Element("rss").Element("channel");
             IEnumerable<XElement> elements = channelRoot.Elements("item");
-            items = new ObservableCollection<ArticleItem>();
+            selectedArticles = new ObservableCollection<ArticleItem>();
             foreach (XElement eleItem in elements)
             {
                 String sTitle = eleItem.Element("title").Value;
@@ -309,9 +309,9 @@ namespace KKBOX_News
                 newItem.IconImagePath = sIconPath;
                 newItem.Link = sLink;
                 newItem.IsExtended = false;
-                items.Add(newItem);
+                selectedArticles.Add(newItem);
             }
-            ArticleModel.KKBOXArticles = items;
+            ArticleModel.KKBOXArticles = selectedArticles;
         }
 
         private void loadArticleIntoPasser()
@@ -344,7 +344,7 @@ namespace KKBOX_News
 
                 if (lastSelectedItemIndex != -1 && lastSelectedItemIndex != listBox.SelectedIndex)
                 {
-                    items[lastSelectedItemIndex].IsExtended = false;
+                    ArticleModel.KKBOXArticles[lastSelectedItemIndex].IsExtended = false;
                     lastSelectedItemIndex = listBox.SelectedIndex;
                 }
 
@@ -590,7 +590,7 @@ namespace KKBOX_News
             set;
         }
 
-        private ObservableCollection<ArticleItem> items
+        private ObservableCollection<ArticleItem> selectedArticles
         {
             get;
             set;
@@ -735,6 +735,13 @@ namespace KKBOX_News
             {
                 concelAllSelect();
             }
+        }
+
+        private void OnSearchArticlesButtonClick(Object sender, RoutedEventArgs e)
+        {
+            SearchLocalArticles locaArticles = new SearchLocalArticles();
+            String keyword = searchKeywordTextBox.Text;
+            ArticleModel.KKBOXArticles = locaArticles.SearchArticleContainKeyWord(keyword);
         }
     }
 }

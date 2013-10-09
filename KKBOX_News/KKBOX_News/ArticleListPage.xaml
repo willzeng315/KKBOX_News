@@ -45,8 +45,8 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBox Grid.Column="0"/>
-                <Button Grid.Column="1" Content="搜尋"/>
+                <TextBox Grid.Column="0" x:Name="searchKeywordTextBox" />
+                <Button Grid.Column="1" Content="搜尋" Click="OnSearchArticlesButtonClick"/>
             </Grid>
             <Grid x:Name="selectAllGrid" Grid.Row="0" Visibility="{Binding MultipleManipulation}" Background="Gray">
                 <Grid.ColumnDefinitions>
@@ -56,7 +56,7 @@
                 <TextBlock Grid.Column="0" Text="全選" FontSize="28" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 <CheckBox x:Name="checkBoxSelectAll" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Click="OnSelectAllCheckBoxClick" IsChecked="false"/>
             </Grid>
-            <ListBox Grid.Row="1" ItemsSource="{Binding KKBOXArticles}" SelectionChanged="OnListBoxSelectionChanged" HorizontalContentAlignment="Stretch">
+            <ListBox Grid.Row="1" ItemsSource="{Binding KKBOXArticles}" SelectionChanged="OnListBoxSelectionChanged" HorizontalContentAlignment="Stretch" Margin="0,0,0,30"> 
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" ></Setter>

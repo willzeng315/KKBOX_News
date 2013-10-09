@@ -106,7 +106,11 @@
     <Compile Include="DataTemplateSelector.cs" />
     <Compile Include="LoadMySelectedSqlite.cs" />
     <Compile Include="LocalImageManipulation.cs" />
+    <Compile Include="LoginPage.xaml.cs">
+      <DependentUpon>LoginPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MySelectedArticleDirectory.cs" />
+    <Compile Include="SearchLocalArticles.cs" />
     <Compile Include="UpdateIntervalSelector.xaml.cs">
       <DependentUpon>UpdateIntervalSelector.xaml</DependentUpon>
     </Compile>
@@ -144,6 +148,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CoverInformationEditPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LoginPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
