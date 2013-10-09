@@ -32,6 +32,7 @@ namespace KKBOX_News
                 LoadMySelectedSqlite.InitialAccoutData();
             }
             DataContext = this;
+            
             Debug.WriteLine("LoginPage");
         }
 
@@ -58,9 +59,40 @@ namespace KKBOX_News
             }
         }
 
+        private Boolean verifyUserAccount()
+        {
+            String account = accountTextBox.Text;
+            String password = passwordTextBox.Password;
+            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            {
+                conn.Open();
+
+                using (SqliteCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM userAccount WHERE account=@account AND password=@password";
+                    cmd.Parameters.Add("@account", account);
+                    cmd.Parameters.Add("@password", password);
+                    int n = cmd.ExecuteNonQuery();
+                    using (SqliteDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            UserId = reader.GetInt32(0);
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+
         private void OnLoginButtonClick(Object sender, RoutedEventArgs e)
         {
-
+            verifyUserAccount();
             //Debug.WriteLine(accountTextBox.Text);
             if (accountTextBox.Text != null)
             {

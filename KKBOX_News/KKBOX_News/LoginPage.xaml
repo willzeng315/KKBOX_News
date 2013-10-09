@@ -39,7 +39,7 @@
             </StackPanel>
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
                 <TextBlock x:Name="Mytext123" Text="密碼" VerticalAlignment="Center" FontSize="25"/>
-                <TextBox x:Name="passwordTextBox" Width="300" VerticalAlignment="Center" />
+                <PasswordBox x:Name="passwordTextBox" Width="300" VerticalAlignment="Center" />
             </StackPanel>
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
                 <CheckBox/>

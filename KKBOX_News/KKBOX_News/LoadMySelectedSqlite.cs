@@ -55,8 +55,8 @@ namespace KKBOX_News
 
                     for (int i = 0; i < 3; i++)
                     {
-                        cmd.Parameters["@account"].Value = "a" + i;
-                        cmd.Parameters["@password"].Value = "a" + i;
+                        cmd.Parameters["@account"].Value = "a" + (i+1);
+                        cmd.Parameters["@password"].Value = "a" + (i+1);
                         cmd.Parameters["@openExternalWeb"].Value = 0;
                         cmd.Parameters["@openAutoUpdate"].Value = 0;
                         cmd.Parameters["@updateInterval"].Value = 5;
@@ -87,7 +87,7 @@ namespace KKBOX_News
 
                         cmd.CommandText = String.Format("CREATE TABLE directoryArticlesUser{0} ( [id] INTEGER PRIMARY KEY, [directoryId] INTEGER, [articleTitle] TEXT, [articleContent] TEXT, [articleIconPath] TEXT, [articleLink] TEXT)", userId);
                         cmd.ExecuteNonQuery();
-
+                        
                         //cmd.Transaction = conn.BeginTransaction();
                         //cmd.CommandText = "INSERT INTO directoryArticles (directoryId,  articleTitle, articleContent, articleIconPath, articleLink) VALUES(@directoryId, @articleTitle, @articleContent, @articleIconPath, @articleLink);SELECT last_insert_rowid();";
                         //cmd.Parameters.Add("@directoryId", null);
