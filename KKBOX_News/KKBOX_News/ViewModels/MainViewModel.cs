@@ -9,7 +9,7 @@ using System.Diagnostics;
 using System.Reflection;
 using Community.CsharpSqlite.SQLiteClient;
 
-namespace KKBOX_News.ViewModels
+namespace KKBOX_News
 {
     public class MainViewModel : BindableBase
     {
@@ -17,11 +17,22 @@ namespace KKBOX_News.ViewModels
         {
             loadDirectoris();
             loadSettingList();
+            Debug.WriteLine("MainViewModel");
         }
 
         private void loadSettingList()
         {
             Settings = new ObservableCollection<SettingListItem>();
+            Settings.Add(new SettingListItem()
+            {
+                Title = "帳戶",
+                Type = "space"
+            });
+            Settings.Add(new SettingListItem()
+            {
+                Title = "登出帳戶",
+                Type = "textblock"
+            });
             Settings.Add(new SettingListItem() 
             { 
                 Title = "行為",Type="space"
@@ -31,6 +42,7 @@ namespace KKBOX_News.ViewModels
                 Title = "以外部瀏覽器開啟文章",
                 Content = "應用程式內直接顯示網頁",
                 Type = "textblockCheckbox",
+                IsChecked = UserSettings.IsOpenExternalWeb,
                 FunctionOfCheck = "OpenExternalWeb"
             });
             Settings.Add(new SettingListItem()
@@ -38,6 +50,7 @@ namespace KKBOX_News.ViewModels
                 Title = "開啟自動更新",
                 Content = "開啟自動更新資訊",
                 Type = "textblockCheckbox",
+                IsChecked = UserSettings.IsOpenAutoUpdate,
                 FunctionOfCheck = "OpenAutoUpdate"
             });
 
@@ -47,7 +60,7 @@ namespace KKBOX_News.ViewModels
                 Title = "自動更新頻率",
                 Content = "設定每次自動更新的間隔時間",
                 PageLink = "/UpdateIntervalSelector.xaml",
-                UpdateInterval = checkTimeIntervalIsZero(),
+                UpdateInterval = String.Format("{0}{1}", UserSettings.UpdateInterval,"分"),
                 Type = "textblockContent"
             });
             Settings.Add(new SettingListItem()
@@ -83,42 +96,36 @@ namespace KKBOX_News.ViewModels
             });
         }
 
-        private String checkTimeIntervalIsZero()
-        {
-            if (ArticleListPage.ArticleUpdateTimeInterval == 0)
-            {
-                return "";
-            }
-            else
-            {
-                return String.Format("{0}{1}", ArticleListPage.ArticleUpdateTimeInterval, "分");
-            }
-        }
-
         private void loadDirectoris()
         {
             ArticleDirectories = new ObservableCollection<MySelectedArticleDirectory>();
-
-            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            try
             {
-                conn.Open();
-                using (SqliteCommand cmd = conn.CreateCommand())
+                using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
                 {
-                    cmd.CommandText = "SELECT * FROM directoryTable";
-                    using (SqliteDataReader reader = cmd.ExecuteReader())
+                    conn.Open();
+                    using (SqliteCommand cmd = conn.CreateCommand())
                     {
-                        while (reader.Read())
+                        cmd.CommandText = String.Format("SELECT * FROM directoryTableUser{0}",LoginPage.UserId);
+                        using (SqliteDataReader reader = cmd.ExecuteReader())
                         {
-                            ArticleDirectories.Add(new MySelectedArticleDirectory()
+                            while (reader.Read())
                             {
-                                DirectoryIndex = reader.GetInt32(0),
-                                Title = reader.GetString(1),
-                                CoverImage = LocalImageManipulation.ReadJpgFromLocal(reader.GetString(2))
-                            });
+                                ArticleDirectories.Add(new MySelectedArticleDirectory()
+                                {
+                                    DirectoryIndex = reader.GetInt32(0),
+                                    Title = reader.GetString(1),
+                                    CoverImage = LocalImageManipulation.ReadJpgFromLocal(reader.GetString(2))
+                                });
+                            }
                         }
                     }
+                    conn.Close();
                 }
-                conn.Close();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.ToString());
             }
                 
         }
@@ -155,7 +162,7 @@ namespace KKBOX_News.ViewModels
         #region Property
 
         private IEnumerable<XElement> TopicsInXml;
-
+        
         private Boolean isOpenExternalWeb = false;
         public Boolean IsOpenExternalWeb
         {
@@ -232,9 +239,6 @@ namespace KKBOX_News.ViewModels
                 SetProperty(ref settings, value, "Settings");
             }
         }
-
-
-
         #endregion
     }
 }

@@ -255,7 +255,7 @@ namespace KKBOX_News
                 using (SqliteCommand cmd = conn.CreateCommand())
                 {
                     cmd.Transaction = conn.BeginTransaction();
-                    cmd.CommandText = "INSERT INTO directoryArticles (directoryId, articleTitle, articleContent, articleIconPath, articleLink) VALUES(@directoryId, @articleTitle, @articleContent, @articleIconPath, @articleLink);SELECT last_insert_rowid();";
+                    cmd.CommandText = String.Format("INSERT INTO directoryArticlesUser{0} (directoryId, articleTitle, articleContent, articleIconPath, articleLink) VALUES(@directoryId, @articleTitle, @articleContent, @articleIconPath, @articleLink);SELECT last_insert_rowid();",LoginPage.UserId);
                     cmd.Parameters.Add("@directoryId", null);
                     cmd.Parameters.Add("@articleTitle", null);
                     cmd.Parameters.Add("@articleContent", null);
@@ -310,7 +310,7 @@ namespace KKBOX_News
                     using (SqliteCommand cmd = conn.CreateCommand())
                     {
                         cmd.Transaction = conn.BeginTransaction();
-                        cmd.CommandText = "INSERT INTO directoryTable (directoryName, imagePath) VALUES(@directoryName, @imagePath);SELECT last_insert_rowid();";
+                        cmd.CommandText = String.Format("INSERT INTO directoryTableUser{0} (directoryName, imagePath) VALUES(@directoryName, @imagePath);SELECT last_insert_rowid();",LoginPage.UserId);
 
                         cmd.Parameters.Add("@directoryName", null);
                         cmd.Parameters.Add("@imagePath", null);
@@ -324,7 +324,7 @@ namespace KKBOX_News
                         cmd.Transaction = null;
 
                         cmd.Transaction = conn.BeginTransaction();
-                        cmd.CommandText = "INSERT INTO directoryArticles (directoryId, articleTitle, articleContent, articleIconPath, articleLink) VALUES(@directoryId, @articleTitle, @articleContent, @articleIconPath, @articleLink);SELECT last_insert_rowid();";
+                        cmd.CommandText = String.Format("INSERT INTO directoryArticlesUser{0} (directoryId, articleTitle, articleContent, articleIconPath, articleLink) VALUES(@directoryId, @articleTitle, @articleContent, @articleIconPath, @articleLink);SELECT last_insert_rowid();",LoginPage.UserId);
                         cmd.Parameters.Add("@directoryId", null);
                         cmd.Parameters.Add("@articleTitle", null);
                         cmd.Parameters.Add("@articleContent", null);

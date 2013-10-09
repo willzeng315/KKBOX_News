@@ -22,7 +22,7 @@
         <!--TitlePanel 包含應用程式的名稱和頁面標題-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28">
             <TextBlock Text="KKBOX NEWS" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" HorizontalAlignment="Center"/>
-            <TextBlock Text="登入" Style="{StaticResource PhoneTextNormalStyle}" HorizontalAlignment="Center"/>
+            <TextBlock Text="登入" FontSize="28" HorizontalAlignment="Center"/>
         </StackPanel>
 
         <!--ContentPanel - 其他內容置於此-->
@@ -30,17 +30,26 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,100">
-                <TextBlock Text="帳號" VerticalAlignment="Center"/>
-                <TextBox Width="300" VerticalAlignment="Center"/>
+            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,120,0,0">
+                <TextBlock Text="帳號" VerticalAlignment="Center" FontSize="25"/>
+                <TextBox x:Name="accountTextBox" Width="300" VerticalAlignment="Center" />
             </StackPanel>
-            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,-100">
-                <TextBlock Text="密碼" VerticalAlignment="Center"/>
-                <TextBox Width="300" VerticalAlignment="Center"/>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                <TextBlock x:Name="Mytext123" Text="密碼" VerticalAlignment="Center" FontSize="25"/>
+                <TextBox x:Name="passwordTextBox" Width="300" VerticalAlignment="Center" />
             </StackPanel>
-            <Button Grid.Row="2" Content="登入" Width="200" Height="100" HorizontalAlignment="Center" Click="OnLoginButtonClick"/>
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                <CheckBox/>
+                <TextBlock Text="記住帳號密碼" VerticalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button  Content="註冊"  FontSize="25" Width="200" Height="100" HorizontalAlignment="Center" />
+                <Button  Content="登入"  FontSize="25" Width="200" Height="100" HorizontalAlignment="Center" Click="OnLoginButtonClick"/>
+            </StackPanel>
+           
         </Grid>
     </Grid>
 

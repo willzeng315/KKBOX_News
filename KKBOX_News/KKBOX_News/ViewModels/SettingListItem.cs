@@ -147,10 +147,12 @@ namespace KKBOX_News
                 if (FunctionOfCheck == "OpenExternalWeb")
                 {
                    App.ViewModel.IsOpenExternalWeb = value;
+                   UserSettings.IsOpenExternalWeb = value;
                 }
                 if (FunctionOfCheck == "OpenAutoUpdate")
                 {
                     App.ViewModel.IsAutoUpdate = value;
+                    UserSettings.IsOpenAutoUpdate = value;
                 }
                 isChecked = value;
             }

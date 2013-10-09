@@ -9,12 +9,12 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using KKBOX_News.Resources;
-using KKBOX_News.ViewModels;
 using System.IO;
 using System.ServiceModel.Syndication;
 using System.Xml;
 using Microsoft.Phone.Tasks;
 using System.IO.IsolatedStorage;
+using Community.CsharpSqlite.SQLiteClient;
 namespace KKBOX_News
 {
     public partial class App : Application
@@ -34,7 +34,8 @@ namespace KKBOX_News
                 // 延遲建立檢視模型，直到必要為止
                 if (viewModel == null)
                 {
-                    LoadMySelectedSqlite.CreateTables();
+                    Debug.WriteLine("App");
+
                     LocalImageManipulation.SaveJpgsToLocalData();
                     viewModel = new MainViewModel();
                 }
@@ -122,34 +123,64 @@ namespace KKBOX_News
 
         void LoadSettings()
         {
-            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
+            //IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
 
-            Boolean openExternalWeb;
-            Boolean openAutoUpdate;
-            Int32 articleUpdateTimeInterval;
-            if (settings.TryGetValue<Boolean>("OpenExternalWeb", out openExternalWeb))
-            {
-                ViewModel.Settings[1].IsChecked = openExternalWeb;
-            }
-            if (settings.TryGetValue<Boolean>("OpenAutoUpdate", out openAutoUpdate))
-            {
-                ViewModel.Settings[2].IsChecked = openAutoUpdate;
-            }
-            if (settings.TryGetValue<Int32>("UpdateInterval", out articleUpdateTimeInterval))
-            {
-                ArticleListPage.ArticleUpdateTimeInterval = articleUpdateTimeInterval;
-            }
+            //Boolean openExternalWeb;
+            //Boolean openAutoUpdate;
+            //Int32 articleUpdateTimeInterval;
+            //if (settings.TryGetValue<Boolean>("OpenExternalWeb", out openExternalWeb))
+            //{
+            //    ViewModel.Settings[3].IsChecked = openExternalWeb;
+            //}
+            //if (settings.TryGetValue<Boolean>("OpenAutoUpdate", out openAutoUpdate))
+            //{
+            //    ViewModel.Settings[4].IsChecked = openAutoUpdate;
+            //}
+            //if (settings.TryGetValue<Int32>("UpdateInterval", out articleUpdateTimeInterval))
+            //{
+            //    ArticleListPage.ArticleUpdateTimeInterval = articleUpdateTimeInterval;
+            //}
                 
         }
 
         void SaveSettings()
         {
-            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
+            //IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
 
-            settings["OpenExternalWeb"] = ViewModel.Settings[1].IsChecked;
-            settings["OpenAutoUpdate"] = ViewModel.Settings[2].IsChecked;
-            settings["UpdateInterval"] = ArticleListPage.ArticleUpdateTimeInterval;
-            settings.Save();
+            //settings["OpenExternalWeb"] = ViewModel.Settings[3].IsChecked;
+            //settings["OpenAutoUpdate"] = ViewModel.Settings[4].IsChecked;
+            //settings["UpdateInterval"] = ArticleListPage.ArticleUpdateTimeInterval;
+            //settings.Save();
+            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            {
+                conn.Open();
+
+                using (SqliteCommand cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = conn.BeginTransaction();
+                    cmd.CommandText = String.Format("UPDATE userAccount SET openExternalWeb=@openExternalWeb, openAutoUpdate=@openAutoUpdate, updateInterval=@updateInterval WHERE id={0}", LoginPage.UserId);
+                    cmd.Parameters.Add("@openExternalWeb", UserSettings.IsOpenExternalWeb?1:0);
+                    cmd.Parameters.Add("@openAutoUpdate", UserSettings.IsOpenAutoUpdate?1:0);
+                    cmd.Parameters.Add("@updateInterval", UserSettings.UpdateInterval);
+                    cmd.ExecuteNonQuery();
+                    cmd.Transaction.Commit();
+                    cmd.Transaction = null;
+
+                    //cmd.CommandText = String.Format("SELECT * FROM userAccount WHERE id={0}", LoginPage.UserId);
+                    //using (SqliteDataReader reader = cmd.ExecuteReader())
+                    //{
+                    //    while (reader.Read())
+                    //    {
+                    //        Debug.WriteLine(reader.GetInt32(3));
+                    //        Debug.WriteLine(reader.GetInt32(4));
+                    //        Debug.WriteLine(reader.GetInt32(5));
+                    //    //    UserSettings.IsOpenExternalWeb = reader.GetBoolean(3);
+                    //    //    UserSettings.IsOpenAutoUpdate = reader.GetBoolean(4);
+                    //    //    UserSettings.UpdateInterval = reader.GetInt32(5);
+                    //    }
+                    //}
+                }
+            }
 
         }
 

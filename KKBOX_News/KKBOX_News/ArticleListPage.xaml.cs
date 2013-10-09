@@ -60,6 +60,7 @@ namespace KKBOX_News
             MultipleManipulation = Visibility.Collapsed;
             SearchManipulation = Visibility.Collapsed;
             simpleArticles = new List<SimpleArticleItem>();
+            ArticleUpdateTimeInterval = UserSettings.UpdateInterval;
 
             appbarMultipleManipulation = this.ApplicationBar as ApplicationBar;
             menuMultipleDelete = this.ApplicationBar.MenuItems[1] as ApplicationBarMenuItem;
@@ -264,7 +265,7 @@ namespace KKBOX_News
                 {
                     String querySrting = "";
 
-                    querySrting = String.Format("SELECT * FROM directoryArticles WHERE directoryId={0}", DirectoryIndex);
+                    querySrting = String.Format("SELECT * FROM directoryArticlesUser{0} WHERE directoryId={1}", LoginPage.UserId, DirectoryIndex);
 
                     cmd.CommandText = querySrting;
 
@@ -438,7 +439,7 @@ namespace KKBOX_News
                 {
                     String querySrting = "";
 
-                    querySrting = String.Format("SELECT * FROM directoryArticles WHERE directoryId={0}", DirIndex);
+                    querySrting = String.Format("SELECT * FROM directoryArticlesUser{0} WHERE directoryId={1}", LoginPage.UserId, DirIndex);
 
                     cmd.CommandText = querySrting;
 
@@ -530,9 +531,9 @@ namespace KKBOX_News
                 conn.Open();
                 using (SqliteCommand cmd = conn.CreateCommand())
                 {
-                    String querySrting = "";
-                    querySrting = String.Format("SELECT * FROM directoryArticles WHERE directoryId={0}", directoryIndex);
-                    cmd.CommandText = querySrting;
+                    //String querySrting = "";
+                    //querySrting = String.Format("SELECT * FROM directoryArticlesUser{0} WHERE directoryId={1}", LoginPage.UserId, directoryIndex);
+                    cmd.CommandText = String.Format("SELECT * FROM directoryArticlesUser{0} WHERE directoryId={1}", LoginPage.UserId, directoryIndex);
                     using (SqliteDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -563,7 +564,7 @@ namespace KKBOX_News
                         {
                             if (ArticleNavigationPasser.Articles[i].Title == simpleArticles[j].Title)
                             {
-                                cmd.CommandText = String.Format("DELETE FROM directoryArticles WHERE id={0}", simpleArticles[j].DeleteId);
+                                cmd.CommandText = String.Format("DELETE FROM directoryArticlesUser{0} WHERE id={1}", LoginPage.UserId, simpleArticles[j].DeleteId);
                                 cmd.ExecuteNonQuery();
                                 ArticleModel.KKBOXArticles.Remove(ArticleNavigationPasser.Articles[i]);
                                 break;
@@ -627,11 +628,11 @@ namespace KKBOX_News
                 {
                     if (value == 0)
                     {
-                        App.ViewModel.Settings[3].UpdateInterval = "";
+                        App.ViewModel.Settings[5].UpdateInterval = "";
                     }
                     else
                     {
-                        App.ViewModel.Settings[3].UpdateInterval = value.ToString() + "分"; // UpdateInterval
+                        App.ViewModel.Settings[5].UpdateInterval = value.ToString() + "分"; // UpdateInterval
                     }
                 }
                 articleUpdateTimeInterval = value;

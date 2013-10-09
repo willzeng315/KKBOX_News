@@ -51,7 +51,7 @@ namespace KKBOX_News
                 conn.Open();
                 using (SqliteCommand cmd = conn.CreateCommand())
                 {
-                   cmd.CommandText = "SELECT * FROM directoryArticles";
+                    cmd.CommandText = String.Format("SELECT * FROM directoryArticlesUser{0}",LoginPage.UserId);
                    using (SqliteDataReader reader = cmd.ExecuteReader())
                    {
                        while (reader.Read())

@@ -40,6 +40,7 @@ namespace KKBOX_News
             if(minuteSelector.SelectedItem !=null)
             {
                 ArticleListPage.ArticleUpdateTimeInterval = Int32.Parse(minuteSelector.SelectedItem.ToString());
+                UserSettings.UpdateInterval = Int32.Parse(minuteSelector.SelectedItem.ToString());
             }
             NavigationService.GoBack();
         }

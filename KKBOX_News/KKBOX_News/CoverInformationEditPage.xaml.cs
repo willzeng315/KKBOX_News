@@ -178,7 +178,7 @@ namespace KKBOX_News
                 using (SqliteCommand cmd = conn.CreateCommand())
                 {
                     cmd.Transaction = conn.BeginTransaction();
-                    cmd.CommandText = String.Format("UPDATE directoryTable SET directoryName=@directoryName WHERE id={0}", directoryIndex);
+                    cmd.CommandText = String.Format("UPDATE directoryTableUser{0} SET directoryName=@directoryName WHERE id={1}", LoginPage.UserId, directoryIndex);
                     cmd.Parameters.Add("@directoryName", CoverTitle);
                     cmd.ExecuteNonQuery();
                     cmd.Transaction.Commit();
@@ -188,7 +188,7 @@ namespace KKBOX_News
                     if (selectedImageName != null)
                     {
                         cmd.Transaction = conn.BeginTransaction();
-                        cmd.CommandText = String.Format("UPDATE directoryTable SET imagePath=@imagePath WHERE id={0}", directoryIndex);
+                        cmd.CommandText = String.Format("UPDATE directoryTableUser{0} SET imagePath=@imagePath WHERE id={1}", LoginPage.UserId, directoryIndex);
                         cmd.Parameters.Add("@imagePath", selectedImageName);
                         cmd.ExecuteNonQuery();
                         cmd.Transaction.Commit();

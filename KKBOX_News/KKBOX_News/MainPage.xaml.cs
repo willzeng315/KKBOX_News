@@ -9,7 +9,6 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.Xml.Linq;
 using System.Diagnostics;
-using KKBOX_News.ViewModels;
 using Microsoft.Phone.Tasks;
 using Community.CsharpSqlite.SQLiteClient;
 
@@ -21,7 +20,7 @@ namespace KKBOX_News
         public MainPage()
         {
             InitializeComponent();
-
+            Debug.WriteLine("MainPage");
             // 將清單方塊控制項的資料內容設為範例資料
             DataContext = App.ViewModel;
         }
@@ -29,6 +28,7 @@ namespace KKBOX_News
         // 載入 ViewModel 項目的資料
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            NavigationService.RemoveBackEntry();
             if (!App.ViewModel.IsTopicsXmlLoaded)
             {
                 App.ViewModel.SelectTopicParser();
@@ -93,16 +93,14 @@ namespace KKBOX_News
                 using (SqliteCommand cmd = conn.CreateCommand())
                 {
 
-                    cmd.CommandText = String.Format("DELETE FROM directoryArticles WHERE directoryId={0}", DirIndex);
+                    cmd.CommandText = String.Format("DELETE FROM directoryArticlesUser{0} WHERE directoryId={1}", LoginPage.UserId, DirIndex);
                     cmd.ExecuteNonQuery();
-                    cmd.CommandText = String.Format("DELETE FROM directoryTable WHERE id={0}", DirIndex);
+                    cmd.CommandText = String.Format("DELETE FROM directoryTableUser{0} WHERE id={1}", LoginPage.UserId, DirIndex);
                     cmd.ExecuteNonQuery();
                     App.ViewModel.ArticleDirectories.Remove(mySelectedArticleDirectory);
                 }
             }
         }
-
-
 
         private void OnSelectedDirectoyClick(Object sender, RoutedEventArgs e)
         {
