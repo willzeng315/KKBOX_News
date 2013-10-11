@@ -225,6 +225,7 @@ namespace KKBOX_News
             {
                 PageTitle = "搜尋文章";
                 SearchManipulation = Visibility.Visible;
+                appbarMultipleManipulation.IsVisible = false;
             }
 
         }
@@ -236,13 +237,13 @@ namespace KKBOX_News
 
         private void determineAppBarVisibility()
         {
-            if (!isDirectoryHasContent(directoryIndex))
+            if (isDirectoryHasContent(directoryIndex))
             {
-                appbarMultipleManipulation.IsMenuEnabled = false;
+                appbarMultipleManipulation.IsVisible = true;
             }
             else
             {
-                appbarMultipleManipulation.IsMenuEnabled = true;
+                appbarMultipleManipulation.IsVisible = false;
             }
         }
 
@@ -738,11 +739,24 @@ namespace KKBOX_News
             }
         }
 
+        private void appbarVisibilityForSearchResult()
+        {
+            if (ArticleModel.KKBOXArticles.Count == 0)
+            {
+                appbarMultipleManipulation.IsVisible = false;
+            }
+            else
+            {
+                appbarMultipleManipulation.IsVisible = true;
+            }
+        }
+
         private void OnSearchArticlesButtonClick(Object sender, RoutedEventArgs e)
         {
             SearchLocalArticles locaArticles = new SearchLocalArticles();
             String keyword = searchKeywordTextBox.Text;
             ArticleModel.KKBOXArticles = locaArticles.SearchArticleContainKeyWord(keyword);
+            appbarVisibilityForSearchResult();
         }
     }
 }

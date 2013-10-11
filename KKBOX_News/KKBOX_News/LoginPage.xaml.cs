@@ -92,7 +92,7 @@ namespace KKBOX_News
 
         private void OnLoginButtonClick(Object sender, RoutedEventArgs e)
         {
-            verifyUserAccount();
+            //verifyUserAccount();
             //Debug.WriteLine(accountTextBox.Text);
             if (accountTextBox.Text != null)
             {
