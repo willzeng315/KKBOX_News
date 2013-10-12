@@ -19,24 +19,9 @@ using System.Windows.Threading;
 
 namespace KKBOX_News
 {
-    public class SimpleArticleItem
-    {
-        public String Title
-        {
-            get;
-            set;
-        }
-
-        public Int32 DeleteId
-        {
-            get;
-            set;
-        }
-    }
-
     public partial class ArticleListPage : PhoneApplicationPage,INotifyPropertyChanged
     {
-        public enum PageMode { NULL,READ_FROM_DIR, READ_FROM_XML, SEARCH_ARTICLES};
+        public enum PageMode { NULL,READ_FROM_DIR, READ_FROM_XML, SEARCH_ARTICLES, EXTERNAL_ARTICLES};
         public enum ConfirmButtonMode { NULL, ADD_ARTICLE, DELETE_ARTICLE };
         private PageMode currentPageMode;
         private ConfirmButtonMode currentConfirmButtonMode;
@@ -61,7 +46,6 @@ namespace KKBOX_News
             MultipleManipulation = Visibility.Collapsed;
             SearchManipulation = Visibility.Collapsed;
             externalArticleManipulation = Visibility.Collapsed;
-            simpleArticles = new List<SimpleArticleItem>();
             ArticleUpdateTimeInterval = UserSettings.Instance.UpdateInterval;
 
             appbarMultipleManipulation = this.ApplicationBar as ApplicationBar;
@@ -104,100 +88,119 @@ namespace KKBOX_News
             {
                 if (App.ViewModel.IsAutoUpdate)
                 {
-                    startUpdateArticle();
+                    StartUpdateArticle();
                 }
             }
 
-            if (lastSelectedItemIndex != -1 && ArticleModel.KKBOXArticles.Count > 0 && lastSelectedItemIndex < ArticleModel.KKBOXArticles.Count)
+            if (CheckLastSelectedItemIndex())
             {
                 ArticleModel.KKBOXArticles[lastSelectedItemIndex].IsExtended = true;
             }
-            else if (parameters.ContainsKey("XML") && ArticleModel.KKBOXArticles.Count == 0)
+            else if (ArticleModel.KKBOXArticles.Count == 0)
             {
-                currentPageMode = PageMode.READ_FROM_XML;
-
                 if (parameters.ContainsKey("XML"))
                 {
-                    xmlString = parameters["XML"];
+                    currentPageMode = PageMode.READ_FROM_XML;
+
+                    if (parameters.ContainsKey("XML"))
+                    {
+                        xmlString = parameters["XML"];
+                    }
+                    if (parameters.ContainsKey("Title"))
+                    {
+                        PageTitle = parameters["Title"];
+                    }
+
+                    LoadingText.Text = "載入中...";
+
+                    webClientXmlDownload(xmlString);
+
+                    if (App.ViewModel.IsAutoUpdate)
+                    {
+                        StartUpdateArticle();
+                    }
                 }
-                if (parameters.ContainsKey("Title"))
+                else if (IsExternalArticlePage())
                 {
-                    PageTitle = parameters["Title"];
-                }
+                    ExternalArticleManipulation = Visibility.Visible;
+                    menuMultipleDelete.IsEnabled = true;
+                    menuMultipleAdd.IsEnabled = false;
 
-                LoadingText.Text = "載入中...";
+                    directoryIndex = 1;
 
-                webClientXmlDownload(xmlString);
+                    currentPageMode = PageMode.EXTERNAL_ARTICLES;
 
-                if (App.ViewModel.IsAutoUpdate)
-                {
-                    startUpdateArticle();
-                }
-            }
-            else if (isExternalArticlePage())
-            {
-                ExternalArticleManipulation = Visibility.Visible;
-                menuMultipleDelete.IsEnabled = true;
-                menuMultipleAdd.IsEnabled = false;
-                directoryIndex = 1;
-                if (parameters.ContainsKey("DirectoryTitle"))
-                {
-                    PageTitle = parameters["DirectoryTitle"];
-                }
+                    if (parameters.ContainsKey("DirectoryTitle"))
+                    {
+                        PageTitle = parameters["DirectoryTitle"];
+                    }
 
-                LoadDirectoryArticlesFromTable();
-            }
-            else if (parameters.ContainsKey("DirectoryIndex"))
-            {
-                directoryIndex = Int32.Parse(parameters["DirectoryIndex"]);
-
-                determineAppBarVisibility();
-
-                currentPageMode = PageMode.READ_FROM_DIR;
-
-                menuMultipleDelete.IsEnabled = true;
-
-                if (parameters.ContainsKey("DirectoryTitle"))
-                {
-                    PageTitle = parameters["DirectoryTitle"];
-                }
-                if (parameters.ContainsKey("DirectoryIndex"))
-                {
-                    IsNotPageLoaded = true;
                     LoadDirectoryArticlesFromTable();
-                    IsNotPageLoaded = false;
+
+                    SetArticleImageCollapsed();
                 }
-            }
-            else if (parameters.ContainsKey("SearchArticle"))
-            {
-                PageTitle = "搜尋文章";
-                SearchManipulation = Visibility.Visible;
-                appbarMultipleManipulation.IsVisible = false;
+                else if (parameters.ContainsKey("DirectoryIndex"))
+                {
+                    Debug.WriteLine("Directory");
+
+                    directoryIndex = Int32.Parse(parameters["DirectoryIndex"]);
+
+                    DetermineAppBarVisibility();
+
+                    currentPageMode = PageMode.READ_FROM_DIR;
+
+                    menuMultipleDelete.IsEnabled = true;
+
+                    if (parameters.ContainsKey("DirectoryTitle"))
+                    {
+                        PageTitle = parameters["DirectoryTitle"];
+                    }
+
+                    LoadDirectoryArticlesFromTable();
+
+                }
+                else if (parameters.ContainsKey("SearchArticle"))
+                {
+                    PageTitle = "搜尋文章";
+                    SearchManipulation = Visibility.Visible;
+                    appbarMultipleManipulation.IsVisible = false;
+                }
             }
 
         }
 
-        private Boolean isExternalArticlePage()
+        private Boolean CheckLastSelectedItemIndex()
         {
+            return (lastSelectedItemIndex != -1 && ArticleModel.KKBOXArticles.Count > 0 && lastSelectedItemIndex < ArticleModel.KKBOXArticles.Count) ? true : false;
+        }
+
+        private void SetArticleImageCollapsed()
+        {
+            for (int i = 0; i < ArticleModel.KKBOXArticles.Count; i++)
+            {
+                ArticleModel.KKBOXArticles[i].ImageVisiblity = Visibility.Collapsed;
+            }
+        }
+
+        private Boolean IsExternalArticlePage()
+        {
+            Boolean externalArticlePage = false;
             IDictionary<String, String> parameters = this.NavigationContext.QueryString;
 
             if (parameters.ContainsKey("DirectoryIndex") && Int32.Parse(parameters["DirectoryIndex"]) == 1)
             {
-                return true;
+                externalArticlePage = true;
             }
-            else
-            {
-                return false;
-            }
+            return externalArticlePage;
         }
 
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
         {
-            stopUpdateArticle();
+            StopUpdateArticle();
             ExternalArticleManipulation = Visibility.Collapsed;
         }
 
-        private void determineAppBarVisibility()
+        private void DetermineAppBarVisibility()
         {
             if (DBManager.Instance.IsDirectoryHaveArticles(directoryIndex))
             {
@@ -209,12 +212,12 @@ namespace KKBOX_News
             }
         }
 
-        private void startUpdateArticle()
+        private void StartUpdateArticle()
         {
             Timer.Start();
         }
 
-        private void stopUpdateArticle()
+        private void StopUpdateArticle()
         {
             Timer.Stop();
         }
@@ -224,7 +227,7 @@ namespace KKBOX_News
             ArticleModel.KKBOXArticles = DBManager.Instance.LoadDirectoryArticles(directoryIndex);
         }
 
-        private void loadArticleIntoPasser()
+        private void LoadArticleIntoPasser()
         {
             ArticleNavigationPasser.Instance.Articles.Clear();
 
@@ -317,10 +320,10 @@ namespace KKBOX_News
 
             ArticleNavigationPasser.Instance.Articles.Clear();
             ArticleNavigationPasser.Instance.Articles.Add(articleItem);
-            deleteDirectoryArticlesFormDB();
+            DeleteDirectoryArticlesFormDB();
         }
 
-        private void setArticleCheckBoxVisibility(Visibility visibility)
+        private void SetArticleCheckBoxVisibility(Visibility visibility)
         {
             if (ArticleModel.KKBOXArticles != null)
             {
@@ -333,17 +336,10 @@ namespace KKBOX_News
 
         private Boolean IsAnyArticleSelected()
         {
-            if (ArticleNavigationPasser.Instance.Articles.Count == 0)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return ArticleNavigationPasser.Instance.Articles.Count == 0 ? false : true;
         }
 
-        private void concelAllSelect()
+        private void ConcelAllSelect()
         {
             for (int i = 0; i < ArticleModel.KKBOXArticles.Count; i++)
             {
@@ -351,7 +347,7 @@ namespace KKBOX_News
             }
         }
 
-        private void checkAllSelect()
+        private void CheckAllSelect()
         {
             for (int i = 0; i < ArticleModel.KKBOXArticles.Count; i++)
             {
@@ -359,42 +355,42 @@ namespace KKBOX_News
             }
         }
 
-        private void resetAllSelect()
+        private void ResetAllSelect()
         {
-            concelAllSelect();
+            ConcelAllSelect();
             checkBoxSelectAll.IsChecked = false;
         }
 
         private void OnConfirmButtonClick(Object sender, RoutedEventArgs e)
         {
             MultipleManipulation = Visibility.Collapsed;
-            setArticleCheckBoxVisibility(Visibility.Collapsed);
+            SetArticleCheckBoxVisibility(Visibility.Collapsed);
             appbarMultipleManipulation.IsVisible = true;
-            loadArticleIntoPasser();
+            LoadArticleIntoPasser();
             if (currentConfirmButtonMode == ConfirmButtonMode.ADD_ARTICLE && IsAnyArticleSelected())
             {
                 this.NavigationService.Navigate(new Uri("/AddMySelectPage.xaml", UriKind.Relative));
             }
             else if (currentConfirmButtonMode == ConfirmButtonMode.DELETE_ARTICLE)
             {
-                deleteDirectoryArticlesFormDB();
+                DeleteDirectoryArticlesFormDB();
             }
-            resetAllSelect();
+            ResetAllSelect();
 
         }
         
         private void OnConcelButtonClick(Object sender, RoutedEventArgs e)
         {
             MultipleManipulation = Visibility.Collapsed;
-            setArticleCheckBoxVisibility(Visibility.Collapsed);
+            SetArticleCheckBoxVisibility(Visibility.Collapsed);
             appbarMultipleManipulation.IsVisible = true;
-            resetAllSelect();
+            ResetAllSelect();
         }
 
         private void OnAddMyMultiSelectMenuClick(Object sender, EventArgs e)
         {
             MultipleManipulation = Visibility.Visible;
-            setArticleCheckBoxVisibility(Visibility.Visible);
+            SetArticleCheckBoxVisibility(Visibility.Visible);
             appbarMultipleManipulation.IsVisible = false;
             currentConfirmButtonMode = ConfirmButtonMode.ADD_ARTICLE;
         }
@@ -402,12 +398,12 @@ namespace KKBOX_News
         private void OnAddMyMultiDeleteMenuClick(Object sender, EventArgs e)
         {
             MultipleManipulation = Visibility.Visible;
-            setArticleCheckBoxVisibility(Visibility.Visible);
+            SetArticleCheckBoxVisibility(Visibility.Visible);
             appbarMultipleManipulation.IsVisible = false;
             currentConfirmButtonMode = ConfirmButtonMode.DELETE_ARTICLE;
         }
 
-        private void deleteDirectoryArticlesFormDB()
+        private void DeleteDirectoryArticlesFormDB()
         {
             DBManager.Instance.DeleteArticleFromTable(directoryIndex);
 
@@ -417,7 +413,7 @@ namespace KKBOX_News
             }
 
             ArticleNavigationPasser.Instance.Articles.Clear();
-            appbarVisibilityForHasArticles();
+            AppbarVisibilityForHasArticles();
         }
 
         public static DispatcherTimer Timer;
@@ -443,12 +439,6 @@ namespace KKBOX_News
         }
 
         private Int32 directoryIndex
-        {
-            get;
-            set;
-        }
-
-        private List<SimpleArticleItem> simpleArticles
         {
             get;
             set;
@@ -560,7 +550,10 @@ namespace KKBOX_News
 
         protected Boolean SetProperty<T>(ref T storage, T value, [CallerMemberName] String propertyName = null)
         {
-            if (object.Equals(storage, value)) return false;
+            if (Object.Equals(storage, value))
+            {
+                return false;
+            }
 
             storage = value;
             this.OnPropertyChanged(propertyName);
@@ -582,15 +575,15 @@ namespace KKBOX_News
             CheckBox checkBox = (CheckBox)sender;
             if ((Boolean)checkBox.IsChecked)
             {
-                checkAllSelect();
+                CheckAllSelect();
             }
             else
             {
-                concelAllSelect();
+                ConcelAllSelect();
             }
         }
 
-        private void appbarVisibilityForHasArticles()
+        private void AppbarVisibilityForHasArticles()
         {
             if (ArticleModel.KKBOXArticles.Count == 0)
             {
@@ -607,7 +600,7 @@ namespace KKBOX_News
             SearchLocalArticles locaArticles = new SearchLocalArticles();
             String keyword = searchKeywordTextBox.Text;
             ArticleModel.KKBOXArticles = locaArticles.SearchArticleContainKeyWord(keyword);
-            appbarVisibilityForHasArticles();
+            AppbarVisibilityForHasArticles();
         }
 
         private void OnAddExternalArticleButtonClick(Object sender, RoutedEventArgs e)

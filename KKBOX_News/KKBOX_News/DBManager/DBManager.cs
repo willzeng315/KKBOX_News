@@ -56,34 +56,9 @@ namespace KKBOX_News
             }
         }
 
-        public void UpdateValueToArticleTable(Int32 directoryIndex, List<String> args)
+        public void UpdateValueToArticleTable(Int32 directoryIndex)
         {
 
-            //using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
-            //{
-            //    conn.Open();
-
-            //    using (SqliteCommand cmd = conn.CreateCommand())
-            //    {
-            //        cmd.Transaction = conn.BeginTransaction();
-            //        cmd.CommandText = String.Format("UPDATE directoryTableUser{0} SET directoryName=@directoryName WHERE id={1}", LoginPage.UserId, directoryIndex);
-            //        cmd.Parameters.Add("@directoryName", CoverTitle);
-            //        cmd.ExecuteNonQuery();
-            //        cmd.Transaction.Commit();
-            //        cmd.Transaction = null;
-
-
-            //        if (selectedImageName != null)
-            //        {
-            //            cmd.Transaction = conn.BeginTransaction();
-            //            cmd.CommandText = String.Format("UPDATE directoryTableUser{0} SET imagePath=@imagePath WHERE id={1}", LoginPage.UserId, directoryIndex);
-            //            cmd.Parameters.Add("@imagePath", selectedImageName);
-            //            cmd.ExecuteNonQuery();
-            //            cmd.Transaction.Commit();
-            //            cmd.Transaction = null;
-            //        }
-            //    }
-            //}
         }
 
         public void InsertDirectoryToTable(String directoryName, String imagePath)
@@ -201,6 +176,7 @@ namespace KKBOX_News
                             directoryArticleItem.IconImagePath = reader.GetString(4);
                             directoryArticleItem.Link = reader.GetString(5);
                             directoryArticleItem.DeleteMenuVisiblity = Visibility.Visible;
+
                             if (directoryIndex == 1) // set external article can not add to my selected
                             {
                                 directoryArticleItem.AddMenuVisiblity = Visibility.Collapsed;
@@ -217,27 +193,87 @@ namespace KKBOX_News
 
         public Boolean IsDirectoryHaveArticles(Int32 directoryIndex)
         {
-
             using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
             {
                 conn.Open();
                 using (SqliteCommand cmd = conn.CreateCommand())
                 {
-                    String querySrting = "";
-
-                    querySrting = String.Format("SELECT * FROM directoryArticlesUser{0} WHERE directoryId={1}", LoginPage.UserId, directoryIndex);
-
-                    cmd.CommandText = querySrting;
+                    cmd.CommandText = String.Format("SELECT * FROM directoryArticlesUser{0} WHERE directoryId={1}", LoginPage.UserId, directoryIndex);
 
                     using (SqliteDataReader reader = cmd.ExecuteReader())
                     {
+                        return reader.Read() ? true : false;
+                    }
+                }
+            }
+
+        }
+
+        public void InsertExternalArticleToTable(ArticleItem externalArticle)
+        {
+            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            {
+                conn.Open();
+                using (SqliteCommand cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = conn.BeginTransaction();
+                    cmd.CommandText = String.Format("INSERT INTO directoryArticlesUser{0} (directoryId, articleTitle, articleContent, articleIconPath, articleLink) VALUES(@directoryId, @articleTitle, @articleContent, @articleIconPath, @articleLink);SELECT last_insert_rowid();", LoginPage.UserId);
+                    cmd.Parameters.Add("@directoryId", 1);
+                    cmd.Parameters.Add("@articleTitle", externalArticle.Title);
+                    cmd.Parameters.Add("@articleContent", externalArticle.Content);
+                    cmd.Parameters.Add("@articleIconPath", "null");
+                    cmd.Parameters.Add("@articleLink", externalArticle.Link);
+                    cmd.ExecuteNonQuery();
+
+                    cmd.Transaction.Commit();
+                    cmd.Transaction = null;
+                }
+            }
+        }
+
+        public Boolean VerifyUserAccount(String account, String password)
+        {
+            Boolean isCorrect = false;
+            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            {
+                conn.Open();
+
+                using (SqliteCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM userAccount WHERE account=@account AND password=@password";
+                    cmd.Parameters.Add("@account", account);
+                    cmd.Parameters.Add("@password", password);
+                    int n = cmd.ExecuteNonQuery();
+                    using (SqliteDataReader reader = cmd.ExecuteReader())
+                    {
+                        
                         if (reader.Read())
                         {
-                            return true;
+                            LoginPage.UserId = reader.GetInt32(0);
+                            isCorrect = true;
                         }
-                        else
+                    }
+                }
+            }
+            return isCorrect;
+        }
+
+        public void LoadUserSetting()
+        {
+            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            {
+                conn.Open();
+
+                using (SqliteCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = String.Format("SELECT * FROM userAccount WHERE id={0}",LoginPage.UserId);
+                    using (SqliteDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
                         {
-                            return false;
+                            UserSettings.Instance.IsOpenExternalWeb = reader.GetBoolean(3);
+                            UserSettings.Instance.IsOpenAutoUpdate = reader.GetBoolean(4);
+                            UserSettings.Instance.UpdateInterval = reader.GetInt32(5);
                         }
                     }
                 }

@@ -16,6 +16,7 @@ namespace KKBOX_News
             CheckBoxVisiblity = Visibility.Collapsed;
             DeleteMenuVisiblity = Visibility.Collapsed;
             AddMenuVisiblity = Visibility.Visible;
+            ImageVisiblity = Visibility.Visible;
             IsSelected = false;
         }
         #region Property
@@ -132,6 +133,19 @@ namespace KKBOX_News
             set
             {
                 SetProperty(ref addMenuVisiblity, value, "AddMenuVisiblity");
+            }
+        }
+
+        private Visibility imageVisiblity;
+        public Visibility ImageVisiblity
+        {
+            get
+            {
+                return imageVisiblity;
+            }
+            set
+            {
+                SetProperty(ref imageVisiblity, value, "ImageVisiblity");
             }
         }
 

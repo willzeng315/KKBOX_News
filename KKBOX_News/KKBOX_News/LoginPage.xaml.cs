@@ -62,14 +62,9 @@ namespace KKBOX_News
         public LoginPage()
         {
             InitializeComponent();
-            createUserAccount();
-            loadUserSettings();
+            CreateUserAccount();
+            LoadUserSettings();
             DataContext = this;
-            //List<String> a =new List<string>();
-            //a.Add("abc");
-
-           // DBManger.Instance.UpdateValueToArticleTable("123", 1, a);
-
             Debug.WriteLine("LoginPage");
         }
 
@@ -78,7 +73,7 @@ namespace KKBOX_News
             NavigationService.RemoveBackEntry();
         }
 
-        private void createUserAccount()
+        private void CreateUserAccount()
         {
             if (InitializeDB.Instance.CreateAccountTable())
             {
@@ -86,29 +81,7 @@ namespace KKBOX_News
             }
         }
 
-        private void loadUserSettingFromDB()
-        {
-            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
-            {
-                conn.Open();
-
-                using (SqliteCommand cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = String.Format("SELECT * FROM userAccount WHERE id={0}",UserId);
-                    using (SqliteDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            UserSettings.Instance.IsOpenExternalWeb = reader.GetBoolean(3);
-                            UserSettings.Instance.IsOpenAutoUpdate = reader.GetBoolean(4);
-                            UserSettings.Instance.UpdateInterval = reader.GetInt32(5);
-                        }
-                    }
-                }
-            }
-        }
-
-        private void loadUserSettings()
+        private void LoadUserSettings()
         {
             IsSaveAccountAndPassword = LoginSettings.Instance.IsSaveAccountAndPassword;
             if (IsSaveAccountAndPassword)
@@ -119,49 +92,12 @@ namespace KKBOX_News
             
         }
 
-        private Boolean verifyUserAccount()
-        {
-            String account = accountTextBox.Text;
-            String password = passwordTextBox.Password;
-            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
-            {
-                conn.Open();
-
-                using (SqliteCommand cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = "SELECT * FROM userAccount WHERE account=@account AND password=@password";
-                    cmd.Parameters.Add("@account", account);
-                    cmd.Parameters.Add("@password", password);
-                    int n = cmd.ExecuteNonQuery();
-                    using (SqliteDataReader reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            UserId = reader.GetInt32(0);
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-
         private Boolean isNotAccountOrPasswordEmpty()
         {
-            if (accountTextBox.Text == "" || passwordTextBox.Password == "")
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return (accountTextBox.Text == "" || passwordTextBox.Password == "") ? false : true;
         }
 
-        private void saveAccountAndPassword(Boolean isSave)
+        private void SaveAccountAndPassword(Boolean isSave)
         {
             if (isSave)
             {
@@ -170,7 +106,7 @@ namespace KKBOX_News
             }
         }
 
-        private void createUserTables()
+        private void CreateUserTables()
         {
             if (InitializeDB.Instance.CreateUserTables(UserId))
             {
@@ -180,11 +116,14 @@ namespace KKBOX_News
 
         private void OnLoginButtonClick(Object sender, RoutedEventArgs e)
         {
-            if (isNotAccountOrPasswordEmpty() && verifyUserAccount())
+            String account = accountTextBox.Text;
+            String password = passwordTextBox.Password;
+
+            if (isNotAccountOrPasswordEmpty() && DBManager.Instance.VerifyUserAccount(account,password))
             {
-                loadUserSettingFromDB();
-                createUserTables();
-                saveAccountAndPassword(IsSaveAccountAndPassword);
+                DBManager.Instance.LoadUserSetting();
+                CreateUserTables();
+                SaveAccountAndPassword(IsSaveAccountAndPassword);
 
                 LoginSettings.Instance.IsSaveAccountAndPassword = IsSaveAccountAndPassword;
                 LoginSettings.Instance.Login = true;

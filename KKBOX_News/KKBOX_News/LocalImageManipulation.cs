@@ -49,8 +49,6 @@ namespace KKBOX_News
 
         public void SaveJpgToIsolateStorage(String JpgPath, String JpgName)
         {
-
-            // Create virtual store and file stream. Check for duplicate tempJPEG files.
             using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
             {
                 if (myIsolatedStorage.FileExists(JpgName))
@@ -68,10 +66,8 @@ namespace KKBOX_News
                 bitmap.SetSource(sri.Stream);
                 WriteableBitmap wb = new WriteableBitmap(bitmap);
 
-                // Encode WriteableBitmap object to a JPEG stream.
                 Extensions.SaveJpeg(wb, fileStream, SquareLength, SquareLength, 0, 100);
 
-                //wb.SaveJpeg(fileStream, wb.PixelWidth, wb.PixelHeight, 0, 85);
                 fileStream.Close();
             }
         }

@@ -78,8 +78,7 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-
-                                <Image Grid.Column="0" Source="{Binding IconImagePath}" Width="60" Height="60" VerticalAlignment="Top"/>
+                                <Image Grid.Column="0" Source="{Binding IconImagePath}" Width="60" Height="60" VerticalAlignment="Top" Visibility="{Binding ImageVisiblity}"/>
                                 <StackPanel  Grid.Column="1" Orientation="Vertical">
                                     <TextBlock  Text="{Binding Title}" VerticalAlignment="Top" TextTrimming="WordEllipsis" TextWrapping="{Binding IsExtended,Converter = {StaticResource BooleanToWarp}}" Margin="10,0" Style="{StaticResource PhoneTextExtraLargeStyle}" FontSize="{StaticResource PhoneFontSizeLarge}" />
                                     <TextBlock  Text="{Binding Content}" TextWrapping="Wrap" Margin="10,0" Style="{StaticResource PhoneTextSmallStyle}" Visibility="{Binding IsExtended,Converter = {StaticResource BooleanToVisibility}}"/>
