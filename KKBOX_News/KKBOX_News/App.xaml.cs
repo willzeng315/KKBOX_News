@@ -15,6 +15,7 @@ using System.Xml;
 using Microsoft.Phone.Tasks;
 using System.IO.IsolatedStorage;
 using Community.CsharpSqlite.SQLiteClient;
+
 namespace KKBOX_News
 {
     public partial class App : Application
@@ -32,10 +33,10 @@ namespace KKBOX_News
             {
                 
                 // 延遲建立檢視模型，直到必要為止
-                if (viewModel == null)
+                if (LoginSettings.Instance.Login || viewModel == null)
                 {
                     Debug.WriteLine("App");
-
+                    LoginSettings.Instance.Login = false;
                     LocalImageManipulation.SaveJpgsToLocalData();
                     viewModel = new MainViewModel();
                 }
@@ -123,34 +124,36 @@ namespace KKBOX_News
 
         void LoadSettings()
         {
-            //IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
+            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
 
-            //Boolean openExternalWeb;
-            //Boolean openAutoUpdate;
-            //Int32 articleUpdateTimeInterval;
-            //if (settings.TryGetValue<Boolean>("OpenExternalWeb", out openExternalWeb))
-            //{
-            //    ViewModel.Settings[3].IsChecked = openExternalWeb;
-            //}
-            //if (settings.TryGetValue<Boolean>("OpenAutoUpdate", out openAutoUpdate))
-            //{
-            //    ViewModel.Settings[4].IsChecked = openAutoUpdate;
-            //}
-            //if (settings.TryGetValue<Int32>("UpdateInterval", out articleUpdateTimeInterval))
-            //{
-            //    ArticleListPage.ArticleUpdateTimeInterval = articleUpdateTimeInterval;
-            //}
+            String account;
+            String password;
+            Boolean isSaveAccountAndPassword;
+
+            if (settings.TryGetValue<String>("account", out account))
+            {
+                LoginSettings.Instance.LastAccount = account;
+            }
+            if (settings.TryGetValue<String>("password", out password))
+            {
+                LoginSettings.Instance.LastPassword = password;
+            }
+            if (settings.TryGetValue<Boolean>("isSaveAccountAndPassword", out isSaveAccountAndPassword))
+            {
+                LoginSettings.Instance.IsSaveAccountAndPassword = isSaveAccountAndPassword;
+            }
                 
         }
 
-        void SaveSettings()
+        public static void SaveSettings()
         {
-            //IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
+            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
 
-            //settings["OpenExternalWeb"] = ViewModel.Settings[3].IsChecked;
-            //settings["OpenAutoUpdate"] = ViewModel.Settings[4].IsChecked;
-            //settings["UpdateInterval"] = ArticleListPage.ArticleUpdateTimeInterval;
-            //settings.Save();
+            settings["account"] = LoginSettings.Instance.LastAccount;
+            settings["password"] = LoginSettings.Instance.LastPassword;
+            settings["isSaveAccountAndPassword"] = LoginSettings.Instance.IsSaveAccountAndPassword;
+            settings.Save();
+
             using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
             {
                 conn.Open();
@@ -159,9 +162,9 @@ namespace KKBOX_News
                 {
                     cmd.Transaction = conn.BeginTransaction();
                     cmd.CommandText = String.Format("UPDATE userAccount SET openExternalWeb=@openExternalWeb, openAutoUpdate=@openAutoUpdate, updateInterval=@updateInterval WHERE id={0}", LoginPage.UserId);
-                    cmd.Parameters.Add("@openExternalWeb", UserSettings.IsOpenExternalWeb?1:0);
-                    cmd.Parameters.Add("@openAutoUpdate", UserSettings.IsOpenAutoUpdate?1:0);
-                    cmd.Parameters.Add("@updateInterval", UserSettings.UpdateInterval);
+                    cmd.Parameters.Add("@openExternalWeb", UserSettings.Instance.IsOpenExternalWeb?1:0);
+                    cmd.Parameters.Add("@openAutoUpdate", UserSettings.Instance.IsOpenAutoUpdate ? 1 : 0);
+                    cmd.Parameters.Add("@updateInterval", UserSettings.Instance.UpdateInterval);
                     cmd.ExecuteNonQuery();
                     cmd.Transaction.Commit();
                     cmd.Transaction = null;

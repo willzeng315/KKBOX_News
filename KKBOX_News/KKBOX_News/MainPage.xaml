@@ -71,7 +71,7 @@
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu>
                                                 <toolkit:MenuItem Header="編輯封面資訊" Click="OnDirectoryEditMenuClick"/>
-                                                <toolkit:MenuItem Header="刪除此目錄" Click="OnDirectoryDeleteMenuClick"/>
+                                                <toolkit:MenuItem Header="刪除此目錄" Click="OnDirectoryDeleteMenuClick" Visibility="{Binding NonRemoved}"/>
                                             </toolkit:ContextMenu>
                                         </toolkit:ContextMenuService.ContextMenu>
                                     </Button>

@@ -129,7 +129,7 @@ namespace KKBOX_News
             AdderListBox.Add(new AdderItem() { ItemTitle = "新資料夾", Type = "textbox"});
             AdderListBox.Add(new AdderItem() { Type = "selectImage" });
             AdderListBox.Add(new AdderItem(){ItemTitle = "", Type = "space"});
-            for (int i = 0; i < App.ViewModel.ArticleDirectories.Count; i++)
+            for (int i = 1; i < App.ViewModel.ArticleDirectories.Count; i++)
             {
                 AdderListBox.Add(new AdderItem() 
                 { 
@@ -270,16 +270,13 @@ namespace KKBOX_News
 
                         if (AdderListBox[i].IsChecked)
                         {
-                            //App.ViewModel.ArticleDirectories[i - 3].ArticleItemList.Add(myArticleItem);
-
-                            for (int j = 0; j < ArticleNavigationPasser.Articles.Count; j++)
+                            for (int j = 0; j < ArticleNavigationPasser.Instance.Articles.Count; j++)
                             {
-
                                 cmd.Parameters["@directoryId"].Value = AdderListBox[i].DirectoryId; //ID start with 1
-                                cmd.Parameters["@articleTitle"].Value = ArticleNavigationPasser.Articles[j].Title;
-                                cmd.Parameters["@articleContent"].Value = ArticleNavigationPasser.Articles[j].Content;
-                                cmd.Parameters["@articleIconPath"].Value = ArticleNavigationPasser.Articles[j].IconImagePath;
-                                cmd.Parameters["@articleLink"].Value = ArticleNavigationPasser.Articles[j].Link;
+                                cmd.Parameters["@articleTitle"].Value = ArticleNavigationPasser.Instance.Articles[j].Title;
+                                cmd.Parameters["@articleContent"].Value = ArticleNavigationPasser.Instance.Articles[j].Content;
+                                cmd.Parameters["@articleIconPath"].Value = ArticleNavigationPasser.Instance.Articles[j].IconImagePath;
+                                cmd.Parameters["@articleLink"].Value = ArticleNavigationPasser.Instance.Articles[j].Link;
 
                                 cmd.ExecuteNonQuery();
                             }
@@ -331,13 +328,13 @@ namespace KKBOX_News
                         cmd.Parameters.Add("@articleIconPath", null);
                         cmd.Parameters.Add("@articleLink", null);
 
-                        for (int i = 0; i < ArticleNavigationPasser.Articles.Count ; i++)
+                        for (int i = 0; i < ArticleNavigationPasser.Instance.Articles.Count ; i++)
                         {
                             cmd.Parameters["@directoryId"].Value = mySelectedArticleDirectory.DirectoryIndex; //ID start with 1
-                            cmd.Parameters["@articleTitle"].Value = ArticleNavigationPasser.Articles[i].Title;
-                            cmd.Parameters["@articleContent"].Value = ArticleNavigationPasser.Articles[i].Content;
-                            cmd.Parameters["@articleIconPath"].Value = ArticleNavigationPasser.Articles[i].IconImagePath;
-                            cmd.Parameters["@articleLink"].Value = ArticleNavigationPasser.Articles[i].Link;
+                            cmd.Parameters["@articleTitle"].Value = ArticleNavigationPasser.Instance.Articles[i].Title;
+                            cmd.Parameters["@articleContent"].Value = ArticleNavigationPasser.Instance.Articles[i].Content;
+                            cmd.Parameters["@articleIconPath"].Value = ArticleNavigationPasser.Instance.Articles[i].IconImagePath;
+                            cmd.Parameters["@articleLink"].Value = ArticleNavigationPasser.Instance.Articles[i].Link;
 
                             cmd.ExecuteNonQuery();
                         }
@@ -348,6 +345,7 @@ namespace KKBOX_News
                 }
 
             }
+            ArticleNavigationPasser.Instance.Articles.Clear();
             NavigationService.GoBack();
         }
 

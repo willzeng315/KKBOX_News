@@ -24,7 +24,10 @@ namespace KKBOX_News
             {
                 Link = parameters["Link"];
             }
-            webBrowser1.Navigate(new Uri(Link, UriKind.Absolute));     
+            if (Link != "")
+            {
+                webBrowser1.Navigate(new Uri(Link, UriKind.Absolute));
+            }
         }
     }
 }

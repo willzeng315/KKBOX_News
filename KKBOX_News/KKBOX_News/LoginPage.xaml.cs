@@ -16,10 +16,45 @@ namespace KKBOX_News
 {
     public class UserSettings
     {
-        public static Boolean IsOpenExternalWeb;
-        public static Boolean IsOpenAutoUpdate;
-        public static Int32 UpdateInterval;
+        private static UserSettings _instance;
 
+        private UserSettings() { }
+
+        public static UserSettings Instance
+        {
+            get
+            {
+                if (_instance == null)
+                    _instance = new UserSettings();
+                return _instance;
+            }
+        }
+        public Boolean IsOpenExternalWeb;
+        public Boolean IsOpenAutoUpdate;
+        public Int32 UpdateInterval;
+    }
+
+    public class LoginSettings
+    {
+        private static LoginSettings _instance;
+
+        private LoginSettings() { }
+
+        public static LoginSettings Instance
+        {
+            get
+            {
+                if (_instance == null)
+                    _instance = new LoginSettings();
+                return _instance;
+            }
+        }
+
+        public String LastAccount;
+        public String LastPassword;
+        public String CurrentAccount;
+        public Boolean IsSaveAccountAndPassword;
+        public Boolean Login;
     }
 
     public partial class LoginPage : PhoneApplicationPage
@@ -27,15 +62,25 @@ namespace KKBOX_News
         public LoginPage()
         {
             InitializeComponent();
-            if (LoadMySelectedSqlite.CreateAccountTable())
-            {
-                LoadMySelectedSqlite.InitialAccoutData();
-            }
+            createUserAccount();
+            loadUserSettings();
             DataContext = this;
             
             Debug.WriteLine("LoginPage");
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            NavigationService.RemoveBackEntry();
+        }
+
+        private void createUserAccount()
+        {
+            if (LoadMySelectedSqlite.CreateAccountTable())
+            {
+                LoadMySelectedSqlite.InitialAccoutData();
+            }
+        }
 
         private void loadUserSettingFromDB()
         {
@@ -50,13 +95,24 @@ namespace KKBOX_News
                     {
                         while (reader.Read())
                         {
-                            UserSettings.IsOpenExternalWeb = reader.GetBoolean(3);
-                            UserSettings.IsOpenAutoUpdate = reader.GetBoolean(4);
-                            UserSettings.UpdateInterval = reader.GetInt32(5);
+                            UserSettings.Instance.IsOpenExternalWeb = reader.GetBoolean(3);
+                            UserSettings.Instance.IsOpenAutoUpdate = reader.GetBoolean(4);
+                            UserSettings.Instance.UpdateInterval = reader.GetInt32(5);
                         }
                     }
                 }
             }
+        }
+
+        private void loadUserSettings()
+        {
+            IsSaveAccountAndPassword = LoginSettings.Instance.IsSaveAccountAndPassword;
+            if (IsSaveAccountAndPassword)
+            {
+                accountTextBox.Text = LoginSettings.Instance.LastAccount;
+                passwordTextBox.Password = LoginSettings.Instance.LastPassword;
+            }
+            
         }
 
         private Boolean verifyUserAccount()
@@ -89,24 +145,77 @@ namespace KKBOX_News
             }
         }
 
-
-        private void OnLoginButtonClick(Object sender, RoutedEventArgs e)
+        private Boolean isNotAccountOrPasswordEmpty()
         {
-            //verifyUserAccount();
-            //Debug.WriteLine(accountTextBox.Text);
-            if (accountTextBox.Text != null)
+            if (accountTextBox.Text == "" || passwordTextBox.Password == "")
             {
-                UserId = Int32.Parse(accountTextBox.Text);
-                loadUserSettingFromDB();
-                if (LoadMySelectedSqlite.CreateUserTables(UserId))
-                {
-                    LoadMySelectedSqlite.InitialUserTableData(UserId);
-                }
-                NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
 
+        private void saveAccountAndPassword(Boolean isSave)
+        {
+            if (isSave)
+            {
+                LoginSettings.Instance.LastAccount = accountTextBox.Text;
+                LoginSettings.Instance.LastPassword = passwordTextBox.Password;
+            }
+        }
+
+        private void createUserTables()
+        {
+            if (LoadMySelectedSqlite.CreateUserTables(UserId))
+            {
+                LoadMySelectedSqlite.InitialUserTableData(UserId);
+            }
+        }
+
+        private void OnLoginButtonClick(Object sender, RoutedEventArgs e)
+        {
+            if (isNotAccountOrPasswordEmpty() && verifyUserAccount())
+            {
+                loadUserSettingFromDB();
+                createUserTables();
+                saveAccountAndPassword(IsSaveAccountAndPassword);
+
+                LoginSettings.Instance.IsSaveAccountAndPassword = IsSaveAccountAndPassword;
+                LoginSettings.Instance.Login = true;
+                LoginSettings.Instance.CurrentAccount = accountTextBox.Text;
+
+                NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
+            }
+            else
+            {
+                MessageBox.Show("帳號或密碼錯誤");
+            }
+        }
+
+        private void OnRegistrationButtonClick(Object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/RegistrationPage.xaml", UriKind.Relative));
+        }
+        
         public static Int32 UserId;
+
+        #region Property
+
+        private Boolean isSaveAccountAndPassword;
+        public Boolean IsSaveAccountAndPassword
+        {
+            get
+            {
+                return isSaveAccountAndPassword;
+            }
+            set
+            {
+                isSaveAccountAndPassword = value;
+            }
+        }
+        #endregion
 
     }
 }

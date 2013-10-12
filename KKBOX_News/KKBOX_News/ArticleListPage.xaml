@@ -40,6 +40,9 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
+            <Grid x:Name="externalArticleTexBoxGrid" Grid.Row="0" Visibility="{Binding ExternalArticleManipulation}" Background="Gray">
+                <Button Grid.Row="0" Content="新增外部文章" Click="OnAddExternalArticleButtonClick"/>
+            </Grid>
             <Grid x:Name="searchTexBoxGrid" Grid.Row="0" Visibility="{Binding SearchManipulation}" Background="Gray">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -84,7 +87,7 @@
                                 </StackPanel>
                                 <toolkit:ContextMenuService.ContextMenu>
                                     <toolkit:ContextMenu>
-                                        <toolkit:MenuItem Header="加到我的精選" Click="OnMenuItemAddMySelectClick" />
+                                        <toolkit:MenuItem Header="加到我的精選" Click="OnMenuItemAddMySelectClick" Visibility="{Binding AddMenuVisiblity}"/>
                                         <toolkit:MenuItem Header="刪除" Click="OnMenuItemDeleteClick" Visibility="{Binding DeleteMenuVisiblity}" />
                                     </toolkit:ContextMenu>
                                 </toolkit:ContextMenuService.ContextMenu>
@@ -99,7 +102,7 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Content="確認" FontSize="28" Click="OnComfirmButtonClick"/>
+                <Button Grid.Column="0" Content="確認" FontSize="28" Click="OnConfirmButtonClick"/>
                 <Button Grid.Column="1" Content="取消" FontSize="28" Click="OnConcelButtonClick"/>
             </Grid>
         </Grid>
@@ -107,7 +110,7 @@
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar x:Name="appbarMultipleManipulation" Opacity="0.7" Mode="Minimized">
             <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem Text="加入我的精選" Click="OnAddMyMultiSelectMenuClick"/>
+                <shell:ApplicationBarMenuItem x:Name="menuMultipleAdd" Text="加入我的精選" Click="OnAddMyMultiSelectMenuClick"/>
                 <shell:ApplicationBarMenuItem x:Name="menuMultipleDelete" Text="刪除多個文章" Click="OnAddMyMultiDeleteMenuClick"/>           
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>

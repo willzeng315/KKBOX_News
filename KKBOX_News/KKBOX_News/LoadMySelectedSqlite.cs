@@ -151,6 +151,11 @@ namespace KKBOX_News
                     cmd.Parameters.Add("@directoryName", null);
                     cmd.Parameters.Add("@imagePath", null);
 
+                    cmd.Parameters["@directoryName"].Value = "外部文章";
+                    cmd.Parameters["@imagePath"].Value = "KKBOX.jpg"; //Default Image
+
+                    cmd.ExecuteNonQuery();
+
                     for (int i = 0; i < 3; i++)
                     {
                         cmd.Parameters["@directoryName"].Value = "個人精選" + (i + 1);

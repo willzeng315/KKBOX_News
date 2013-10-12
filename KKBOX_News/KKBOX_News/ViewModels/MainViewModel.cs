@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using Community.CsharpSqlite.SQLiteClient;
+using System.Windows;
 
 namespace KKBOX_News
 {
@@ -31,7 +32,9 @@ namespace KKBOX_News
             Settings.Add(new SettingListItem()
             {
                 Title = "登出帳戶",
-                Type = "textblock"
+                PageLink = "/LoginPage.xaml",
+                Content = LoginSettings.Instance.CurrentAccount,
+                Type = "textblockContent"
             });
             Settings.Add(new SettingListItem() 
             { 
@@ -42,7 +45,7 @@ namespace KKBOX_News
                 Title = "以外部瀏覽器開啟文章",
                 Content = "應用程式內直接顯示網頁",
                 Type = "textblockCheckbox",
-                IsChecked = UserSettings.IsOpenExternalWeb,
+                IsChecked = UserSettings.Instance.IsOpenExternalWeb,
                 FunctionOfCheck = "OpenExternalWeb"
             });
             Settings.Add(new SettingListItem()
@@ -50,7 +53,7 @@ namespace KKBOX_News
                 Title = "開啟自動更新",
                 Content = "開啟自動更新資訊",
                 Type = "textblockCheckbox",
-                IsChecked = UserSettings.IsOpenAutoUpdate,
+                IsChecked = UserSettings.Instance.IsOpenAutoUpdate,
                 FunctionOfCheck = "OpenAutoUpdate"
             });
 
@@ -60,7 +63,7 @@ namespace KKBOX_News
                 Title = "自動更新頻率",
                 Content = "設定每次自動更新的間隔時間",
                 PageLink = "/UpdateIntervalSelector.xaml",
-                UpdateInterval = String.Format("{0}{1}", UserSettings.UpdateInterval,"分"),
+                UpdateInterval = String.Format("{0}{1}", UserSettings.Instance.UpdateInterval, "分"),
                 Type = "textblockContent"
             });
             Settings.Add(new SettingListItem()
@@ -96,6 +99,7 @@ namespace KKBOX_News
             });
         }
 
+
         private void loadDirectoris()
         {
             ArticleDirectories = new ObservableCollection<MySelectedArticleDirectory>();
@@ -106,16 +110,26 @@ namespace KKBOX_News
                     conn.Open();
                     using (SqliteCommand cmd = conn.CreateCommand())
                     {
-                        cmd.CommandText = String.Format("SELECT * FROM directoryTableUser{0}",LoginPage.UserId);
+                        cmd.CommandText = String.Format("SELECT * FROM directoryTableUser{0}", LoginPage.UserId);
                         using (SqliteDataReader reader = cmd.ExecuteReader())
                         {
+                            if (reader.Read())
+                            {
+                                ArticleDirectories.Add(new MySelectedArticleDirectory()
+                                {
+                                    DirectoryIndex = reader.GetInt32(0),
+                                    Title = reader.GetString(1),
+                                    CoverImage = LocalImageManipulation.ReadJpgFromLocal(reader.GetString(2)),
+                                    NonRemoved = Visibility.Collapsed,
+                                });
+                            }
                             while (reader.Read())
                             {
                                 ArticleDirectories.Add(new MySelectedArticleDirectory()
                                 {
                                     DirectoryIndex = reader.GetInt32(0),
                                     Title = reader.GetString(1),
-                                    CoverImage = LocalImageManipulation.ReadJpgFromLocal(reader.GetString(2))
+                                    CoverImage = LocalImageManipulation.ReadJpgFromLocal(reader.GetString(2)),
                                 });
                             }
                         }

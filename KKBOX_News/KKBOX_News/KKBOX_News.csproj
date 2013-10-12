@@ -99,18 +99,27 @@
     <Compile Include="ArticleListPage.xaml.cs">
       <DependentUpon>ArticleListPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ArticleNavigationPasser.cs" />
+    <Compile Include="ViewModels\ArticleNavigationPasser.cs" />
+    <Compile Include="ChangePassword.xaml.cs">
+      <DependentUpon>ChangePassword.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CoverInformationEditPage.xaml.cs">
       <DependentUpon>CoverInformationEditPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DataTemplateSelector.cs" />
+    <Compile Include="ViewModels\DataTemplateSelector.cs" />
+    <Compile Include="ExternalArticlesInfoPage.xaml.cs">
+      <DependentUpon>ExternalArticlesInfoPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LoadMySelectedSqlite.cs" />
     <Compile Include="LocalImageManipulation.cs" />
     <Compile Include="LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MySelectedArticleDirectory.cs" />
-    <Compile Include="SearchLocalArticles.cs" />
+    <Compile Include="ViewModels\MySelectedArticleDirectory.cs" />
+    <Compile Include="RegistrationPage.xaml.cs">
+      <DependentUpon>RegistrationPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\SearchLocalArticles.cs" />
     <Compile Include="UpdateIntervalSelector.xaml.cs">
       <DependentUpon>UpdateIntervalSelector.xaml</DependentUpon>
     </Compile>
@@ -118,7 +127,6 @@
     <Compile Include="ViewModels\ArticleListPageModel.cs" />
     <Compile Include="BindableBase.cs" />
     <Compile Include="Converters.cs" />
-    <Compile Include="LocalizedStrings.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -128,7 +136,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AppResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ChannelListItem.cs" />
+    <Compile Include="ViewModels\ChannelListItem.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="WebPage.xaml.cs">
       <DependentUpon>WebPage.xaml</DependentUpon>
@@ -147,7 +155,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ChangePassword.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CoverInformationEditPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ExternalArticlesInfoPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -163,6 +179,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </DesignData>
+    <Page Include="RegistrationPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UpdateIntervalSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -188,7 +208,6 @@
     <Content Include="Images\F.jpg" />
     <Content Include="Images\green.png" />
     <Content Include="Images\KKBOX.jpg" />
-    <Content Include="README_FIRST.txt" />
     <Content Include="Toolkit.Content\ApplicationBar.Add.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Cancel.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
@@ -236,6 +255,7 @@
       <HintPath>DLL\System.ServiceModel.Syndication.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

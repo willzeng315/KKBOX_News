@@ -33,6 +33,7 @@ namespace KKBOX_News
             {
                 App.ViewModel.SelectTopicParser();
             }
+
         }
 
         private void OnListBoxSelectionChanged(Object sender, SelectionChangedEventArgs e)
@@ -62,6 +63,10 @@ namespace KKBOX_News
                 }
                 else if (settingListItem.PageLink != null)
                 {
+                    if (settingListItem.Title == "登出帳戶")
+                    {
+                        App.SaveSettings();
+                    }
                     this.NavigationService.Navigate(new Uri(settingListItem.PageLink, UriKind.Relative));
                 }
             }
@@ -72,7 +77,7 @@ namespace KKBOX_News
         {
             MenuItem menuItem = (MenuItem)sender;
             MySelectedArticleDirectory mySelectedArticleDirectory = (MySelectedArticleDirectory)menuItem.DataContext;
-            String sDestination = String.Format("/CoverInformationEditPage.xaml?Title={0}&DirectoryIndex={1}", mySelectedArticleDirectory.Title, mySelectedArticleDirectory.DirectoryIndex);
+            String sDestination = String.Format("View/CoverInformationEditPage.xaml?Title={0}&DirectoryIndex={1}", mySelectedArticleDirectory.Title, mySelectedArticleDirectory.DirectoryIndex);
 
             this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
         }
