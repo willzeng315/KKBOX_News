@@ -99,6 +99,9 @@
     <Compile Include="ArticleListPage.xaml.cs">
       <DependentUpon>ArticleListPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DBManager\DBManager.cs" />
+    <Compile Include="PhotoChooser.cs" />
+    <Compile Include="RssXmlParser.cs" />
     <Compile Include="ViewModels\ArticleNavigationPasser.cs" />
     <Compile Include="ChangePassword.xaml.cs">
       <DependentUpon>ChangePassword.xaml</DependentUpon>
@@ -110,7 +113,7 @@
     <Compile Include="ExternalArticlesInfoPage.xaml.cs">
       <DependentUpon>ExternalArticlesInfoPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="LoadMySelectedSqlite.cs" />
+    <Compile Include="DBManager\InitializeDB.cs" />
     <Compile Include="LocalImageManipulation.cs" />
     <Compile Include="LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
@@ -200,13 +203,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Images\A.jpg" />
-    <Content Include="Images\B.jpg" />
-    <Content Include="Images\C.jpg" />
-    <Content Include="Images\D.jpg" />
-    <Content Include="Images\E.jpg" />
-    <Content Include="Images\F.jpg" />
-    <Content Include="Images\green.png" />
     <Content Include="Images\KKBOX.jpg" />
     <Content Include="Toolkit.Content\ApplicationBar.Add.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Cancel.png" />

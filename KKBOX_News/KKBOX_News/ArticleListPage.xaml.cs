@@ -84,75 +84,6 @@ namespace KKBOX_News
             }
         }
 
-        #region LoadArticlesFromXml
-        private String ImageRetriever(String sDescription)
-        {
-            String ImageSource = "";
-            const Int32 IndexShift = 9; //Length of "img src='"
-
-            if (sDescription != null)
-            {
-                Int32 startIndex = sDescription.ToString().IndexOf("img src='");
-                Int32 EndIndex = sDescription.ToString().IndexOf("jpg");
-                Int32 srcLen = EndIndex - startIndex;
-
-                if (startIndex > EndIndex || srcLen < 0)
-                {
-                    return null;
-                }
-
-                ImageSource = sDescription.ToString().Substring(startIndex + IndexShift, srcLen);
-                return ImageSource;
-            }
-            return ImageSource;
-        }
-
-        private String ContentRetriever(String sDescription)
-        {
-            String ContentString = "";
-
-            if (sDescription != null)
-            {
-                ContentString = Regex.Replace(sDescription.ToString(), "<[^>]+>", String.Empty);
-
-                ContentString = ContentString.Replace("\r", "").Replace("\n", "");
-
-                ContentString = HttpUtility.HtmlDecode(ContentString);
-
-                Int32 ContentLenth = ContentString.IndexOf("更多文章");
-
-                if (ContentLenth != -1)
-                {
-                    ContentString = ContentString.Substring(0, ContentLenth);
-                }
-
-                //ContentString = ContentString;// String.Format("{0},{1}", ContentString, "...");
-
-            }
-            return ContentString;
-        }
-
-        private String LinkRetriever(String sDescription)
-        {
-            String LinkSource = "";
-            const Int32 IndexShift = 4; // Length of "http"
-
-            if (sDescription != null)
-            {
-                Int32 startIndex = sDescription.ToString().IndexOf("http");
-                Int32 EndIndex = sDescription.ToString().IndexOf("html");
-                Int32 srcLen = EndIndex - startIndex;
-
-                if (startIndex < EndIndex && srcLen > 0)
-                {
-                    LinkSource = sDescription.ToString().Substring(startIndex, srcLen + IndexShift);
-                }
-            }
-            return LinkSource;
-
-        }
-        #endregion
-
         private void webClientXmlDownload(String xmlValue)
         {
 
@@ -160,7 +91,7 @@ namespace KKBOX_News
 
             Uri uri = new Uri(xmlValue, UriKind.Absolute); ;
             WebClient webClient = new WebClient();
-            webClient.DownloadStringCompleted += OnDownloadStringCompleted;
+            webClient.DownloadStringCompleted += OnDownloadXmlCompleted;
             webClient.DownloadStringAsync(uri);
         }
 
@@ -177,11 +108,11 @@ namespace KKBOX_News
                 }
             }
 
-            if (lastSelectedItemIndex != -1 && ArticleModel.KKBOXArticles != null && lastSelectedItemIndex < ArticleModel.KKBOXArticles.Count)
+            if (lastSelectedItemIndex != -1 && ArticleModel.KKBOXArticles.Count > 0 && lastSelectedItemIndex < ArticleModel.KKBOXArticles.Count)
             {
                 ArticleModel.KKBOXArticles[lastSelectedItemIndex].IsExtended = true;
             }
-            else if (parameters.ContainsKey("XML") && selectedArticles == null)
+            else if (parameters.ContainsKey("XML") && ArticleModel.KKBOXArticles.Count == 0)
             {
                 currentPageMode = PageMode.READ_FROM_XML;
 
@@ -202,7 +133,6 @@ namespace KKBOX_News
                 {
                     startUpdateArticle();
                 }
-                
             }
             else if (isExternalArticlePage())
             {
@@ -214,11 +144,8 @@ namespace KKBOX_News
                 {
                     PageTitle = parameters["DirectoryTitle"];
                 }
-                LoadDirectoryArticlesFromDB(directoryIndex);
-                //if (ArticleNavigationPasser.ExternalArticles.Count > 0)
-                //{
-                //    ArticleModel.KKBOXArticles.Add(ArticleNavigationPasser.ExternalArticles[0]);
-                //}
+
+                LoadDirectoryArticlesFromTable();
             }
             else if (parameters.ContainsKey("DirectoryIndex"))
             {
@@ -237,7 +164,7 @@ namespace KKBOX_News
                 if (parameters.ContainsKey("DirectoryIndex"))
                 {
                     IsNotPageLoaded = true;
-                    LoadDirectoryArticlesFromDB(directoryIndex);
+                    LoadDirectoryArticlesFromTable();
                     IsNotPageLoaded = false;
                 }
             }
@@ -272,7 +199,7 @@ namespace KKBOX_News
 
         private void determineAppBarVisibility()
         {
-            if (isDirectoryHasContent(directoryIndex))
+            if (DBManager.Instance.IsDirectoryHaveArticles(directoryIndex))
             {
                 appbarMultipleManipulation.IsVisible = true;
             }
@@ -292,67 +219,9 @@ namespace KKBOX_News
             Timer.Stop();
         }
 
-        private void LoadDirectoryArticlesFromDB(Int32 DirectoryIndex)
+        private void LoadDirectoryArticlesFromTable()
         {
-            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
-            {
-                conn.Open();
-                using (SqliteCommand cmd = conn.CreateCommand())
-                {
-                    String querySrting = "";
-
-                    querySrting = String.Format("SELECT * FROM directoryArticlesUser{0} WHERE directoryId={1}", LoginPage.UserId, DirectoryIndex);
-
-                    cmd.CommandText = querySrting;
-
-                    using (SqliteDataReader reader = cmd.ExecuteReader())
-                    {
-                        selectedArticles = new ObservableCollection<ArticleItem>();
-
-                        while (reader.Read())
-                        {
-                            ArticleItem selectedArticleItem = new ArticleItem();
-                            selectedArticleItem.Title = reader.GetString(2);
-                            selectedArticleItem.Content = reader.GetString(3);
-                            selectedArticleItem.IconImagePath = reader.GetString(4);
-                            selectedArticleItem.Link = reader.GetString(5);
-                            selectedArticleItem.DeleteMenuVisiblity = Visibility.Visible;
-                            if (DirectoryIndex == 1) // set external article can not add to my selected
-                            {
-                                selectedArticleItem.AddMenuVisiblity = Visibility.Collapsed;
-                            }
-
-                            selectedArticles.Add(selectedArticleItem);
-                        }
-                        ArticleModel.KKBOXArticles = selectedArticles;
-                    }
-                }
-            }
-        }
-
-        private void loadXmlParserResult(DownloadStringCompletedEventArgs EventArgs)
-        {
-            String sXML = EventArgs.Result;
-            XDocument root = XDocument.Parse(sXML);
-            XElement channelRoot = root.Element("rss").Element("channel");
-            IEnumerable<XElement> elements = channelRoot.Elements("item");
-            selectedArticles = new ObservableCollection<ArticleItem>();
-            foreach (XElement eleItem in elements)
-            {
-                String sTitle = eleItem.Element("title").Value;
-                String sDescription = eleItem.Element("description").Value;
-                String sIconPath = ImageRetriever(sDescription);
-                String sContent = ContentRetriever(sDescription);
-                String sLink = LinkRetriever(sDescription);
-                ArticleItem newItem = new ArticleItem();
-                newItem.Title = sTitle;
-                newItem.Content = sContent;
-                newItem.IconImagePath = sIconPath;
-                newItem.Link = sLink;
-                newItem.IsExtended = false;
-                selectedArticles.Add(newItem);
-            }
-            ArticleModel.KKBOXArticles = selectedArticles;
+            ArticleModel.KKBOXArticles = DBManager.Instance.LoadDirectoryArticles(directoryIndex);
         }
 
         private void loadArticleIntoPasser()
@@ -368,9 +237,10 @@ namespace KKBOX_News
             }
         }
 
-        private void OnDownloadStringCompleted(Object sender, DownloadStringCompletedEventArgs EventArgs)
+        private void OnDownloadXmlCompleted(Object sender, DownloadStringCompletedEventArgs EventArgs)
         {
-            loadXmlParserResult(EventArgs);
+            RssXmlParser rssArticleParser = new RssXmlParser();
+            ArticleModel.KKBOXArticles = rssArticleParser.GetXmlParserResult(EventArgs);
             IsNotPageLoaded = false;
         }
 
@@ -392,6 +262,10 @@ namespace KKBOX_News
                 if (sItem.IsExtended == true)
                 {
                     sItem.IsExtended = false;
+                    if (lastSelectedItemIndex == listBox.SelectedIndex)
+                    {
+                        lastSelectedItemIndex = -1;
+                    }
                 }
                 else
                 {
@@ -469,35 +343,6 @@ namespace KKBOX_News
             }
         }
 
-        private Boolean isDirectoryHasContent(Int32 DirIndex)
-        {
-
-            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
-            {
-                conn.Open();
-                using (SqliteCommand cmd = conn.CreateCommand())
-                {
-                    String querySrting = "";
-
-                    querySrting = String.Format("SELECT * FROM directoryArticlesUser{0} WHERE directoryId={1}", LoginPage.UserId, DirIndex);
-
-                    cmd.CommandText = querySrting;
-
-                    using (SqliteDataReader reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-
         private void concelAllSelect()
         {
             for (int i = 0; i < ArticleModel.KKBOXArticles.Count; i++)
@@ -562,57 +407,17 @@ namespace KKBOX_News
             currentConfirmButtonMode = ConfirmButtonMode.DELETE_ARTICLE;
         }
 
-        private void loadSimpleArticlesFromDB()
-        {
-            simpleArticles.Clear();
-
-            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
-            {
-                conn.Open();
-                using (SqliteCommand cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = String.Format("SELECT * FROM directoryArticlesUser{0} WHERE directoryId={1}", LoginPage.UserId, directoryIndex);
-                    using (SqliteDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            simpleArticles.Add(new SimpleArticleItem()
-                            {
-                                DeleteId = reader.GetInt32(0),
-                                Title = reader.GetString(2)
-                            });
-                        }
-                    }
-                }
-            }
-        }
-
         private void deleteDirectoryArticlesFormDB()
         {
-            loadSimpleArticlesFromDB();
+            DBManager.Instance.DeleteArticleFromTable(directoryIndex);
 
-            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            for (int i = 0; i < ArticleNavigationPasser.Instance.Articles.Count; i++)
             {
-                conn.Open();
-                using (SqliteCommand cmd = conn.CreateCommand())
-                {
-                    for (int i = 0; i < ArticleNavigationPasser.Instance.Articles.Count; i++)
-                    {
-                        for (int j = 0; j < simpleArticles.Count; j++)
-                        {
-                            if (ArticleNavigationPasser.Instance.Articles[i].Title == simpleArticles[j].Title)
-                            {
-                                cmd.CommandText = String.Format("DELETE FROM directoryArticlesUser{0} WHERE id={1}", LoginPage.UserId, simpleArticles[j].DeleteId);
-                                cmd.ExecuteNonQuery();
-                                ArticleModel.KKBOXArticles.Remove(ArticleNavigationPasser.Instance.Articles[i]);
-                                break;
-                            }
-                        }
-                    }
-                    ArticleNavigationPasser.Instance.Articles.Clear();
-                    appbarVisibilityForHasArticles();
-                }
+                ArticleModel.KKBOXArticles.Remove(ArticleNavigationPasser.Instance.Articles[i]);
             }
+
+            ArticleNavigationPasser.Instance.Articles.Clear();
+            appbarVisibilityForHasArticles();
         }
 
         public static DispatcherTimer Timer;
@@ -626,12 +431,6 @@ namespace KKBOX_News
         }
 
         private Boolean isLinkClick
-        {
-            get;
-            set;
-        }
-
-        private ObservableCollection<ArticleItem> selectedArticles
         {
             get;
             set;

@@ -119,7 +119,7 @@ namespace KKBOX_News
                                 {
                                     DirectoryIndex = reader.GetInt32(0),
                                     Title = reader.GetString(1),
-                                    CoverImage = LocalImageManipulation.ReadJpgFromLocal(reader.GetString(2)),
+                                    CoverImage = LocalImageManipulation.Instance.ReadJpgFromStorage(reader.GetString(2)),
                                     NonRemoved = Visibility.Collapsed,
                                 });
                             }
@@ -129,7 +129,7 @@ namespace KKBOX_News
                                 {
                                     DirectoryIndex = reader.GetInt32(0),
                                     Title = reader.GetString(1),
-                                    CoverImage = LocalImageManipulation.ReadJpgFromLocal(reader.GetString(2)),
+                                    CoverImage = LocalImageManipulation.Instance.ReadJpgFromStorage(reader.GetString(2)),
                                 });
                             }
                         }

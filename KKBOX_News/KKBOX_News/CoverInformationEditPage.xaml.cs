@@ -32,47 +32,6 @@ namespace KKBOX_News
             DataContext = this;
         }
 
-        private void OnPhotoChooserTaskCompleted(object sender, PhotoResult e)
-        {
-            if (e.TaskResult == TaskResult.OK)
-            {
-                using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
-                {
-                    BitmapImage bitmap = new BitmapImage();
-                    bitmap.SetSource(e.ChosenPhoto);
-
-                    Int32 imageNameBeginIndex = 0;
-
-                    for (int i = e.OriginalFileName.Length - 1; i > 0; i--)
-                    {
-                        if (e.OriginalFileName[i] == '\\')
-                        {
-                            imageNameBeginIndex = i;
-                            break;
-                        }
-                    }
-                    selectedImageName = e.OriginalFileName.Substring(imageNameBeginIndex + 1, (e.OriginalFileName.Length - imageNameBeginIndex) - 4);
-
-                    selectedImageName = String.Format("{0}{1}", selectedImageName, "jpg");
-
-                    if (!myIsolatedStorage.FileExists(selectedImageName))
-                    {
-                        IsolatedStorageFileStream fileStream = myIsolatedStorage.CreateFile(selectedImageName);
-
-                        WriteableBitmap wb = new WriteableBitmap(bitmap);
-
-                        Extensions.SaveJpeg(wb, fileStream, ImageLength, ImageLength, 0, 100);
-
-                        fileStream.Close();
-                    }
-
-                    CoverImage = LocalImageManipulation.ReadJpgFromLocal(selectedImageName);
-
-                    
-                }
-            }
-        }
-
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             IDictionary<String, String> parameters = this.NavigationContext.QueryString;
@@ -88,7 +47,6 @@ namespace KKBOX_News
                 }
             }
             isReturnFromPhotoChooser = false;
-
         }
 
         #region Property
@@ -100,12 +58,6 @@ namespace KKBOX_News
         }
 
         private Int32 directoryIndex
-        {
-            get;
-            set;
-        }
-
-        private Int32 selectedImageCount
         {
             get;
             set;
@@ -152,10 +104,13 @@ namespace KKBOX_News
 
         protected Boolean SetProperty<T>(ref T storage, T value, [CallerMemberName] String propertyName = null)
         {
-            if (object.Equals(storage, value)) return false;
+            if (Object.Equals(storage, value))
+            {
+                return false;
+            }
 
             storage = value;
-            this.OnPropertyChanged(propertyName);
+            OnPropertyChanged(propertyName);
             return true;
         }
 
@@ -169,33 +124,40 @@ namespace KKBOX_News
         }
         #endregion
 
-        private void updateDirectoryInfoToDB()
+        private void OnPhotoChooserTaskCompleted(Object sender, PhotoResult args)
         {
-            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            if (args.TaskResult == TaskResult.OK)
             {
-                conn.Open();
+                BitmapImage bitmap = new BitmapImage();
+                bitmap.SetSource(args.ChosenPhoto);
 
-                using (SqliteCommand cmd = conn.CreateCommand())
+                retrieveImageName(args);
+
+                LocalImageManipulation.Instance.SaveJpgToIsolateStorage(bitmap, selectedImageName);
+
+                CoverImage = LocalImageManipulation.Instance.ReadJpgFromStorage(selectedImageName);
+            }
+        }
+
+        private void retrieveImageName(PhotoResult args)
+        {
+            Int32 imageNameBeginIndex = 0;
+            for (int i = args.OriginalFileName.Length - 1; i > 0; i--)
+            {
+                if (args.OriginalFileName[i] == '\\')
                 {
-                    cmd.Transaction = conn.BeginTransaction();
-                    cmd.CommandText = String.Format("UPDATE directoryTableUser{0} SET directoryName=@directoryName WHERE id={1}", LoginPage.UserId, directoryIndex);
-                    cmd.Parameters.Add("@directoryName", CoverTitle);
-                    cmd.ExecuteNonQuery();
-                    cmd.Transaction.Commit();
-                    cmd.Transaction = null;
-
-
-                    if (selectedImageName != null)
-                    {
-                        cmd.Transaction = conn.BeginTransaction();
-                        cmd.CommandText = String.Format("UPDATE directoryTableUser{0} SET imagePath=@imagePath WHERE id={1}", LoginPage.UserId, directoryIndex);
-                        cmd.Parameters.Add("@imagePath", selectedImageName);
-                        cmd.ExecuteNonQuery();
-                        cmd.Transaction.Commit();
-                        cmd.Transaction = null;
-                    }
+                    imageNameBeginIndex = i;
+                    break;
                 }
             }
+            selectedImageName = args.OriginalFileName.Substring(imageNameBeginIndex + 1, (args.OriginalFileName.Length - imageNameBeginIndex) - 4);
+
+            selectedImageName = String.Format("{0}{1}", selectedImageName, "jpg");
+        }
+
+        private void updateDirectoryInfoToTable()
+        {
+            DBManager.Instance.UpdateDirectoryToTable(directoryIndex, CoverTitle, selectedImageName);
         }
 
         private void OnChoosePhotoClick(Object sender, RoutedEventArgs e)
@@ -205,6 +167,10 @@ namespace KKBOX_News
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.Completed += new EventHandler<PhotoResult>(OnPhotoChooserTaskCompleted);
             photoChooserTask.Show();
+            //PhotoChooser photoChooser = new PhotoChooser();
+            //selectedImageName =  photoChooser.GetSelectedImageName();
+            //CoverImage = photoChooser.GetChooseImage();
+
         }
 
         private void OnConfirmButtonClick(object sender, RoutedEventArgs e)
@@ -214,11 +180,13 @@ namespace KKBOX_News
                 if (App.ViewModel.ArticleDirectories[i].DirectoryIndex == directoryIndex)
                 {
                     App.ViewModel.ArticleDirectories[i].Title = CoverTitle;
+
                     if (selectedImageName != null)
                     {
-                        App.ViewModel.ArticleDirectories[i].CoverImage = LocalImageManipulation.ReadJpgFromLocal(selectedImageName);
+                        App.ViewModel.ArticleDirectories[i].CoverImage = LocalImageManipulation.Instance.ReadJpgFromStorage(selectedImageName);
                     }
-                    updateDirectoryInfoToDB();
+
+                    updateDirectoryInfoToTable();
                     break;
                 }
             }
@@ -230,6 +198,5 @@ namespace KKBOX_News
         {
             NavigationService.GoBack();
         }
-      
     }
 }

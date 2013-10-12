@@ -37,7 +37,7 @@ namespace KKBOX_News
                 {
                     Debug.WriteLine("App");
                     LoginSettings.Instance.Login = false;
-                    LocalImageManipulation.SaveJpgsToLocalData();
+                    LocalImageManipulation.Instance.SaveJpgToIsolateStorage("Images/KKBOX.jpg","KKBOX.jpg");
                     viewModel = new MainViewModel();
                 }
 

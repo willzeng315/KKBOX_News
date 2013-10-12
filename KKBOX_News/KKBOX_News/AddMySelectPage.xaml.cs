@@ -111,6 +111,7 @@ namespace KKBOX_News
         }
 
     }
+
     public partial class AddMySelectPage : PhoneApplicationPage
     {
         const Int32 ImageLength = 200;
@@ -145,24 +146,6 @@ namespace KKBOX_News
         {
            IDictionary<String, String> parameters = this.NavigationContext.QueryString;
 
-            myArticleItem = new ArticleItem();
-            
-            if (parameters.ContainsKey("Title"))
-            {
-                myArticleItem.Title = parameters["Title"];
-            }
-            if (parameters.ContainsKey("Content"))
-            {
-                myArticleItem.Content = parameters["Content"];
-            }
-            if (parameters.ContainsKey("Link"))
-            {
-                myArticleItem.Link = parameters["Link"];
-            }
-            if (parameters.ContainsKey("ImagePath"))
-            {
-                myArticleItem.IconImagePath = parameters["ImagePath"];
-            }
             if (selectedImageName != null)
             {
                 displayChooseImage();
@@ -171,20 +154,19 @@ namespace KKBOX_News
 
         private void displayChooseImage()
         {
-            AdderListBox[2].CoverImage = LocalImageManipulation.ReadJpgFromLocal(selectedImageName);
+            AdderListBox[2].CoverImage = LocalImageManipulation.Instance.ReadJpgFromStorage(selectedImageName);
         }
 
         private void OnPhotoChooserTaskCompleted(object sender, PhotoResult args)
         {
             if (args.TaskResult == TaskResult.OK)
             {
-
                 BitmapImage bitmap = new BitmapImage();
                 bitmap.SetSource(args.ChosenPhoto);
 
                 retrieveImageName(args);
 
-                writeJpgToIsolateStorage(bitmap);
+                LocalImageManipulation.Instance.SaveJpgToIsolateStorage(bitmap,selectedImageName);
             }
         }
 
@@ -204,22 +186,7 @@ namespace KKBOX_News
             selectedImageName = String.Format("{0}{1}", selectedImageName, "jpg");
         }
 
-        private void writeJpgToIsolateStorage(BitmapImage bitmap)
-        {
-            using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                if (!myIsolatedStorage.FileExists(selectedImageName))
-                {
-                    IsolatedStorageFileStream fileStream = myIsolatedStorage.CreateFile(selectedImageName);
-
-                    WriteableBitmap wb = new WriteableBitmap(bitmap);
-
-                    Extensions.SaveJpeg(wb, fileStream, ImageLength, ImageLength, 0, 100);
-
-                    fileStream.Close();
-                }
-            }
-        }
+       
 
         private void OnChoosePhotoClick(Object sender, RoutedEventArgs e)
         {
@@ -231,14 +198,13 @@ namespace KKBOX_News
 
         private Int32 getLastDirectoryIndex()
         {
+            Int32 DirectoryIndex = 2; //dirID = 1 is externalArticle
+
             if (App.ViewModel.ArticleDirectories.Count > 0)
             {
-                return App.ViewModel.ArticleDirectories[App.ViewModel.ArticleDirectories.Count - 1].DirectoryIndex + 1;
+                DirectoryIndex = App.ViewModel.ArticleDirectories[App.ViewModel.ArticleDirectories.Count - 1].DirectoryIndex + 1;
             }
-            else
-            {
-                return 1;
-            }
+            return DirectoryIndex;
         }
 
         private void OnListBoxSelectionChanged(Object sender, SelectionChangedEventArgs e)
@@ -249,103 +215,42 @@ namespace KKBOX_News
 
         private void OnConfirmButtonClick(Object sender, RoutedEventArgs e)
         {
-            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            for (int i = 3; i < AdderListBox.Count; i++) //start with my select because i=0 is space, i=1 is new directory,i=2 is space
             {
-                conn.Open();
-                using (SqliteCommand cmd = conn.CreateCommand())
+                if (AdderListBox[i].Type == "sapce")
                 {
-                    cmd.Transaction = conn.BeginTransaction();
-                    cmd.CommandText = String.Format("INSERT INTO directoryArticlesUser{0} (directoryId, articleTitle, articleContent, articleIconPath, articleLink) VALUES(@directoryId, @articleTitle, @articleContent, @articleIconPath, @articleLink);SELECT last_insert_rowid();",LoginPage.UserId);
-                    cmd.Parameters.Add("@directoryId", null);
-                    cmd.Parameters.Add("@articleTitle", null);
-                    cmd.Parameters.Add("@articleContent", null);
-                    cmd.Parameters.Add("@articleIconPath", null);
-                    cmd.Parameters.Add("@articleLink", null);
-                    for (int i = 3; i < AdderListBox.Count; i++) //start with my select because i=0 is space, i=1 is new directory,i=2 is space
-                    {
-                        if (AdderListBox[i].Type == "sapce")
-                        {
-                            continue;
-                        }
-
-                        if (AdderListBox[i].IsChecked)
-                        {
-                            for (int j = 0; j < ArticleNavigationPasser.Instance.Articles.Count; j++)
-                            {
-                                cmd.Parameters["@directoryId"].Value = AdderListBox[i].DirectoryId; //ID start with 1
-                                cmd.Parameters["@articleTitle"].Value = ArticleNavigationPasser.Instance.Articles[j].Title;
-                                cmd.Parameters["@articleContent"].Value = ArticleNavigationPasser.Instance.Articles[j].Content;
-                                cmd.Parameters["@articleIconPath"].Value = ArticleNavigationPasser.Instance.Articles[j].IconImagePath;
-                                cmd.Parameters["@articleLink"].Value = ArticleNavigationPasser.Instance.Articles[j].Link;
-
-                                cmd.ExecuteNonQuery();
-                            }
-                        }
-                    }
-                    cmd.Transaction.Commit();
-                    cmd.Transaction = null;
+                    continue;
                 }
 
-
-                if (AdderListBox[1].IsChecked) //new directory 
+                if (AdderListBox[i].IsChecked)
                 {
-                    MySelectedArticleDirectory mySelectedArticleDirectory = new MySelectedArticleDirectory();
-
-                    mySelectedArticleDirectory.Title = AdderListBox[1].ItemTitle;
-                    if (selectedImageName == null)
-                    {
-                        selectedImageName = "KKBOX.jpg"; // prevent user want to create new folder but not choose image 
-                    }
-                    mySelectedArticleDirectory.CoverImage = LocalImageManipulation.ReadJpgFromLocal(selectedImageName);
-
-                    mySelectedArticleDirectory.DirectoryIndex = getLastDirectoryIndex();
-
-                    App.ViewModel.ArticleDirectories.Add(mySelectedArticleDirectory);
-
-                    Int32 TotalArticleDirectories = App.ViewModel.ArticleDirectories.Count;
-
-                    using (SqliteCommand cmd = conn.CreateCommand())
-                    {
-                        cmd.Transaction = conn.BeginTransaction();
-                        cmd.CommandText = String.Format("INSERT INTO directoryTableUser{0} (directoryName, imagePath) VALUES(@directoryName, @imagePath);SELECT last_insert_rowid();",LoginPage.UserId);
-
-                        cmd.Parameters.Add("@directoryName", null);
-                        cmd.Parameters.Add("@imagePath", null);
-
-                        cmd.Parameters["@directoryName"].Value = AdderListBox[1].ItemTitle;
-
-                        cmd.Parameters["@imagePath"].Value = selectedImageName;
-
-                        cmd.ExecuteNonQuery();
-                        cmd.Transaction.Commit();
-                        cmd.Transaction = null;
-
-                        cmd.Transaction = conn.BeginTransaction();
-                        cmd.CommandText = String.Format("INSERT INTO directoryArticlesUser{0} (directoryId, articleTitle, articleContent, articleIconPath, articleLink) VALUES(@directoryId, @articleTitle, @articleContent, @articleIconPath, @articleLink);SELECT last_insert_rowid();",LoginPage.UserId);
-                        cmd.Parameters.Add("@directoryId", null);
-                        cmd.Parameters.Add("@articleTitle", null);
-                        cmd.Parameters.Add("@articleContent", null);
-                        cmd.Parameters.Add("@articleIconPath", null);
-                        cmd.Parameters.Add("@articleLink", null);
-
-                        for (int i = 0; i < ArticleNavigationPasser.Instance.Articles.Count ; i++)
-                        {
-                            cmd.Parameters["@directoryId"].Value = mySelectedArticleDirectory.DirectoryIndex; //ID start with 1
-                            cmd.Parameters["@articleTitle"].Value = ArticleNavigationPasser.Instance.Articles[i].Title;
-                            cmd.Parameters["@articleContent"].Value = ArticleNavigationPasser.Instance.Articles[i].Content;
-                            cmd.Parameters["@articleIconPath"].Value = ArticleNavigationPasser.Instance.Articles[i].IconImagePath;
-                            cmd.Parameters["@articleLink"].Value = ArticleNavigationPasser.Instance.Articles[i].Link;
-
-                            cmd.ExecuteNonQuery();
-                        }
-                        cmd.Transaction.Commit();
-                        cmd.Transaction = null;
-
-                    }
+                    DBManager.Instance.InsertArticleToTable(AdderListBox[i].DirectoryId);
                 }
+            }
+
+            if (AdderListBox[1].IsChecked) //new directory 
+            {
+                MySelectedArticleDirectory mySelectedArticleDirectory = new MySelectedArticleDirectory();
+
+                mySelectedArticleDirectory.Title = AdderListBox[1].ItemTitle;
+
+                if (selectedImageName == null)
+                {
+                    selectedImageName = "KKBOX.jpg"; // prevent user want to create new folder but not choose image 
+                }
+
+                mySelectedArticleDirectory.CoverImage = LocalImageManipulation.Instance.ReadJpgFromStorage(selectedImageName);
+                mySelectedArticleDirectory.DirectoryIndex = getLastDirectoryIndex();
+
+                App.ViewModel.ArticleDirectories.Add(mySelectedArticleDirectory);
+
+                DBManager.Instance.InsertDirectoryToTable(AdderListBox[1].ItemTitle, selectedImageName);
+
+                DBManager.Instance.InsertArticleToTable(mySelectedArticleDirectory.DirectoryIndex);
 
             }
             ArticleNavigationPasser.Instance.Articles.Clear();
+
             NavigationService.GoBack();
         }
 
@@ -355,11 +260,6 @@ namespace KKBOX_News
         }
 
         #region property
-        private ArticleItem myArticleItem
-        {
-            get;
-            set;
-        }
 
         public String SelectedItemTitle
         {
@@ -391,14 +291,12 @@ namespace KKBOX_News
             set;
         }
 
-
         public ObservableCollection<AdderItem> AdderListBox
         {
             get;
             set;
         }
-        #endregion 
 
-        
+        #endregion 
     }
 }

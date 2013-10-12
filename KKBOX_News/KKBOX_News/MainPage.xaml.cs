@@ -77,7 +77,7 @@ namespace KKBOX_News
         {
             MenuItem menuItem = (MenuItem)sender;
             MySelectedArticleDirectory mySelectedArticleDirectory = (MySelectedArticleDirectory)menuItem.DataContext;
-            String sDestination = String.Format("View/CoverInformationEditPage.xaml?Title={0}&DirectoryIndex={1}", mySelectedArticleDirectory.Title, mySelectedArticleDirectory.DirectoryIndex);
+            String sDestination = String.Format("/CoverInformationEditPage.xaml?Title={0}&DirectoryIndex={1}", mySelectedArticleDirectory.Title, mySelectedArticleDirectory.DirectoryIndex);
 
             this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
         }
@@ -92,19 +92,9 @@ namespace KKBOX_News
 
         private void deleteDirectoryFromDB(Int32 DirIndex, MySelectedArticleDirectory mySelectedArticleDirectory)
         {
-            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
-            {
-                conn.Open();
-                using (SqliteCommand cmd = conn.CreateCommand())
-                {
+            DBManager.Instance.DeleteDirectoryFromTable(DirIndex);
 
-                    cmd.CommandText = String.Format("DELETE FROM directoryArticlesUser{0} WHERE directoryId={1}", LoginPage.UserId, DirIndex);
-                    cmd.ExecuteNonQuery();
-                    cmd.CommandText = String.Format("DELETE FROM directoryTableUser{0} WHERE id={1}", LoginPage.UserId, DirIndex);
-                    cmd.ExecuteNonQuery();
-                    App.ViewModel.ArticleDirectories.Remove(mySelectedArticleDirectory);
-                }
-            }
+            App.ViewModel.ArticleDirectories.Remove(mySelectedArticleDirectory);
         }
 
         private void OnSelectedDirectoyClick(Object sender, RoutedEventArgs e)

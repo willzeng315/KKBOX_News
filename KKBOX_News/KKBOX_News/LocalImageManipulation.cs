@@ -12,50 +12,42 @@ using System.Windows.Resources;
 
 namespace KKBOX_News
 {
-
-    public class ImageProperty
-    {
-        public String ImageName
-        {
-            set;
-            get;
-        }
-
-        public String ImagePath
-        {
-            set;
-            get;
-        }
-
-        public ImageProperty()
-        {
-        }
-
-    }
-
     public class LocalImageManipulation
     {
+        const Int32 SquareLength = 200;
 
-        static LocalImageManipulation()
-        {
-            Images = new ObservableCollection<ImageProperty>();
+        private static LocalImageManipulation _instance;
 
-            Images.Add(new ImageProperty() { ImageName = "KKBOX.jpg", ImagePath = "Images/KKBOX.jpg" });
-            Images.Add(new ImageProperty() { ImageName = "A.jpg", ImagePath = "Images/A.jpg" });
-            Images.Add(new ImageProperty() { ImageName = "B.jpg", ImagePath = "Images/B.jpg" });
-            Images.Add(new ImageProperty() { ImageName = "C.jpg", ImagePath = "Images/C.jpg" });
-            Images.Add(new ImageProperty() { ImageName = "D.jpg", ImagePath = "Images/D.jpg" });
-            Images.Add(new ImageProperty() { ImageName = "E.jpg", ImagePath = "Images/E.jpg" });
-            Images.Add(new ImageProperty() { ImageName = "F.jpg", ImagePath = "Images/F.jpg" });
-        }
-        public static void SaveJpgsToLocalData()
+        private LocalImageManipulation() { }
+
+        public static LocalImageManipulation Instance
         {
-          for (int i = 0; i < Images.Count; i++)
+            get
             {
-                SaveJpgToLocal(Images[i].ImagePath, Images[i].ImageName);
+                if (_instance == null)
+                    _instance = new LocalImageManipulation();
+                return _instance;
             }
         }
-        public static void SaveJpgToLocal(String JpgPath, String JpgName)
+
+        public void SaveJpgToIsolateStorage(BitmapImage bitmap, String JpgPath)
+        {
+            using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (!myIsolatedStorage.FileExists(JpgPath))
+                {
+                    IsolatedStorageFileStream fileStream = myIsolatedStorage.CreateFile(JpgPath);
+
+                    WriteableBitmap wb = new WriteableBitmap(bitmap);
+
+                    Extensions.SaveJpeg(wb, fileStream, SquareLength, SquareLength, 0, 100);
+
+                    fileStream.Close();
+                }
+            }
+        }
+
+        public void SaveJpgToIsolateStorage(String JpgPath, String JpgName)
         {
 
             // Create virtual store and file stream. Check for duplicate tempJPEG files.
@@ -77,13 +69,14 @@ namespace KKBOX_News
                 WriteableBitmap wb = new WriteableBitmap(bitmap);
 
                 // Encode WriteableBitmap object to a JPEG stream.
-                Extensions.SaveJpeg(wb, fileStream, wb.PixelWidth, wb.PixelHeight, 0, 85);
+                Extensions.SaveJpeg(wb, fileStream, SquareLength, SquareLength, 0, 100);
 
                 //wb.SaveJpeg(fileStream, wb.PixelWidth, wb.PixelHeight, 0, 85);
                 fileStream.Close();
             }
         }
-        public static BitmapImage ReadJpgFromLocal(String JpgName)
+
+        public BitmapImage ReadJpgFromStorage(String JpgName)
         {
             BitmapImage jpgImage = new BitmapImage();
 
@@ -96,11 +89,5 @@ namespace KKBOX_News
                 }
             }
         }
-         public static ObservableCollection<ImageProperty> Images
-        {
-            set;
-            get;
-        }
-
     }
 }

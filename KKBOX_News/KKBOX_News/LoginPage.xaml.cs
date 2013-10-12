@@ -65,7 +65,11 @@ namespace KKBOX_News
             createUserAccount();
             loadUserSettings();
             DataContext = this;
-            
+            //List<String> a =new List<string>();
+            //a.Add("abc");
+
+           // DBManger.Instance.UpdateValueToArticleTable("123", 1, a);
+
             Debug.WriteLine("LoginPage");
         }
 
@@ -76,9 +80,9 @@ namespace KKBOX_News
 
         private void createUserAccount()
         {
-            if (LoadMySelectedSqlite.CreateAccountTable())
+            if (InitializeDB.Instance.CreateAccountTable())
             {
-                LoadMySelectedSqlite.InitialAccoutData();
+                InitializeDB.Instance.InitialAccoutData();
             }
         }
 
@@ -168,9 +172,9 @@ namespace KKBOX_News
 
         private void createUserTables()
         {
-            if (LoadMySelectedSqlite.CreateUserTables(UserId))
+            if (InitializeDB.Instance.CreateUserTables(UserId))
             {
-                LoadMySelectedSqlite.InitialUserTableData(UserId);
+                InitializeDB.Instance.InitialUserTableData(UserId);
             }
         }
 
