@@ -65,10 +65,8 @@ namespace KKBOX_News
         {
             lastSelectedItemIndex = -1;
 
-            ArticleUpdateTimeInterval = UserSettings.Instance.UpdateInterval;
-
             Timer = new DispatcherTimer();
-            Timer.Interval = TimeSpan.FromSeconds(ArticleUpdateTimeInterval);
+            Timer.Interval = TimeSpan.FromSeconds(UserSettings.Instance.UpdateInterval);
             Timer.Tick += OnTimerTick;
         }
 
@@ -96,20 +94,16 @@ namespace KKBOX_News
         {
             IDictionary<String, String> parameters = this.NavigationContext.QueryString;
            
-
             if (currentPageMode == PageMode.READ_FROM_XML)
             {
-                if (App.ViewModel.IsAutoUpdate)
+                if (UserSettings.Instance.IsOpenAutoUpdate)
                 {
                     StartUpdateArticle();
                 }
             }
 
-            if (CheckLastSelectedItemIndex())
-            {
-                ArticleModel.KKBOXArticles[lastSelectedItemIndex].IsExtended = true;
-            }
-            else if (ArticleModel.KKBOXArticles.Count == 0)
+            Debug.WriteLine(ArticleModel.KKBOXArticles.Count);
+            if (ArticleModel.KKBOXArticles.Count == 0)
             {
                 if (parameters.ContainsKey("XML"))
                 {
@@ -128,7 +122,7 @@ namespace KKBOX_News
 
                     webClientXmlDownload(xmlString);
 
-                    if (App.ViewModel.IsAutoUpdate)
+                    if (UserSettings.Instance.IsOpenAutoUpdate)
                     {
                         StartUpdateArticle();
                     }
@@ -178,6 +172,25 @@ namespace KKBOX_News
                     SearchManipulation = Visibility.Visible;
                     appbarMultipleManipulation.IsVisible = false;
                 }
+            }
+            else if (IsExternalArticlePage())
+            {
+                ExternalArticleManipulation = Visibility.Visible;
+                menuMultipleDelete.IsEnabled = true;
+                menuMultipleAdd.IsEnabled = false;
+
+                directoryIndex = 1;
+
+                currentPageMode = PageMode.EXTERNAL_ARTICLES;
+
+                if (parameters.ContainsKey("DirectoryTitle"))
+                {
+                    PageTitle = parameters["DirectoryTitle"];
+                }
+
+                LoadDirectoryArticlesFromTable();
+
+                SetArticleImageCollapsed();
             }
 
         }
@@ -291,24 +304,6 @@ namespace KKBOX_News
             }
 
             listBox.SelectedItem = null;
-        }
-
-        private void OnTextBlockPageLinkClick(Object sender, System.Windows.Input.ManipulationStartedEventArgs e)
-        {
-            TextBlock textBlock = (TextBlock)sender;
-            ArticleItem articleItem = (ArticleItem)textBlock.DataContext;
-
-            if (App.ViewModel.IsOpenExternalWeb)// External WebBrowser is in Settings[1]
-            {
-                WebBrowserTask webBrowserTask = new WebBrowserTask();
-                webBrowserTask.Uri = new Uri(articleItem.Link, UriKind.Absolute);
-                webBrowserTask.Show();
-            }
-            else
-            {
-                NavigationService.Navigate(new Uri(String.Format("/WebPage.xaml?Link={0}", articleItem.Link), UriKind.Relative));
-            }
-
         }
 
         private void OnMenuItemAddMySelectClick(Object sender, RoutedEventArgs e)
@@ -446,30 +441,6 @@ namespace KKBOX_News
         {
             get;
             set;
-        }
-
-        private static Int32 articleUpdateTimeInterval;
-        public static Int32 ArticleUpdateTimeInterval
-        {
-            get
-            {
-                return articleUpdateTimeInterval;
-            }
-            set
-            {
-                if (App.ViewModel.Settings != null)
-                {
-                    if (value == 0)
-                    {
-                        App.ViewModel.Settings[5].UpdateInterval = "";
-                    }
-                    else
-                    {
-                        App.ViewModel.Settings[5].UpdateInterval = value.ToString() + "分"; // UpdateInterval
-                    }
-                }
-                articleUpdateTimeInterval = value;
-            }
         }
 
         private ArticleListPageModel articleModel;
@@ -610,6 +581,23 @@ namespace KKBOX_News
         private void OnAddExternalArticleButtonClick(Object sender, RoutedEventArgs e)
         {
             this.NavigationService.Navigate(new Uri("/ExternalArticlesInfoPage.xaml",UriKind.Relative));
+        }
+
+        private void OnPageLinkButtonClick(Object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            ArticleItem articleItem = (ArticleItem)button.DataContext;
+
+            if (UserSettings.Instance.IsOpenExternalWeb)// External WebBrowser is in Settings[1]
+            {
+                WebBrowserTask webBrowserTask = new WebBrowserTask();
+                webBrowserTask.Uri = new Uri(articleItem.Link, UriKind.Absolute);
+                webBrowserTask.Show();
+            }
+            else
+            {
+                NavigationService.Navigate(new Uri(String.Format("/WebPage.xaml?Link={0}", articleItem.Link), UriKind.Relative));
+            }
         }
     }
 }

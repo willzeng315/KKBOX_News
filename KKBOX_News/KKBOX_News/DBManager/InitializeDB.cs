@@ -25,6 +25,25 @@ namespace KKBOX_News
             }
         }
 
+        public Boolean IsTableExists(String tableName)
+        {
+            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            {
+                conn.Open();
+
+                using (SqliteCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT name FROM sqlite_master WHERE type='table' AND name=@name";
+                    cmd.Parameters.Add("@name", tableName);
+                    using (SqliteDataReader reader = cmd.ExecuteReader())
+                    {
+                        return reader.Read() ? true : false;
+                    }
+                }
+            }
+            ;
+        }
+
         public Boolean CreateAccountTable()
         {
             IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication();

@@ -39,7 +39,7 @@ namespace KKBOX_News
         {
             if(minuteSelector.SelectedItem !=null)
             {
-                ArticleListPage.ArticleUpdateTimeInterval = Int32.Parse(minuteSelector.SelectedItem.ToString());
+                App.ViewModel.Settings[5].UpdateInterval = String.Format("{0}分", minuteSelector.SelectedItem.ToString());//value.ToString() + "分";
                 UserSettings.Instance.UpdateInterval = Int32.Parse(minuteSelector.SelectedItem.ToString());
             }
             NavigationService.GoBack();

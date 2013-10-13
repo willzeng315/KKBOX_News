@@ -12,15 +12,15 @@
     <Application.Resources>
         <DataTemplate x:Key="settingTemplateSelector">
             <local:SettingTemplateSelector Content="{Binding}" HorizontalContentAlignment="Stretch">
-                <local:SettingTemplateSelector.space>
+                <local:SettingTemplateSelector.Space>
                     <DataTemplate>
                         <Grid>
                             <Rectangle Fill="Gray" Height="30"/>
                             <TextBlock Text="{Binding Title}" HorizontalAlignment="Left" Margin="10"/>
                         </Grid>
                     </DataTemplate>
-                </local:SettingTemplateSelector.space>
-                <local:SettingTemplateSelector.textblockCheckbox>
+                </local:SettingTemplateSelector.Space>
+                <local:SettingTemplateSelector.TextblockCheckbox>
                     <DataTemplate>
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -34,8 +34,8 @@
                            <CheckBox Grid.Column="1"  IsChecked="{Binding IsChecked,Mode=TwoWay}" />
                         </Grid>
                     </DataTemplate>
-                </local:SettingTemplateSelector.textblockCheckbox>
-                <local:SettingTemplateSelector.textblockContent>
+                </local:SettingTemplateSelector.TextblockCheckbox>
+                <local:SettingTemplateSelector.TextblockContent>
                     <DataTemplate>
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -49,8 +49,8 @@
                             <TextBlock Grid.Column="1" Text="{Binding UpdateInterval}" FontSize="28" Margin="30,15"/>
                         </Grid>
                     </DataTemplate>
-                </local:SettingTemplateSelector.textblockContent>
-                <local:SettingTemplateSelector.textblock>
+                </local:SettingTemplateSelector.TextblockContent>
+                <local:SettingTemplateSelector.Textblock>
                     <DataTemplate>
                         <Grid>
                             <StackPanel Orientation="Vertical">
@@ -58,7 +58,7 @@
                             </StackPanel>
                         </Grid>
                     </DataTemplate>
-                </local:SettingTemplateSelector.textblock>
+                </local:SettingTemplateSelector.Textblock>
             </local:SettingTemplateSelector>
         </DataTemplate>
         

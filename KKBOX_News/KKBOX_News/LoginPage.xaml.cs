@@ -62,10 +62,18 @@ namespace KKBOX_News
         public LoginPage()
         {
             InitializeComponent();
-            CreateUserAccount();
-            LoadUserSettings();
+            CheckUserAccountTableExistAndCreate();
             DataContext = this;
             Debug.WriteLine("LoginPage");
+        }
+
+        private void CheckUserAccountTableExistAndCreate()
+        {
+            if (!InitializeDB.Instance.IsTableExists("userAccount"))
+            {
+                CreateUserAccount();
+                LoadUserSettings();
+            }
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -106,10 +114,11 @@ namespace KKBOX_News
             }
         }
 
-        private void CreateUserTables()
+        private void CheckUserTablesExistsAndCreate()
         {
-            if (InitializeDB.Instance.CreateUserTables(UserId))
+            if (!InitializeDB.Instance.IsTableExists(String.Format("directoryTableUser{0}",UserId)))
             {
+                InitializeDB.Instance.CreateUserTables(UserId);
                 InitializeDB.Instance.InitialUserTableData(UserId);
             }
         }
@@ -122,7 +131,7 @@ namespace KKBOX_News
             if (isNotAccountOrPasswordEmpty() && DBManager.Instance.VerifyUserAccount(account,password))
             {
                 DBManager.Instance.LoadUserSetting();
-                CreateUserTables();
+                CheckUserTablesExistsAndCreate();
                 SaveAccountAndPassword(IsSaveAccountAndPassword);
 
                 LoginSettings.Instance.IsSaveAccountAndPassword = IsSaveAccountAndPassword;

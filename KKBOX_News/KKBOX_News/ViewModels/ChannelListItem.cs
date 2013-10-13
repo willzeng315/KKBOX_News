@@ -23,16 +23,16 @@ namespace KKBOX_News
             }
         }
 
-        public String iconImagePath = "";
-        public String IconImagePath
+        public String imagePath = "";
+        public String ImagePath
         {
             get
             {
-                return iconImagePath;
+                return imagePath;
             }
             set
             {
-                SetProperty(ref iconImagePath, value, "IconImagePath");
+                SetProperty(ref imagePath, value, "IconImagePath");
             }
         }
 

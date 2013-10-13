@@ -79,8 +79,8 @@
                                 <Image Grid.Column="0" Source="{Binding IconImagePath}" Width="60" Height="60" VerticalAlignment="Top" Visibility="{Binding ImageVisiblity}"/>
                                 <StackPanel  Grid.Column="1" Orientation="Vertical">
                                     <TextBlock  Text="{Binding Title}" VerticalAlignment="Top" TextTrimming="WordEllipsis" TextWrapping="{Binding IsExtended,Converter = {StaticResource BooleanToWarp}}" Margin="10,0" Style="{StaticResource PhoneTextExtraLargeStyle}" FontSize="{StaticResource PhoneFontSizeLarge}" />
-                                    <TextBlock  Text="{Binding Content}" TextWrapping="Wrap" Margin="10,0" Style="{StaticResource PhoneTextSmallStyle}" Visibility="{Binding IsExtended,Converter = {StaticResource BooleanToVisibility}}"/>
-                                    <TextBlock  Text="更多文章及歌曲" TextWrapping="Wrap" Margin="10,0" Foreground="Blue" Style="{StaticResource PhoneTextSmallStyle}"  Visibility="{Binding IsExtended,Converter = {StaticResource BooleanToVisibility}}" ManipulationStarted="OnTextBlockPageLinkClick"/>
+                                    <TextBlock  Text="{Binding Content}" TextWrapping="Wrap" Margin="10,0" Style="{StaticResource PhoneTextSmallStyle}" Visibility="{Binding IsExtended,Converter = {StaticResource BooleanToVisibility}}" />
+                                    <Button BorderThickness="0" Content="更多文章及歌曲" Margin="-20,-20" Foreground="Blue" FontSize="18"  Width="200" HorizontalAlignment="Left" Visibility="{Binding IsExtended,Converter = {StaticResource BooleanToVisibility}}" Click="OnPageLinkButtonClick"/>
                                 </StackPanel>
                                 <toolkit:ContextMenuService.ContextMenu>
                                     <toolkit:ContextMenu>

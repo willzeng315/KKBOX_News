@@ -26,24 +26,25 @@ namespace KKBOX_News
             Settings.Add(new SettingListItem()
             {
                 Title = "帳戶",
-                Type = "space"
+                Type = SettingItemTemplate.TEMPLATE_SPACE
             });
             Settings.Add(new SettingListItem()
             {
                 Title = "登出帳戶",
                 PageLink = "/LoginPage.xaml",
                 Content = LoginSettings.Instance.CurrentAccount,
-                Type = "textblockContent"
+                Type = SettingItemTemplate.TEMPLATE_TEXT_CONTENT
             });
             Settings.Add(new SettingListItem() 
             { 
-                Title = "行為",Type="space"
+                Title = "行為",
+                Type = SettingItemTemplate.TEMPLATE_SPACE
             });
             Settings.Add(new SettingListItem()
             {
                 Title = "以外部瀏覽器開啟文章",
                 Content = "應用程式內直接顯示網頁",
-                Type = "textblockCheckbox",
+                Type = SettingItemTemplate.TEMPLATE_TXET_CHECK,
                 IsChecked = UserSettings.Instance.IsOpenExternalWeb,
                 FunctionOfCheck = "OpenExternalWeb"
             });
@@ -51,7 +52,7 @@ namespace KKBOX_News
             {
                 Title = "開啟自動更新",
                 Content = "開啟自動更新資訊",
-                Type = "textblockCheckbox",
+                Type = SettingItemTemplate.TEMPLATE_TXET_CHECK,
                 IsChecked = UserSettings.Instance.IsOpenAutoUpdate,
                 FunctionOfCheck = "OpenAutoUpdate"
             });
@@ -63,29 +64,29 @@ namespace KKBOX_News
                 Content = "設定每次自動更新的間隔時間",
                 PageLink = "/UpdateIntervalSelector.xaml",
                 UpdateInterval = String.Format("{0}{1}", UserSettings.Instance.UpdateInterval, "分"),
-                Type = "textblockContent"
+                Type = SettingItemTemplate.TEMPLATE_TEXT_CONTENT
             });
             Settings.Add(new SettingListItem()
             {
                 Title = "關於",
-                Type = "space"
+                Type = SettingItemTemplate.TEMPLATE_SPACE
             });
             Settings.Add(new SettingListItem()
             {
                 Title = "關於KKBOX",
                 Link = "http://www.kkbox.com/about/tc/",
-                Type = "textblock"
+                Type = SettingItemTemplate.TEMPLATE_TEXT
             });
             Settings.Add(new SettingListItem()
             {
                 Title = "關於KKBOX 音樂誌",
                 Link = "http://www.kkbox.com/tw/tc/column/index.html",
-                Type = "textblock"
+                Type = SettingItemTemplate.TEMPLATE_TEXT
             });
             Settings.Add(new SettingListItem()
             {
                 Title = "系統",
-                Type = "space"
+                Type = SettingItemTemplate.TEMPLATE_SPACE
             });
 
             AssemblyName assembly = new AssemblyName(Assembly.GetExecutingAssembly().FullName);
@@ -94,7 +95,7 @@ namespace KKBOX_News
             {
                 Title = "版本",
                 Content = assembly.Version.ToString(),
-                Type = "textblockContent"
+                Type = SettingItemTemplate.TEMPLATE_TEXT_CONTENT
             });
         }
 
@@ -151,7 +152,7 @@ namespace KKBOX_News
 
             foreach (XElement channel in TopicsInXml)
             {
-                Topics.Add(new ChannelListItem() { Title = channel.Element("title").Value, IconImagePath = channel.Element("icon").Value, Url = channel.Element("url").Value });
+                Topics.Add(new ChannelListItem() { Title = channel.Element("title").Value, ImagePath = channel.Element("icon").Value, Url = channel.Element("url").Value });
             }
 
             IsTopicsXmlLoaded = true;
@@ -175,32 +176,6 @@ namespace KKBOX_News
 
         private IEnumerable<XElement> TopicsInXml;
         
-        private Boolean isOpenExternalWeb = false;
-        public Boolean IsOpenExternalWeb
-        {
-            get
-            {
-                return isOpenExternalWeb;
-            }
-            set
-            {
-                isOpenExternalWeb = value;
-            }
-        }
-
-        private Boolean isAutoUpdate = false;
-        public Boolean IsAutoUpdate
-        {
-            get
-            {
-                return isAutoUpdate;
-            }
-            set
-            {
-                isAutoUpdate = value;
-            }
-        }
-
         private Boolean isTopicsXmlLoaded;
         public Boolean IsTopicsXmlLoaded
         {
@@ -213,6 +188,7 @@ namespace KKBOX_News
                 SetProperty(ref isTopicsXmlLoaded, value, "IsTopicsXmlLoaded");
             }
         }
+
         private ObservableCollection<ChannelListItem> topics;
         public ObservableCollection<ChannelListItem> Topics
         {

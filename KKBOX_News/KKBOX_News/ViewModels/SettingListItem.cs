@@ -8,39 +8,41 @@ using System.Windows;
 
 namespace KKBOX_News
 {
+    public enum SettingItemTemplate
+    {
+        TEMPLATE_SPACE,
+        TEMPLATE_TXET_CHECK,
+        TEMPLATE_TXET_LINK,
+        TEMPLATE_TEXT_CONTENT,
+        TEMPLATE_TEXT,
+    }
     public class SettingTemplateSelector : DataTemplateSelector
     {
-        public DataTemplate space
+        public DataTemplate Space
         {
             get;
             set;
         }
 
-        public DataTemplate textblockCheckbox
+        public DataTemplate TextblockCheckbox
         {
             get;
             set;
         }
 
-        public DataTemplate checkUpdateChose
+        public DataTemplate TextblockLink
         {
             get;
             set;
         }
 
-        public DataTemplate textblockLink
+        public DataTemplate TextblockContent
         {
             get;
             set;
         }
 
-        public DataTemplate textblockContent
-        {
-            get;
-            set;
-        }
-
-        public DataTemplate textblock
+        public DataTemplate Textblock
         {
             get;
             set;
@@ -53,18 +55,16 @@ namespace KKBOX_News
             {
                 switch (myItem.Type)
                 {
-                    case "space":
-                        return space;
-                    case "textblockCheckbox":
-                        return textblockCheckbox;
-                    case "checkUpdateChose":
-                        return checkUpdateChose;
-                    case "textblocklink":
-                        return textblockLink;
-                    case "textblockContent":
-                        return textblockContent;
-                    case "textblock":
-                        return textblock;
+                    case SettingItemTemplate.TEMPLATE_SPACE:
+                        return Space;
+                    case SettingItemTemplate.TEMPLATE_TXET_CHECK:
+                        return TextblockCheckbox;
+                    case SettingItemTemplate.TEMPLATE_TXET_LINK:
+                        return TextblockLink;
+                    case SettingItemTemplate.TEMPLATE_TEXT_CONTENT:
+                        return TextblockContent;
+                    case SettingItemTemplate.TEMPLATE_TEXT:
+                        return Textblock;
                 }
             }
 
@@ -103,7 +103,7 @@ namespace KKBOX_News
             get;
         }
 
-        public String Type
+        public SettingItemTemplate Type
         {
             set;
             get;
@@ -146,12 +146,10 @@ namespace KKBOX_News
             {
                 if (FunctionOfCheck == "OpenExternalWeb")
                 {
-                   App.ViewModel.IsOpenExternalWeb = value;
                    UserSettings.Instance.IsOpenExternalWeb = value;
                 }
                 if (FunctionOfCheck == "OpenAutoUpdate")
                 {
-                    App.ViewModel.IsAutoUpdate = value;
                     UserSettings.Instance.IsOpenAutoUpdate = value;
                 }
                 isChecked = value;
@@ -163,7 +161,6 @@ namespace KKBOX_News
             Title = "";
             Content = "";
             Link = "";
-            Type = "";
             IsChecked = false;
         }
 

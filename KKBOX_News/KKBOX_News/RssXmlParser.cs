@@ -42,7 +42,6 @@ namespace KKBOX_News
                 selectedArticles.Add(newItem);
             }
             return selectedArticles;
-            //ArticleModel.KKBOXArticles = selectedArticles;
         }
 
         private String ImageRetriever(String description)

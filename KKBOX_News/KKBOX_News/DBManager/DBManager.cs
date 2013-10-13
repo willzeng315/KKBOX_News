@@ -198,14 +198,15 @@ namespace KKBOX_News
             {
                 conn.Open();
                 using (SqliteCommand cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = String.Format("SELECT * FROM directoryArticlesUser{0}", LoginPage.UserId);
+                {    //Do not search external articles
+                    cmd.CommandText = String.Format("SELECT * FROM directoryArticlesUser{0} WHERE directoryId>1", LoginPage.UserId);
                     using (SqliteDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
                             allArticles.Add(new ArticleItem()
                             {
+                                
                                 Title = reader.GetString(2),
                                 Content = reader.GetString(3),
                                 IconImagePath = reader.GetString(4),
