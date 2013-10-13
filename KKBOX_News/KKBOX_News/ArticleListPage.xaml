@@ -11,10 +11,8 @@
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
-    
     SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d"
-    shell:SystemTray.IsVisible="False">
+    mc:Ignorable="d">
       
     <!--LayoutRoot 是放置所有頁面的根資料格-->
     <Grid x:Name="LayoutRoot" Background="#00ADDA" >
@@ -82,7 +80,7 @@
                                 <StackPanel  Grid.Column="1" Orientation="Vertical">
                                     <TextBlock  Text="{Binding Title}" VerticalAlignment="Top" TextTrimming="WordEllipsis" TextWrapping="{Binding IsExtended,Converter = {StaticResource BooleanToWarp}}" Margin="10,0" Style="{StaticResource PhoneTextExtraLargeStyle}" FontSize="{StaticResource PhoneFontSizeLarge}" />
                                     <TextBlock  Text="{Binding Content}" TextWrapping="Wrap" Margin="10,0" Style="{StaticResource PhoneTextSmallStyle}" Visibility="{Binding IsExtended,Converter = {StaticResource BooleanToVisibility}}"/>
-                                    <TextBlock  Text="更多文章及歌曲" TextWrapping="Wrap" Margin="10,0" Foreground="Blue" Style="{StaticResource PhoneTextSmallStyle}"  Visibility="{Binding IsExtended,Converter = {StaticResource BooleanToVisibility}}" ManipulationStarted="OnTextBlockManipulationStarted"/>
+                                    <TextBlock  Text="更多文章及歌曲" TextWrapping="Wrap" Margin="10,0" Foreground="Blue" Style="{StaticResource PhoneTextSmallStyle}"  Visibility="{Binding IsExtended,Converter = {StaticResource BooleanToVisibility}}" ManipulationStarted="OnTextBlockPageLinkClick"/>
                                 </StackPanel>
                                 <toolkit:ContextMenuService.ContextMenu>
                                     <toolkit:ContextMenu>

@@ -62,9 +62,6 @@ namespace KKBOX_News
         public MySelectedArticleDirectory()
         {
             NonRemoved = Visibility.Visible;
-            //ArticleItemList = new List<ArticleItem>();
-            //Title = "新個人精選";
-            //ImagePath = "Images/green.png";
         }
     }
 }

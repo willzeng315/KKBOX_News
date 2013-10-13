@@ -33,6 +33,7 @@ namespace KKBOX_News
             {
                 
                 // 延遲建立檢視模型，直到必要為止
+                //Relogin create new MainViewModel
                 if (LoginSettings.Instance.Login || viewModel == null)
                 {
                     Debug.WriteLine("App");
@@ -91,14 +92,14 @@ namespace KKBOX_News
 
         // 啟動應用程式 (例如，從 [開始]) 時要執行的程式碼
         // 重新啟動應用程式時不會執行這段程式碼
-        private void Application_Launching(object sender, LaunchingEventArgs e)
+        private void Application_Launching(Object sender, LaunchingEventArgs e)
         {
             LoadSettings();
         }
 
         // 啟動應用程式 (帶到前景) 時要執行的程式碼
         // 第一次啟動應用程式時不會執行這段程式碼
-        private void Application_Activated(object sender, ActivatedEventArgs e)
+        private void Application_Activated(Object sender, ActivatedEventArgs e)
         {
             // 確定已適當還原應用程式狀態
             //if (!App.ViewModel.IsDataLoaded)
@@ -110,14 +111,14 @@ namespace KKBOX_News
 
         // 停用應用程式 (移到背景) 時要執行的程式碼
         // 關閉應用程式時不會執行這段程式碼
-        private void Application_Deactivated(object sender, DeactivatedEventArgs e)
+        private void Application_Deactivated(Object sender, DeactivatedEventArgs e)
         {
             SaveSettings();
         }
 
         // 關閉應用程式 (例如，使用者按 [上一頁]) 時要執行的程式碼
         // 停用應用程式時不會執行這段程式碼
-        private void Application_Closing(object sender, ClosingEventArgs e)
+        private void Application_Closing(Object sender, ClosingEventArgs e)
         {
             SaveSettings();
         }
@@ -154,41 +155,11 @@ namespace KKBOX_News
             settings["isSaveAccountAndPassword"] = LoginSettings.Instance.IsSaveAccountAndPassword;
             settings.Save();
 
-            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
-            {
-                conn.Open();
-
-                using (SqliteCommand cmd = conn.CreateCommand())
-                {
-                    cmd.Transaction = conn.BeginTransaction();
-                    cmd.CommandText = String.Format("UPDATE userAccount SET openExternalWeb=@openExternalWeb, openAutoUpdate=@openAutoUpdate, updateInterval=@updateInterval WHERE id={0}", LoginPage.UserId);
-                    cmd.Parameters.Add("@openExternalWeb", UserSettings.Instance.IsOpenExternalWeb?1:0);
-                    cmd.Parameters.Add("@openAutoUpdate", UserSettings.Instance.IsOpenAutoUpdate ? 1 : 0);
-                    cmd.Parameters.Add("@updateInterval", UserSettings.Instance.UpdateInterval);
-                    cmd.ExecuteNonQuery();
-                    cmd.Transaction.Commit();
-                    cmd.Transaction = null;
-
-                    //cmd.CommandText = String.Format("SELECT * FROM userAccount WHERE id={0}", LoginPage.UserId);
-                    //using (SqliteDataReader reader = cmd.ExecuteReader())
-                    //{
-                    //    while (reader.Read())
-                    //    {
-                    //        Debug.WriteLine(reader.GetInt32(3));
-                    //        Debug.WriteLine(reader.GetInt32(4));
-                    //        Debug.WriteLine(reader.GetInt32(5));
-                    //    //    UserSettings.IsOpenExternalWeb = reader.GetBoolean(3);
-                    //    //    UserSettings.IsOpenAutoUpdate = reader.GetBoolean(4);
-                    //    //    UserSettings.UpdateInterval = reader.GetInt32(5);
-                    //    }
-                    //}
-                }
-            }
-
+            DBManager.Instance.UpdateUserSettings();
         }
 
         // 巡覽失敗時要執行的程式碼
-        private void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
+        private void RootFrame_NavigationFailed(Object sender, NavigationFailedEventArgs e)
         {
             if (Debugger.IsAttached)
             {
@@ -198,7 +169,7 @@ namespace KKBOX_News
         }
 
         // 發生未處理的例外狀況時要執行的程式碼
-        private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
+        private void Application_UnhandledException(Object sender, ApplicationUnhandledExceptionEventArgs e)
         {
             if (Debugger.IsAttached)
             {

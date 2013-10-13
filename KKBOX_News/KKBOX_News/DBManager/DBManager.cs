@@ -191,6 +191,33 @@ namespace KKBOX_News
             return directoryArticles;
         }
 
+        public List<ArticleItem> LoadAllArticlesFromTable()
+        {
+            List<ArticleItem> allArticles = new List<ArticleItem>();
+            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            {
+                conn.Open();
+                using (SqliteCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = String.Format("SELECT * FROM directoryArticlesUser{0}", LoginPage.UserId);
+                    using (SqliteDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            allArticles.Add(new ArticleItem()
+                            {
+                                Title = reader.GetString(2),
+                                Content = reader.GetString(3),
+                                IconImagePath = reader.GetString(4),
+                                Link = reader.GetString(5)
+                            });
+                        }
+                    }
+                }
+            }
+            return allArticles;
+        }
+
         public Boolean IsDirectoryHaveArticles(Int32 directoryIndex)
         {
             using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
@@ -279,5 +306,27 @@ namespace KKBOX_News
                 }
             }
         }
+
+        public void UpdateUserSettings()
+        {
+            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            {
+                conn.Open();
+
+                using (SqliteCommand cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = conn.BeginTransaction();
+                    cmd.CommandText = String.Format("UPDATE userAccount SET openExternalWeb=@openExternalWeb, openAutoUpdate=@openAutoUpdate, updateInterval=@updateInterval WHERE id={0}", LoginPage.UserId);
+                    cmd.Parameters.Add("@openExternalWeb", UserSettings.Instance.IsOpenExternalWeb ? 1 : 0);
+                    cmd.Parameters.Add("@openAutoUpdate", UserSettings.Instance.IsOpenAutoUpdate ? 1 : 0);
+                    cmd.Parameters.Add("@updateInterval", UserSettings.Instance.UpdateInterval);
+                    cmd.ExecuteNonQuery();
+                    cmd.Transaction.Commit();
+                    cmd.Transaction = null;
+
+                }
+            }
+        }
+       
     }
 }

@@ -16,12 +16,11 @@ namespace KKBOX_News
     {
         public MainViewModel()
         {
-            loadDirectoris();
-            loadSettingList();
-            Debug.WriteLine("MainViewModel");
+            LoadDirectoris();
+            LoadSettingList();
         }
 
-        private void loadSettingList()
+        private void LoadSettingList()
         {
             Settings = new ObservableCollection<SettingListItem>();
             Settings.Add(new SettingListItem()
@@ -99,8 +98,7 @@ namespace KKBOX_News
             });
         }
 
-
-        private void loadDirectoris()
+        private void LoadDirectoris()
         {
             ArticleDirectories = new ObservableCollection<MySelectedArticleDirectory>();
             try
@@ -144,7 +142,7 @@ namespace KKBOX_News
                 
         }
 
-        private void loadTopics(DownloadStringCompletedEventArgs args) 
+        private void LoadTopics(DownloadStringCompletedEventArgs args) 
         {
             Topics = new ObservableCollection<ChannelListItem>();
 
@@ -171,7 +169,7 @@ namespace KKBOX_News
 
         void OnDownloadTopicXmlCompleted(Object sender, DownloadStringCompletedEventArgs args)//loadTipics
         {
-            loadTopics(args);
+            LoadTopics(args);
         }
         #region Property
 

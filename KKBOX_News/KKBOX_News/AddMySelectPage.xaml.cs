@@ -119,11 +119,11 @@ namespace KKBOX_News
         public AddMySelectPage()
         {
             InitializeComponent();
-            loadDirectoryIntoList();
+            LoadDirectoryIntoList();
             DataContext = this;
         }
 
-        private void loadDirectoryIntoList()
+        private void LoadDirectoryIntoList()
         {
             AdderListBox = new ObservableCollection<AdderItem>();
             AdderListBox.Add(new AdderItem() { ItemTitle = "", Type = "space" });
@@ -148,11 +148,11 @@ namespace KKBOX_News
 
             if (selectedImageName != null)
             {
-                displayChooseImage();
+                DisplayChooseImage();
             }
         }
 
-        private void displayChooseImage()
+        private void DisplayChooseImage() // AdderListBox[2] is the CoverImage
         {
             AdderListBox[2].CoverImage = LocalImageManipulation.Instance.ReadJpgFromStorage(selectedImageName);
         }
@@ -164,13 +164,13 @@ namespace KKBOX_News
                 BitmapImage bitmap = new BitmapImage();
                 bitmap.SetSource(args.ChosenPhoto);
 
-                retrieveImageName(args);
+                RetrieveImageName(args);
 
                 LocalImageManipulation.Instance.SaveJpgToIsolateStorage(bitmap,selectedImageName);
             }
         }
 
-        private void retrieveImageName(PhotoResult args)
+        private void RetrieveImageName(PhotoResult args)
         {
             Int32 imageNameBeginIndex = 0;
             for (int i = args.OriginalFileName.Length - 1; i > 0; i--)
@@ -196,7 +196,7 @@ namespace KKBOX_News
             photoChooserTask.Show();
         }
 
-        private Int32 getLastDirectoryIndex()
+        private Int32 GetLastDirectoryIndex()
         {
             Int32 DirectoryIndex = 2; //dirID = 1 is externalArticle
 
@@ -240,7 +240,7 @@ namespace KKBOX_News
                 }
 
                 mySelectedArticleDirectory.CoverImage = LocalImageManipulation.Instance.ReadJpgFromStorage(selectedImageName);
-                mySelectedArticleDirectory.DirectoryIndex = getLastDirectoryIndex();
+                mySelectedArticleDirectory.DirectoryIndex = GetLastDirectoryIndex();
 
                 App.ViewModel.ArticleDirectories.Add(mySelectedArticleDirectory);
 
@@ -260,30 +260,6 @@ namespace KKBOX_News
         }
 
         #region property
-
-        public String SelectedItemTitle
-        {
-            get;
-            set;
-        }
-
-        public String SelectedItemContent
-        {
-            get;
-            set;
-        }
-
-        public String SelectedItemLink
-        {
-            get;
-            set;
-        }
-
-        public String SelectedItemImagePath
-        {
-            get;
-            set;
-        }
 
         private String selectedImageName
         {

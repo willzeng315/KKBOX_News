@@ -17,11 +17,11 @@ namespace KKBOX_News
         public UpdateIntervalSelector()
         {
             InitializeComponent();
-            loadMinutesSet();
+            LoadMinutesSet();
             DataContext = this;
         }
 
-        private void loadMinutesSet()
+        private void LoadMinutesSet()
         {
             Minutes = new ObservableCollection<string>();
             Minutes.Add("1");

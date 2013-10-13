@@ -103,9 +103,6 @@
     <Compile Include="PhotoChooser.cs" />
     <Compile Include="RssXmlParser.cs" />
     <Compile Include="ViewModels\ArticleNavigationPasser.cs" />
-    <Compile Include="ChangePassword.xaml.cs">
-      <DependentUpon>ChangePassword.xaml</DependentUpon>
-    </Compile>
     <Compile Include="CoverInformationEditPage.xaml.cs">
       <DependentUpon>CoverInformationEditPage.xaml</DependentUpon>
     </Compile>
@@ -155,10 +152,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ArticleListPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ChangePassword.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

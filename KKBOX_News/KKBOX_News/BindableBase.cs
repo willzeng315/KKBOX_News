@@ -14,10 +14,13 @@ namespace KKBOX_News
 
         protected Boolean SetProperty<T>(ref T storage, T value, [CallerMemberName] String propertyName = null)
         {
-            if (object.Equals(storage, value)) return false;
+            if (Object.Equals(storage, value))
+            {
+                return false;
+            }
 
             storage = value;
-            this.OnPropertyChanged(propertyName);
+            OnPropertyChanged(propertyName);
             return true;
         }
 

@@ -131,7 +131,7 @@ namespace KKBOX_News
                 BitmapImage bitmap = new BitmapImage();
                 bitmap.SetSource(args.ChosenPhoto);
 
-                retrieveImageName(args);
+                RetrieveImageName(args);
 
                 LocalImageManipulation.Instance.SaveJpgToIsolateStorage(bitmap, selectedImageName);
 
@@ -139,7 +139,7 @@ namespace KKBOX_News
             }
         }
 
-        private void retrieveImageName(PhotoResult args)
+        private void RetrieveImageName(PhotoResult args)
         {
             Int32 imageNameBeginIndex = 0;
             for (int i = args.OriginalFileName.Length - 1; i > 0; i--)
@@ -155,7 +155,7 @@ namespace KKBOX_News
             selectedImageName = String.Format("{0}{1}", selectedImageName, "jpg");
         }
 
-        private void updateDirectoryInfoToTable()
+        private void UpdateDirectoryInfoToTable()
         {
             DBManager.Instance.UpdateDirectoryToTable(directoryIndex, CoverTitle, selectedImageName);
         }
@@ -186,7 +186,7 @@ namespace KKBOX_News
                         App.ViewModel.ArticleDirectories[i].CoverImage = LocalImageManipulation.Instance.ReadJpgFromStorage(selectedImageName);
                     }
 
-                    updateDirectoryInfoToTable();
+                    UpdateDirectoryInfoToTable();
                     break;
                 }
             }

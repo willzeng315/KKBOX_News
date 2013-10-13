@@ -30,28 +30,42 @@ namespace KKBOX_News
         {
             InitializeComponent();
             defaultSetting();
+            AppbarDefaultSettings();
+            VisibilityDefaultSettings();
+            SetDataContexts();
+            DataContext = ArticleModel;
+        }
+
+        private void SetDataContexts()
+        {
             LoadingText.DataContext = this;
             TopicPageTitle.DataContext = this;
             ButtonSet.DataContext = this;
             selectAllGrid.DataContext = this;
             searchTexBoxGrid.DataContext = this;
             externalArticleTexBoxGrid.DataContext = this;
-            DataContext = ArticleModel;
         }
 
-        private void defaultSetting()
+        private void AppbarDefaultSettings()
         {
-            isLinkClick = false;
-            lastSelectedItemIndex = -1;
-            MultipleManipulation = Visibility.Collapsed;
-            SearchManipulation = Visibility.Collapsed;
-            externalArticleManipulation = Visibility.Collapsed;
-            ArticleUpdateTimeInterval = UserSettings.Instance.UpdateInterval;
-
             appbarMultipleManipulation = this.ApplicationBar as ApplicationBar;
             menuMultipleAdd = this.ApplicationBar.MenuItems[0] as ApplicationBarMenuItem;
             menuMultipleDelete = this.ApplicationBar.MenuItems[1] as ApplicationBarMenuItem;
             menuMultipleDelete.IsEnabled = false;
+        }
+
+        private void VisibilityDefaultSettings()
+        {
+            MultipleManipulation = Visibility.Collapsed;
+            SearchManipulation = Visibility.Collapsed;
+            externalArticleManipulation = Visibility.Collapsed;
+        }
+
+        private void defaultSetting()
+        {
+            lastSelectedItemIndex = -1;
+
+            ArticleUpdateTimeInterval = UserSettings.Instance.UpdateInterval;
 
             Timer = new DispatcherTimer();
             Timer.Interval = TimeSpan.FromSeconds(ArticleUpdateTimeInterval);
@@ -60,7 +74,6 @@ namespace KKBOX_News
 
         private void OnTimerTick(Object sender, EventArgs e)
         {
-            Debug.WriteLine("更新文章中...");
             if (currentPageMode == PageMode.READ_FROM_XML)
             {
                 LoadingText.Text = "更新文章中...";
@@ -275,30 +288,27 @@ namespace KKBOX_News
                    sItem.IsExtended = true;
                    lastSelectedItemIndex = listBox.SelectedIndex;
                 }
-
-                if (isLinkClick)
-                {
-                    if (App.ViewModel.IsOpenExternalWeb)// External WebBrowser is in Settings[1]
-                    {
-                        WebBrowserTask webBrowserTask = new WebBrowserTask();
-                        webBrowserTask.Uri = new Uri(sItem.Link, UriKind.Absolute);
-                        webBrowserTask.Show();
-                    }
-                    else
-                    {
-                        NavigationService.Navigate(new Uri(String.Format("/WebPage.xaml?Link={0}", sItem.Link), UriKind.Relative));
-                    }
-                    isLinkClick = false;
-                }
-
             }
 
             listBox.SelectedItem = null;
         }
 
-        private void OnTextBlockManipulationStarted(Object sender, System.Windows.Input.ManipulationStartedEventArgs e)
+        private void OnTextBlockPageLinkClick(Object sender, System.Windows.Input.ManipulationStartedEventArgs e)
         {
-            isLinkClick = true;
+            TextBlock textBlock = (TextBlock)sender;
+            ArticleItem articleItem = (ArticleItem)textBlock.DataContext;
+
+            if (App.ViewModel.IsOpenExternalWeb)// External WebBrowser is in Settings[1]
+            {
+                WebBrowserTask webBrowserTask = new WebBrowserTask();
+                webBrowserTask.Uri = new Uri(articleItem.Link, UriKind.Absolute);
+                webBrowserTask.Show();
+            }
+            else
+            {
+                NavigationService.Navigate(new Uri(String.Format("/WebPage.xaml?Link={0}", articleItem.Link), UriKind.Relative));
+            }
+
         }
 
         private void OnMenuItemAddMySelectClick(Object sender, RoutedEventArgs e)
@@ -421,12 +431,6 @@ namespace KKBOX_News
         #region Property
 
         private String xmlString
-        {
-            get;
-            set;
-        }
-
-        private Boolean isLinkClick
         {
             get;
             set;
