@@ -73,6 +73,5 @@ namespace KKBOX_News
         private BitmapImage chooseImage;
 
         private String selectedImageName;
-
     }
 }

@@ -19,7 +19,7 @@ using Community.CsharpSqlite.SQLiteClient;
 
 namespace KKBOX_News
 {
-    public partial class CoverInformationEditPage : PhoneApplicationPage,INotifyPropertyChanged
+    public partial class CoverInformationEditPage : PhoneApplicationPage, INotifyPropertyChanged
     {
         const Int32 ImageLength = 200;
 
@@ -75,7 +75,7 @@ namespace KKBOX_News
             set;
         }
 
-        private String coverTitle="";
+        private String coverTitle = "";
         public String CoverTitle
         {
 

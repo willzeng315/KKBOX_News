@@ -63,6 +63,7 @@ namespace KKBOX_News
         {
             InitializeComponent();
             CheckUserAccountTableExistAndCreate();
+            LoadUserSettings();
             DataContext = this;
             Debug.WriteLine("LoginPage");
         }
@@ -72,7 +73,6 @@ namespace KKBOX_News
             if (!InitializeDB.Instance.IsTableExists("userAccount"))
             {
                 CreateUserAccount();
-                LoadUserSettings();
             }
         }
 
@@ -97,7 +97,7 @@ namespace KKBOX_News
                 accountTextBox.Text = LoginSettings.Instance.LastAccount;
                 passwordTextBox.Password = LoginSettings.Instance.LastPassword;
             }
-            
+
         }
 
         private Boolean isNotAccountOrPasswordEmpty()
@@ -116,7 +116,7 @@ namespace KKBOX_News
 
         private void CheckUserTablesExistsAndCreate()
         {
-            if (!InitializeDB.Instance.IsTableExists(String.Format("directoryTableUser{0}",UserId)))
+            if (!InitializeDB.Instance.IsTableExists(String.Format("directoryTableUser{0}", UserId)))
             {
                 InitializeDB.Instance.CreateUserTables(UserId);
                 InitializeDB.Instance.InitialUserTableData(UserId);
@@ -128,7 +128,7 @@ namespace KKBOX_News
             String account = accountTextBox.Text;
             String password = passwordTextBox.Password;
 
-            if (isNotAccountOrPasswordEmpty() && DBManager.Instance.VerifyUserAccount(account,password))
+            if (isNotAccountOrPasswordEmpty() && DBManager.Instance.VerifyUserAccount(account, password))
             {
                 DBManager.Instance.LoadUserSetting();
                 CheckUserTablesExistsAndCreate();
@@ -150,7 +150,7 @@ namespace KKBOX_News
         {
             NavigationService.Navigate(new Uri("/RegistrationPage.xaml", UriKind.Relative));
         }
-        
+
         public static Int32 UserId;
 
         #region Property
@@ -168,6 +168,5 @@ namespace KKBOX_News
             }
         }
         #endregion
-
     }
 }

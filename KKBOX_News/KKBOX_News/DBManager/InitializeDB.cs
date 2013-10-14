@@ -43,7 +43,6 @@ namespace KKBOX_News
                     }
                 }
             }
-            ;
         }
 
         public Boolean CreateAccountTable()
@@ -93,7 +92,6 @@ namespace KKBOX_News
                         cmd.Parameters["@openExternalWeb"].Value = 0;
                         cmd.Parameters["@openAutoUpdate"].Value = 0;
                         cmd.Parameters["@updateInterval"].Value = 5;
-
 
                         cmd.ExecuteNonQuery();
                     }

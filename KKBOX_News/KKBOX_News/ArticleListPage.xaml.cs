@@ -151,6 +151,10 @@ namespace KKBOX_News
 
             IDictionary<String, String> parameters = this.NavigationContext.QueryString;
 
+            directoryIndex = -1;
+
+            DetermineAppBarVisibility("articleBrowseRecordUser");
+
             if (parameters.ContainsKey("BrowseRecord"))
             {
                 browseRecordPage = true;
@@ -198,7 +202,7 @@ namespace KKBOX_News
             Boolean directoryArticlePage = false;
             IDictionary<String, String> parameters = this.NavigationContext.QueryString;
 
-            if (parameters.ContainsKey("DirectoryIndex") && Int32.Parse(parameters["DirectoryIndex"]) > 1 && ArticleModel.KKBOXArticles.Count == 0)
+            if (parameters.ContainsKey("DirectoryIndex") && Int32.Parse(parameters["DirectoryIndex"]) > 1)
             {
                 directoryIndex = Int32.Parse(parameters["DirectoryIndex"]);
 

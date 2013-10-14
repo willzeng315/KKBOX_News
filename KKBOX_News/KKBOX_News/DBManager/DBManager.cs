@@ -330,7 +330,14 @@ namespace KKBOX_News
                 conn.Open();
                 using (SqliteCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = String.Format("SELECT * FROM {0}{1} WHERE directoryId={2}",tableName, LoginPage.UserId, directoryIndex);
+                    if (directoryIndex != -1)
+                    {
+                        cmd.CommandText = String.Format("SELECT * FROM {0}{1} WHERE directoryId={2}", tableName, LoginPage.UserId, directoryIndex);
+                    }
+                    else
+                    {
+                        cmd.CommandText = String.Format("SELECT * FROM {0}{1}", tableName, LoginPage.UserId);
+                    }
 
                     using (SqliteDataReader reader = cmd.ExecuteReader())
                     {

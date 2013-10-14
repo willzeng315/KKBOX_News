@@ -150,7 +150,7 @@ namespace KKBOX_News
         }
 
     }
-#endregion
+        #endregion
     public class ArticleListPageModel : BindableBase
     {
         public ArticleListPageModel()
@@ -170,6 +170,5 @@ namespace KKBOX_News
                 SetProperty(ref kkboxArticles, value, "KKBOXArticles");
             }
         }
-        
     }
 }

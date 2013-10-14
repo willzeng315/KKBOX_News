@@ -37,7 +37,7 @@ namespace KKBOX_News
 
         private void OnComfirmClick(Object sender, RoutedEventArgs e)
         {
-            if(minuteSelector.SelectedItem !=null)
+            if (minuteSelector.SelectedItem != null)
             {
                 App.ViewModel.Settings[5].UpdateInterval = String.Format("{0}分", minuteSelector.SelectedItem.ToString());//value.ToString() + "分";
                 UserSettings.Instance.UpdateInterval = Int32.Parse(minuteSelector.SelectedItem.ToString());
