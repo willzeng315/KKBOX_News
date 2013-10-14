@@ -15,14 +15,14 @@
     <phone:PhoneApplicationPage.Resources>
         <DataTemplate x:Key="adderSelectedTemplate">
             <local:AdderTemplateSelector Content="{Binding}" HorizontalContentAlignment="Stretch">
-                <local:AdderTemplateSelector.space>
+                <local:AdderTemplateSelector.Space>
                     <DataTemplate>
                         <Grid>
                             <Rectangle Fill="Gray" Height="30"/>
                         </Grid>
                     </DataTemplate>
-                </local:AdderTemplateSelector.space>
-                <local:AdderTemplateSelector.textbox>
+                </local:AdderTemplateSelector.Space>
+                <local:AdderTemplateSelector.TextboxCheck>
                     <DataTemplate>
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -33,8 +33,8 @@
                             <CheckBox Grid.Column="1"  IsChecked="{Binding IsChecked,Mode=TwoWay}"/>
                         </Grid>
                     </DataTemplate>
-                </local:AdderTemplateSelector.textbox>
-                <local:AdderTemplateSelector.textblock>
+                </local:AdderTemplateSelector.TextboxCheck>
+                <local:AdderTemplateSelector.TextblockCheck>
                     <DataTemplate>
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -45,8 +45,8 @@
                             <CheckBox Grid.Column="1"  IsChecked="{Binding IsChecked,Mode=TwoWay}" />
                         </Grid>
                     </DataTemplate>
-                </local:AdderTemplateSelector.textblock>
-                <local:AdderTemplateSelector.selectImage>
+                </local:AdderTemplateSelector.TextblockCheck>
+                <local:AdderTemplateSelector.CoverImage>
                     <DataTemplate>
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -57,7 +57,7 @@
                             <Image Grid.Column="1" Source="{Binding CoverImage}" Height="150" Width="150" />
                         </Grid>
                     </DataTemplate>
-                </local:AdderTemplateSelector.selectImage>
+                </local:AdderTemplateSelector.CoverImage>
             </local:AdderTemplateSelector>
         </DataTemplate>
     </phone:PhoneApplicationPage.Resources>

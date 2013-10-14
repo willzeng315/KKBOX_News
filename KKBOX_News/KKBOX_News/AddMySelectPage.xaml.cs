@@ -19,27 +19,35 @@ using System.IO;
 
 namespace KKBOX_News
 {
+    public enum AdderItemTemplate
+    {
+        TEMPLATE_SPACE,
+        TEMPLATE_TXETBOX,
+        TEMPLATE_TXETBLOCK,
+        TEMPLATE_COVERIMAGE,
+    }
+
     public class AdderTemplateSelector : DataTemplateSelector
     {
-        public DataTemplate space
+        public DataTemplate Space
         {
             get;
             set;
         }
 
-        public DataTemplate textbox
+        public DataTemplate TextboxCheck
         {
             get;
             set;
         }
 
-        public DataTemplate textblock
+        public DataTemplate TextblockCheck
         {
             get;
             set;
         }
 
-        public DataTemplate selectImage
+        public DataTemplate CoverImage
         {
             get;
             set;
@@ -52,14 +60,14 @@ namespace KKBOX_News
             {
                 switch (myItem.Type)
                 {
-                    case "space":
-                        return space;
-                    case "textbox":
-                        return textbox;
-                    case "textblock":
-                        return textblock;
-                    case "selectImage":
-                        return selectImage;
+                    case AdderItemTemplate.TEMPLATE_SPACE:
+                        return Space;
+                    case AdderItemTemplate.TEMPLATE_TXETBOX:
+                        return TextboxCheck;
+                    case AdderItemTemplate.TEMPLATE_TXETBLOCK:
+                        return TextblockCheck;
+                    case AdderItemTemplate.TEMPLATE_COVERIMAGE:
+                        return CoverImage;
                 }
             }
 
@@ -73,7 +81,7 @@ namespace KKBOX_News
             set;
             get;
         }
-        public String Type
+        public AdderItemTemplate Type
         {
             set;
             get;
@@ -106,7 +114,6 @@ namespace KKBOX_News
         public AdderItem()
         {
             ItemTitle = "";
-            Type = "";
             IsChecked = false;
         }
 
@@ -126,17 +133,17 @@ namespace KKBOX_News
         private void LoadDirectoryIntoList()
         {
             AdderListBox = new ObservableCollection<AdderItem>();
-            AdderListBox.Add(new AdderItem() { ItemTitle = "", Type = "space" });
-            AdderListBox.Add(new AdderItem() { ItemTitle = "新資料夾", Type = "textbox"});
-            AdderListBox.Add(new AdderItem() { Type = "selectImage" });
-            AdderListBox.Add(new AdderItem(){ItemTitle = "", Type = "space"});
+            AdderListBox.Add(new AdderItem() { ItemTitle = "", Type = AdderItemTemplate.TEMPLATE_SPACE });
+            AdderListBox.Add(new AdderItem() { ItemTitle = "新資料夾", Type = AdderItemTemplate.TEMPLATE_TXETBOX});
+            AdderListBox.Add(new AdderItem() { Type = AdderItemTemplate.TEMPLATE_COVERIMAGE });
+            AdderListBox.Add(new AdderItem() { ItemTitle = "", Type = AdderItemTemplate.TEMPLATE_SPACE});
             for (int i = 1; i < App.ViewModel.ArticleDirectories.Count; i++)
             {
                 AdderListBox.Add(new AdderItem() 
                 { 
                     ItemTitle = App.ViewModel.ArticleDirectories[i].Title, 
                     DirectoryId = App.ViewModel.ArticleDirectories[i].DirectoryIndex,
-                    Type = "textblock" 
+                    Type = AdderItemTemplate.TEMPLATE_TXETBLOCK
                 });
             }
 
@@ -146,54 +153,16 @@ namespace KKBOX_News
         {
            IDictionary<String, String> parameters = this.NavigationContext.QueryString;
 
-            if (selectedImageName != null)
+            if (coverChooser != null)
             {
-                DisplayChooseImage();
+                selectedImageName = coverChooser.GetSelectedImageName();
+                AdderListBox[2].CoverImage = coverChooser.GetChooseImage();
             }
         }
-
-        private void DisplayChooseImage() // AdderListBox[2] is the CoverImage
-        {
-            AdderListBox[2].CoverImage = LocalImageManipulation.Instance.ReadJpgFromStorage(selectedImageName);
-        }
-
-        private void OnPhotoChooserTaskCompleted(object sender, PhotoResult args)
-        {
-            if (args.TaskResult == TaskResult.OK)
-            {
-                BitmapImage bitmap = new BitmapImage();
-                bitmap.SetSource(args.ChosenPhoto);
-
-                RetrieveImageName(args);
-
-                LocalImageManipulation.Instance.SaveJpgToIsolateStorage(bitmap,selectedImageName);
-            }
-        }
-
-        private void RetrieveImageName(PhotoResult args)
-        {
-            Int32 imageNameBeginIndex = 0;
-            for (int i = args.OriginalFileName.Length - 1; i > 0; i--)
-            {
-                if (args.OriginalFileName[i] == '\\')
-                {
-                    imageNameBeginIndex = i;
-                    break;
-                }
-            }
-            selectedImageName = args.OriginalFileName.Substring(imageNameBeginIndex + 1, (args.OriginalFileName.Length - imageNameBeginIndex) - 4);
-
-            selectedImageName = String.Format("{0}{1}", selectedImageName, "jpg");
-        }
-
-       
 
         private void OnChoosePhotoClick(Object sender, RoutedEventArgs e)
         {
-            PhotoChooserTask photoChooserTask;
-            photoChooserTask = new PhotoChooserTask();
-            photoChooserTask.Completed += new EventHandler<PhotoResult>(OnPhotoChooserTaskCompleted);
-            photoChooserTask.Show();
+            coverChooser = new PhotoChooser();
         }
 
         private Int32 GetLastDirectoryIndex()
@@ -217,7 +186,7 @@ namespace KKBOX_News
         {
             for (int i = 3; i < AdderListBox.Count; i++) //start with my select because i=0 is space, i=1 is new directory,i=2 is space
             {
-                if (AdderListBox[i].Type == "sapce")
+                if (AdderListBox[i].Type == AdderItemTemplate.TEMPLATE_SPACE)
                 {
                     continue;
                 }
@@ -260,6 +229,12 @@ namespace KKBOX_News
         }
 
         #region property
+
+        private PhotoChooser coverChooser
+        {
+            get;
+            set;
+        }
 
         private String selectedImageName
         {

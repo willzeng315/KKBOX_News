@@ -16,6 +16,7 @@ namespace KKBOX_News
         TEMPLATE_TEXT_CONTENT,
         TEMPLATE_TEXT,
     }
+
     public class SettingTemplateSelector : DataTemplateSelector
     {
         public DataTemplate Space
