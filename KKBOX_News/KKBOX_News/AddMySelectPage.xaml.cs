@@ -74,7 +74,7 @@ namespace KKBOX_News
             return base.SelectTemplate(item, container);
         }
     }
-    public class AdderItem :BindableBase
+    public class AdderItem : BindableBase
     {
         public String ItemTitle
         {
@@ -121,8 +121,6 @@ namespace KKBOX_News
 
     public partial class AddMySelectPage : PhoneApplicationPage
     {
-        const Int32 ImageLength = 200;
-
         public AddMySelectPage()
         {
             InitializeComponent();
@@ -134,24 +132,24 @@ namespace KKBOX_News
         {
             AdderListBox = new ObservableCollection<AdderItem>();
             AdderListBox.Add(new AdderItem() { ItemTitle = "", Type = AdderItemTemplate.TEMPLATE_SPACE });
-            AdderListBox.Add(new AdderItem() { ItemTitle = "新資料夾", Type = AdderItemTemplate.TEMPLATE_TXETBOX});
+            AdderListBox.Add(new AdderItem() { ItemTitle = "新資料夾", Type = AdderItemTemplate.TEMPLATE_TXETBOX });
             AdderListBox.Add(new AdderItem() { Type = AdderItemTemplate.TEMPLATE_COVERIMAGE });
-            AdderListBox.Add(new AdderItem() { ItemTitle = "", Type = AdderItemTemplate.TEMPLATE_SPACE});
+            AdderListBox.Add(new AdderItem() { ItemTitle = "", Type = AdderItemTemplate.TEMPLATE_SPACE });
             for (int i = 1; i < App.ViewModel.ArticleDirectories.Count; i++)
             {
-                AdderListBox.Add(new AdderItem() 
-                { 
-                    ItemTitle = App.ViewModel.ArticleDirectories[i].Title, 
+                AdderListBox.Add(new AdderItem()
+                {
+                    ItemTitle = App.ViewModel.ArticleDirectories[i].Title,
                     DirectoryId = App.ViewModel.ArticleDirectories[i].DirectoryIndex,
                     Type = AdderItemTemplate.TEMPLATE_TXETBLOCK
                 });
             }
 
         }
-        
+
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
-           IDictionary<String, String> parameters = this.NavigationContext.QueryString;
+            IDictionary<String, String> parameters = this.NavigationContext.QueryString;
 
             if (coverChooser != null)
             {
@@ -248,6 +246,6 @@ namespace KKBOX_News
             set;
         }
 
-        #endregion 
+        #endregion
     }
 }

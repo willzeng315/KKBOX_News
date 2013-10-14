@@ -43,7 +43,7 @@ namespace KKBOX_News
 
             if (topics.SelectedIndex != -1)
             {
-                String sDestination = String.Format("/ArticleListPage.xaml?XML={0}&Title={1}", channelItem.Url, channelItem.Title);
+                String sDestination = String.Format("/ArticleListPage.xaml?Xml={0}&Title={1}", channelItem.Url, channelItem.Title);
                 this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
             }
 
