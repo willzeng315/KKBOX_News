@@ -125,6 +125,7 @@ namespace KKBOX_News
                 Topics.Add(new ChannelListItem() { Title = channel.Element("title").Value, ImagePath = channel.Element("icon").Value, Url = channel.Element("url").Value });
             }
 
+            Topics.Add(new ChannelListItem() { Title = "瀏覽紀錄", IsReadFromRss = false, ImagePath = "Images/lib_browse.png" });
             IsTopicsXmlLoaded = true;
         }
 

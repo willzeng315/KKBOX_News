@@ -43,9 +43,17 @@ namespace KKBOX_News
 
             if (topics.SelectedIndex != -1)
             {
-                String sDestination = String.Format("/ArticleListPage.xaml?Xml={0}&Title={1}", channelItem.Url, channelItem.Title);
-                this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
+                if (channelItem.IsReadFromRss)
+                {
+                    String sDestination = String.Format("/ArticleListPage.xaml?Xml={0}&Title={1}", channelItem.Url, channelItem.Title);
+                    this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
+                }
+                else
+                {
+                    this.NavigationService.Navigate(new Uri(String.Format("/ArticleListPage.xaml?BrowseRecord&Title={0}", channelItem.Title), UriKind.Relative));
+                }
             }
+
 
             topics.SelectedIndex = -1;
         }
@@ -86,11 +94,11 @@ namespace KKBOX_News
         {
             MenuItem menuItem = (MenuItem)sender;
             MySelectedArticleDirectory mySelectedArticleDirectory = (MySelectedArticleDirectory)menuItem.DataContext;
-            deleteDirectoryFromDB(mySelectedArticleDirectory.DirectoryIndex, mySelectedArticleDirectory);
-            
+            DeleteDirectoryFromDB(mySelectedArticleDirectory.DirectoryIndex, mySelectedArticleDirectory);
+
         }
 
-        private void deleteDirectoryFromDB(Int32 DirIndex, MySelectedArticleDirectory mySelectedArticleDirectory)
+        private void DeleteDirectoryFromDB(Int32 DirIndex, MySelectedArticleDirectory mySelectedArticleDirectory)
         {
             DBManager.Instance.DeleteDirectoryFromTable(DirIndex);
 
@@ -108,9 +116,8 @@ namespace KKBOX_News
 
         private void OnSearchArticleButtonClick(Object sender, RoutedEventArgs e)
         {
-            String sDestination = String.Format("/ArticleListPage.xaml?SearchArticle={0}", true);
+            String sDestination = String.Format("/ArticleListPage.xaml?SearchArticleMode");
             this.NavigationService.Navigate(new Uri(sDestination, UriKind.Relative));
         }
-
     }
 }

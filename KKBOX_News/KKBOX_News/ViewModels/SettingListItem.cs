@@ -147,7 +147,7 @@ namespace KKBOX_News
             {
                 if (FunctionOfCheck == "OpenExternalWeb")
                 {
-                   UserSettings.Instance.IsOpenExternalWeb = value;
+                    UserSettings.Instance.IsOpenExternalWeb = value;
                 }
                 if (FunctionOfCheck == "OpenAutoUpdate")
                 {
@@ -164,7 +164,5 @@ namespace KKBOX_News
             Link = "";
             IsChecked = false;
         }
-
-
     }
 }

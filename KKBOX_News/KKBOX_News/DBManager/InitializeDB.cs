@@ -27,6 +27,8 @@ namespace KKBOX_News
 
         public Boolean IsTableExists(String tableName)
         {
+            IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication();
+            //isf.DeleteFile("KKBOX_NEWS.db");
             using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
             {
                 conn.Open();
@@ -46,8 +48,6 @@ namespace KKBOX_News
 
         public Boolean CreateAccountTable()
         {
-            IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication();
-            //isf.DeleteFile("KKBOX_NEWS.db");
             try
             {
                 using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
@@ -119,8 +119,12 @@ namespace KKBOX_News
 
                         cmd.CommandText = String.Format("CREATE TABLE directoryArticlesUser{0} ( [id] INTEGER PRIMARY KEY, [directoryId] INTEGER, [articleTitle] TEXT, [articleContent] TEXT, [articleIconPath] TEXT, [articleLink] TEXT)", userId);
                         cmd.ExecuteNonQuery();
-                        conn.Close();
+
+                        cmd.CommandText = String.Format("CREATE TABLE articleBrowseRecordUser{0} ( [id] INTEGER PRIMARY KEY, [articleTitle] TEXT, [articleContent] TEXT, [articleIconPath] TEXT, [articleLink] TEXT)", userId);
+                        cmd.ExecuteNonQuery();
+
                     }
+                    conn.Close();
                 }
                 return true;
             }

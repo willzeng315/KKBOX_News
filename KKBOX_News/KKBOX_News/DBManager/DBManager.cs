@@ -26,6 +26,117 @@ namespace KKBOX_News
             }
         }
 
+        private Int32 recordTableFirstID
+        {
+            get;
+            set;
+        }
+
+        public ObservableCollection<ArticleItem> LoadRecordsFromTable()
+        {
+            ObservableCollection<ArticleItem> recordArticles = new ObservableCollection<ArticleItem>();
+
+            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            {
+                conn.Open();
+                using (SqliteCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = String.Format("SELECT * FROM articleBrowseRecordUser{0}", LoginPage.UserId);
+                    using (SqliteDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            ArticleItem recordArticleItem = new ArticleItem();
+                            recordArticleItem.Title = reader.GetString(1);
+                            recordArticleItem.Content = reader.GetString(2);
+                            recordArticleItem.IconImagePath = reader.GetString(3);
+                            recordArticleItem.Link = reader.GetString(4);
+
+                            recordArticles.Insert(0, recordArticleItem);
+                        }
+                    }
+                }
+            }
+            return recordArticles;
+        }
+
+        private Boolean IsArticleInRecords(ArticleItem recordArticle)
+        {
+            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            {
+                conn.Open();
+                using (SqliteCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = String.Format("SELECT * FROM articleBrowseRecordUser{0}", LoginPage.UserId);
+                    using (SqliteDataReader reader = cmd.ExecuteReader())
+                    {
+                        if(reader.Read())
+                        {
+                            recordTableFirstID = reader.GetInt32(0);
+                            if (recordArticle.Title == reader.GetString(1))
+                            {
+                                return true;
+                            }
+                        }
+                        while (reader.Read())
+                        {
+                            if (recordArticle.Title == reader.GetString(1))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        public Boolean InsertRecordToTable(ArticleItem recordArticle)
+        {
+            if (IsArticleInRecords(recordArticle))
+            {
+                return false;
+            }
+
+            const Int32 MaxDisplayRecords = 5;
+            Int32 currentRecords = 0;
+            ObservableCollection<ArticleItem> totalArticleRecords = new ObservableCollection<ArticleItem>();
+
+            totalArticleRecords = LoadRecordsFromTable();
+
+            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            {
+                conn.Open();
+                using (SqliteCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = String.Format("SELECT COUNT(*) FROM articleBrowseRecordUser{0}", LoginPage.UserId);
+                    using (SqliteDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            currentRecords = reader.GetInt32(0);
+                        }
+                    }
+                    if (currentRecords == MaxDisplayRecords)
+                    {
+                        cmd.CommandText = String.Format("DELETE FROM articleBrowseRecordUser{0} WHERE id={1}", LoginPage.UserId, recordTableFirstID);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    cmd.Transaction = conn.BeginTransaction();
+                    cmd.CommandText = String.Format("INSERT INTO articleBrowseRecordUser{0} (articleTitle, articleContent, articleIconPath, articleLink) VALUES(@articleTitle, @articleContent, @articleIconPath, @articleLink);SELECT last_insert_rowid();", LoginPage.UserId);
+                    cmd.Parameters.Add("@articleTitle", recordArticle.Title);
+                    cmd.Parameters.Add("@articleContent", recordArticle.Content);
+                    cmd.Parameters.Add("@articleIconPath", recordArticle.IconImagePath);
+                    cmd.Parameters.Add("@articleLink", recordArticle.Link);
+
+                    cmd.ExecuteNonQuery();
+                    cmd.Transaction.Commit();
+                    cmd.Transaction = null;
+                }
+            }
+            return true;
+        }
 
         public void UpdateDirectoryToTable(Int32 directoryIndex, String coverTitle, String imageName)
         {
@@ -54,11 +165,6 @@ namespace KKBOX_News
                     }
                 }
             }
-        }
-
-        public void UpdateValueToArticleTable(Int32 directoryIndex)
-        {
-
         }
 
         public void InsertDirectoryToTable(String directoryName, String imagePath)
@@ -166,8 +272,6 @@ namespace KKBOX_News
 
                     using (SqliteDataReader reader = cmd.ExecuteReader())
                     {
-                        
-
                         while (reader.Read())
                         {
                             ArticleItem directoryArticleItem = new ArticleItem();
@@ -219,14 +323,14 @@ namespace KKBOX_News
             return allArticles;
         }
 
-        public Boolean IsDirectoryHaveArticles(Int32 directoryIndex)
+        public Boolean IsTableHaveArticles(String tableName, Int32 directoryIndex)
         {
             using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
             {
                 conn.Open();
                 using (SqliteCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = String.Format("SELECT * FROM directoryArticlesUser{0} WHERE directoryId={1}", LoginPage.UserId, directoryIndex);
+                    cmd.CommandText = String.Format("SELECT * FROM {0}{1} WHERE directoryId={2}",tableName, LoginPage.UserId, directoryIndex);
 
                     using (SqliteDataReader reader = cmd.ExecuteReader())
                     {
@@ -234,7 +338,6 @@ namespace KKBOX_News
                     }
                 }
             }
-
         }
 
         public void InsertExternalArticleToTable(ArticleItem externalArticle)
@@ -383,7 +486,7 @@ namespace KKBOX_News
                     cmd.Parameters.Add("@openExternalWeb", UserSettings.Instance.IsOpenExternalWeb ? 1 : 0);
                     cmd.Parameters.Add("@openAutoUpdate", UserSettings.Instance.IsOpenAutoUpdate ? 1 : 0);
                     cmd.Parameters.Add("@updateInterval", UserSettings.Instance.UpdateInterval);
-                    cmd.ExecuteNonQuery();
+                    int n = cmd.ExecuteNonQuery();
                     cmd.Transaction.Commit();
                     cmd.Transaction = null;
 

@@ -19,9 +19,9 @@ using System.Windows.Threading;
 
 namespace KKBOX_News
 {
-    public partial class ArticleListPage : PhoneApplicationPage,INotifyPropertyChanged
+    public partial class ArticleListPage : PhoneApplicationPage, INotifyPropertyChanged
     {
-        public enum PageMode { NULL,READ_FROM_DIR, READ_FROM_XML, SEARCH_ARTICLES, EXTERNAL_ARTICLES};
+        public enum PageMode { NULL, READ_FROM_DIR, READ_FROM_XML, SEARCH_ARTICLES, EXTERNAL_ARTICLES, BROWSE_RECORDS };
         public enum ConfirmButtonMode { NULL, ADD_ARTICLE, DELETE_ARTICLE };
         private PageMode currentPageMode;
         private ConfirmButtonMode currentConfirmButtonMode;
@@ -102,9 +102,6 @@ namespace KKBOX_News
                 }
             }
 
-            Debug.WriteLine(ArticleModel.KKBOXArticles.Count);
-            //if (ArticleModel.KKBOXArticles.Count == 0)
-            //{
             if (IsRssArticlePage())
             {
                 if (UserSettings.Instance.IsOpenAutoUpdate)
@@ -114,70 +111,25 @@ namespace KKBOX_News
             }
             else if (IsExternalArticlePage())
             {
-                //ExternalArticleManipulation = Visibility.Visible;
-                //menuMultipleDelete.IsEnabled = true;
-                //menuMultipleAdd.IsEnabled = false;
-
-                //directoryIndex = 1;
-
-                //currentPageMode = PageMode.EXTERNAL_ARTICLES;
-
-                //if (parameters.ContainsKey("DirectoryTitle"))
-                //{
-                //    PageTitle = parameters["DirectoryTitle"];
-                //}
-
                 LoadDirectoryArticlesFromTable();
 
                 SetArticleImageCollapsed();
             }
             else if (IsDirectoryArticlePage())
             {
-                Debug.WriteLine("Directory");
-
-                //directoryIndex = Int32.Parse(parameters["DirectoryIndex"]);
-
-                //DetermineAppBarVisibility();
-
-                //currentPageMode = PageMode.READ_FROM_DIR;
-
-                //menuMultipleDelete.IsEnabled = true;
-
-                //if (parameters.ContainsKey("DirectoryTitle"))
-                //{
-                //    PageTitle = parameters["DirectoryTitle"];
-                //}
-
                 LoadDirectoryArticlesFromTable();
-
             }
-            else if (parameters.ContainsKey("SearchArticle"))
+            else if (parameters.ContainsKey("SearchArticleMode"))
             {
+                currentPageMode = PageMode.SEARCH_ARTICLES;
                 PageTitle = "搜尋文章";
                 SearchManipulation = Visibility.Visible;
                 appbarMultipleManipulation.IsVisible = false;
             }
-
-            //else if (IsExternalArticlePage())
-            //{
-            //    ExternalArticleManipulation = Visibility.Visible;
-            //    menuMultipleDelete.IsEnabled = true;
-            //    menuMultipleAdd.IsEnabled = false;
-
-            //    directoryIndex = 1;
-
-            //    currentPageMode = PageMode.EXTERNAL_ARTICLES;
-
-            //    if (parameters.ContainsKey("DirectoryTitle"))
-            //    {
-            //        PageTitle = parameters["DirectoryTitle"];
-            //    }
-
-            //    LoadDirectoryArticlesFromTable();
-
-            //    SetArticleImageCollapsed();
-            //}
-
+            else if (IsBrowseRecordPage())
+            {
+                LoadBrowseArticleRecordsFromTable();
+            }
         }
 
         private Boolean CheckLastSelectedItemIndex()
@@ -191,6 +143,26 @@ namespace KKBOX_News
             {
                 ArticleModel.KKBOXArticles[i].ImageVisiblity = Visibility.Collapsed;
             }
+        }
+
+        private Boolean IsBrowseRecordPage()
+        {
+            Boolean browseRecordPage = false;
+
+            IDictionary<String, String> parameters = this.NavigationContext.QueryString;
+
+            if (parameters.ContainsKey("BrowseRecord"))
+            {
+                browseRecordPage = true;
+
+                if (parameters.ContainsKey("Title"))
+                {
+                    PageTitle = parameters["Title"];
+                }
+
+            }
+
+            return browseRecordPage;
         }
 
         private Boolean IsExternalArticlePage()
@@ -209,13 +181,14 @@ namespace KKBOX_News
                 menuMultipleDelete.IsEnabled = true;
                 menuMultipleAdd.IsEnabled = false;
 
+                DetermineAppBarVisibility("directoryArticlesUser");
+
                 externalArticlePage = true;
 
                 if (parameters.ContainsKey("DirectoryTitle"))
                 {
                     PageTitle = parameters["DirectoryTitle"];
                 }
-
             }
             return externalArticlePage;
         }
@@ -229,7 +202,7 @@ namespace KKBOX_News
             {
                 directoryIndex = Int32.Parse(parameters["DirectoryIndex"]);
 
-                DetermineAppBarVisibility();
+                DetermineAppBarVisibility("directoryArticlesUser");
 
                 currentPageMode = PageMode.READ_FROM_DIR;
 
@@ -276,17 +249,9 @@ namespace KKBOX_News
             ExternalArticleManipulation = Visibility.Collapsed;
         }
 
-        private void DetermineAppBarVisibility()
+        private void DetermineAppBarVisibility(String tableName)
         {
-            //if (DBManager.Instance.IsDirectoryHaveArticles(directoryIndex))
-            //{
-            //    appbarMultipleManipulation.IsVisible = true;
-            //}
-            //else
-            //{
-            //    appbarMultipleManipulation.IsVisible = false;
-            //}
-            appbarMultipleManipulation.IsVisible = (DBManager.Instance.IsDirectoryHaveArticles(directoryIndex)) ? true : false;
+            appbarMultipleManipulation.IsVisible = (DBManager.Instance.IsTableHaveArticles(tableName,directoryIndex)) ? true : false;
         }
 
         private void StartUpdateArticle()
@@ -297,6 +262,11 @@ namespace KKBOX_News
         private void StopUpdateArticle()
         {
             Timer.Stop();
+        }
+
+        private void LoadBrowseArticleRecordsFromTable()
+        {
+            ArticleModel.KKBOXArticles = DBManager.Instance.LoadRecordsFromTable();
         }
 
         private void LoadDirectoryArticlesFromTable()
@@ -348,8 +318,8 @@ namespace KKBOX_News
                 }
                 else
                 {
-                   sItem.IsExtended = true;
-                   lastSelectedItemIndex = listBox.SelectedIndex;
+                    sItem.IsExtended = true;
+                    lastSelectedItemIndex = listBox.SelectedIndex;
                 }
             }
             listBox.SelectedItem = null;
@@ -357,7 +327,7 @@ namespace KKBOX_News
 
         private void OnMenuItemAddMySelectClick(Object sender, RoutedEventArgs e)
         {
-           
+
             MenuItem menuItem = (MenuItem)sender;
             ArticleItem articleItem = (ArticleItem)menuItem.DataContext;
 
@@ -432,7 +402,7 @@ namespace KKBOX_News
             ResetAllSelect();
 
         }
-        
+
         private void OnConcelButtonClick(Object sender, RoutedEventArgs e)
         {
             MultipleManipulation = Visibility.Collapsed;
@@ -629,13 +599,18 @@ namespace KKBOX_News
 
         private void OnAddExternalArticleButtonClick(Object sender, RoutedEventArgs e)
         {
-            this.NavigationService.Navigate(new Uri("/ExternalArticlesInfoPage.xaml",UriKind.Relative));
+            this.NavigationService.Navigate(new Uri("/ExternalArticlesInfoPage.xaml", UriKind.Relative));
         }
 
         private void OnPageLinkButtonClick(Object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
             ArticleItem articleItem = (ArticleItem)button.DataContext;
+            Debug.WriteLine(String.Format("directoryIndex = {0}",directoryIndex));
+            if (directoryIndex == 0)
+            {
+                DBManager.Instance.InsertRecordToTable(articleItem);
+            }
 
             if (UserSettings.Instance.IsOpenExternalWeb)// External WebBrowser is in Settings[1]
             {

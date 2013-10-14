@@ -50,8 +50,18 @@ namespace KKBOX_News
                 SetProperty(ref url, value, "Url");
             }
         }
+
+        public Boolean IsReadFromRss
+        {
+            get;
+            set;
+        }
+
         #endregion
-        public ChannelListItem() { }
+        public ChannelListItem() 
+        {
+            IsReadFromRss = true;
+        }
     }
     
 }
