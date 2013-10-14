@@ -149,7 +149,7 @@ namespace KKBOX_News
             }
         }
 
-        public ObservableCollection<ArticleItem> LoadDirectoryArticles(Int32 directoryIndex)
+        public ObservableCollection<ArticleItem> LoadDirectoryArticlesFromTable(Int32 directoryIndex)
         {
             ObservableCollection<ArticleItem> directoryArticles = new ObservableCollection<ArticleItem>();
 
@@ -286,6 +286,30 @@ namespace KKBOX_News
             return isCorrect;
         }
 
+        public Boolean VerifyAccountExists(String account)
+        {
+            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            {
+                conn.Open();
+
+                using (SqliteCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT account FROM userAccount";
+                    using (SqliteDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            if (account == reader.GetString(0))
+                            {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                }
+            }
+        }
+
         public void LoadUserSetting()
         {
             using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
@@ -308,6 +332,44 @@ namespace KKBOX_News
             }
         }
 
+        public ObservableCollection<MySelectedArticleDirectory> LoadDirectoriesFromTable()
+        {
+            ObservableCollection<MySelectedArticleDirectory> directories = new ObservableCollection<MySelectedArticleDirectory>();
+
+            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            {
+                conn.Open();
+                using (SqliteCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = String.Format("SELECT * FROM directoryTableUser{0}", LoginPage.UserId);
+                    using (SqliteDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            directories.Add(new MySelectedArticleDirectory()
+                            {
+                                DirectoryIndex = reader.GetInt32(0),
+                                Title = reader.GetString(1),
+                                CoverImage = LocalImageManipulation.Instance.ReadJpgFromStorage(reader.GetString(2)),
+                                NonRemoved = Visibility.Collapsed,
+                            });
+                        }
+                        while (reader.Read())
+                        {
+                            directories.Add(new MySelectedArticleDirectory()
+                            {
+                                DirectoryIndex = reader.GetInt32(0),
+                                Title = reader.GetString(1),
+                                CoverImage = LocalImageManipulation.Instance.ReadJpgFromStorage(reader.GetString(2)),
+                            });
+                        }
+                    }
+                }
+                conn.Close();
+            }
+            return directories;
+        }
+
         public void UpdateUserSettings()
         {
             using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
@@ -325,6 +387,29 @@ namespace KKBOX_News
                     cmd.Transaction.Commit();
                     cmd.Transaction = null;
 
+                }
+            }
+        }
+
+        public void CreateNewAcoount(String account, String password)
+        {
+            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            {
+                conn.Open();
+
+                using (SqliteCommand cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = conn.BeginTransaction();
+                    cmd.CommandText = "INSERT INTO userAccount (account, password, openExternalWeb, openAutoUpdate, updateInterval) VALUES(@account, @password, @openExternalWeb, @openAutoUpdate, @updateInterval);SELECT last_insert_rowid();";
+                    cmd.Parameters.Add("@account", account);
+                    cmd.Parameters.Add("@password", password);
+                    cmd.Parameters.Add("@openExternalWeb", 0);
+                    cmd.Parameters.Add("@openAutoUpdate", 0);
+                    cmd.Parameters.Add("@updateInterval", 5);
+
+                    cmd.ExecuteNonQuery();
+                    cmd.Transaction.Commit();
+                    cmd.Transaction = null;
                 }
             }
         }

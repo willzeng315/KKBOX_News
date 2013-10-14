@@ -104,37 +104,7 @@ namespace KKBOX_News
             ArticleDirectories = new ObservableCollection<MySelectedArticleDirectory>();
             try
             {
-                using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
-                {
-                    conn.Open();
-                    using (SqliteCommand cmd = conn.CreateCommand())
-                    {
-                        cmd.CommandText = String.Format("SELECT * FROM directoryTableUser{0}", LoginPage.UserId);
-                        using (SqliteDataReader reader = cmd.ExecuteReader())
-                        {
-                            if (reader.Read())
-                            {
-                                ArticleDirectories.Add(new MySelectedArticleDirectory()
-                                {
-                                    DirectoryIndex = reader.GetInt32(0),
-                                    Title = reader.GetString(1),
-                                    CoverImage = LocalImageManipulation.Instance.ReadJpgFromStorage(reader.GetString(2)),
-                                    NonRemoved = Visibility.Collapsed,
-                                });
-                            }
-                            while (reader.Read())
-                            {
-                                ArticleDirectories.Add(new MySelectedArticleDirectory()
-                                {
-                                    DirectoryIndex = reader.GetInt32(0),
-                                    Title = reader.GetString(1),
-                                    CoverImage = LocalImageManipulation.Instance.ReadJpgFromStorage(reader.GetString(2)),
-                                });
-                            }
-                        }
-                    }
-                    conn.Close();
-                }
+                ArticleDirectories = DBManager.Instance.LoadDirectoriesFromTable();
             }
             catch (Exception e)
             {

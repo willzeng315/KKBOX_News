@@ -250,7 +250,7 @@ namespace KKBOX_News
 
         private void LoadDirectoryArticlesFromTable()
         {
-            ArticleModel.KKBOXArticles = DBManager.Instance.LoadDirectoryArticles(directoryIndex);
+            ArticleModel.KKBOXArticles = DBManager.Instance.LoadDirectoryArticlesFromTable(directoryIndex);
         }
 
         private void LoadArticleIntoPasser()
