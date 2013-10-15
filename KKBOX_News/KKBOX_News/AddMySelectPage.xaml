@@ -53,7 +53,7 @@
                                 <ColumnDefinition /> 
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
-                            <Button Content="選擇封面" Height="80"  Width="150"  FontSize="20" Click="OnChoosePhotoClick"/>
+                            <Button Content="{Binding Path=LocalizedResources.ChoosePhotoButton,Source={StaticResource LocalizedStrings}}" Height="80"  Width="150"  FontSize="20" Click="OnChoosePhotoClick"/>
                             <Image Grid.Column="1" Source="{Binding CoverImage}" Height="150" Width="150" />
                         </Grid>
                     </DataTemplate>
@@ -71,7 +71,7 @@
 
         <!--TitlePanel 包含應用程式的名稱和頁面標題-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock Text="加到我的精選" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+            <TextBlock Text="{Binding Path=LocalizedResources.JoinMySelectTitle,Source={StaticResource LocalizedStrings}}" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
 
         <!--ContentPanel - 其他內容置於此-->
@@ -92,8 +92,8 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Content="確認" FontSize="28" Click="OnConfirmButtonClick"/>
-                <Button Grid.Column="1" Content="取消" FontSize="28" Click="OnConcelButtonClick"/>
+                <Button Grid.Column="0" Content="{Binding Path=LocalizedResources.ConfrimButton,Source={StaticResource LocalizedStrings}}" FontSize="28" Click="OnConfirmButtonClick"/>
+                <Button Grid.Column="1" Content="{Binding Path=LocalizedResources.ConcelButton,Source={StaticResource LocalizedStrings}}" FontSize="28" Click="OnConcelButtonClick"/>
             </Grid>
         </Grid>
     </Grid>

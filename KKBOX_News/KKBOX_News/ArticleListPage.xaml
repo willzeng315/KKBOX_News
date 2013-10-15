@@ -22,7 +22,7 @@
         </Grid.RowDefinitions>
         <!--TitlePanel 包含應用程式的名稱和頁面標題-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock Text="KKBOX NEWS" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock Text="{Binding Path=LocalizedResources.ApplicationTitle,Source={StaticResource LocalizedStrings}}" Style="{StaticResource PhoneTextNormalStyle}"/>
             <TextBlock x:Name="TopicPageTitle" Text="{Binding PageTitle}" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
         <TextBlock Grid.Row="1" 
@@ -39,7 +39,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid x:Name="externalArticleTexBoxGrid" Grid.Row="0" Visibility="{Binding ExternalArticleManipulation}" Background="Gray">
-                <Button Grid.Row="0" Content="新增外部文章" Click="OnAddExternalArticleButtonClick"/>
+                <Button Grid.Row="0" Content="{Binding Path=LocalizedResources.NewExternalArticleButton,Source={StaticResource LocalizedStrings}}" Click="OnAddExternalArticleButtonClick"/>
             </Grid>
             <Grid x:Name="searchTexBoxGrid" Grid.Row="0" Visibility="{Binding SearchManipulation}" Background="Gray">
                 <Grid.ColumnDefinitions>
@@ -47,14 +47,14 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <TextBox Grid.Column="0" x:Name="searchKeywordTextBox" />
-                <Button Grid.Column="1" Content="搜尋" Click="OnSearchArticlesButtonClick"/>
+                <Button Grid.Column="1" Content="{Binding Path=LocalizedResources.SearchButton,Source={StaticResource LocalizedStrings}}" Click="OnSearchArticlesButtonClick"/>
             </Grid>
             <Grid x:Name="selectAllGrid" Grid.Row="0" Visibility="{Binding MultipleManipulation}" Background="Gray">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="全選" FontSize="28" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="0" Text="{Binding Path=LocalizedResources.AllSelect,Source={StaticResource LocalizedStrings}}" FontSize="28" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 <CheckBox x:Name="checkBoxSelectAll" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Click="OnSelectAllCheckBoxClick" IsChecked="false"/>
             </Grid>
             <ListBox Grid.Row="1" ItemsSource="{Binding KKBOXArticles}" SelectionChanged="OnListBoxSelectionChanged" HorizontalContentAlignment="Stretch" Margin="0,0,0,30"> 
@@ -80,12 +80,12 @@
                                 <StackPanel  Grid.Column="1" Orientation="Vertical">
                                     <TextBlock  Text="{Binding Title}" VerticalAlignment="Top" TextTrimming="WordEllipsis" TextWrapping="{Binding IsExtended,Converter = {StaticResource BooleanToWarp}}" Margin="10,0" Style="{StaticResource PhoneTextExtraLargeStyle}" FontSize="{StaticResource PhoneFontSizeLarge}" />
                                     <TextBlock  Text="{Binding Content}" TextWrapping="Wrap" Margin="10,0" Style="{StaticResource PhoneTextSmallStyle}" Visibility="{Binding IsExtended,Converter = {StaticResource BooleanToVisibility}}" />
-                                    <Button BorderThickness="0" Content="更多文章及歌曲" Margin="-20,-20" Foreground="Blue" FontSize="18"  Width="200" HorizontalAlignment="Left" Visibility="{Binding IsExtended,Converter = {StaticResource BooleanToVisibility}}" Click="OnPageLinkButtonClick"/>
+                                    <Button BorderThickness="0" Content="{Binding Path=LocalizedResources.more,Source={StaticResource LocalizedStrings}}" Margin="-20,-20" Foreground="Blue" FontSize="18"  Width="200" HorizontalAlignment="Left" Visibility="{Binding IsExtended,Converter = {StaticResource BooleanToVisibility}}" Click="OnPageLinkButtonClick"/>
                                 </StackPanel>
                                 <toolkit:ContextMenuService.ContextMenu>
                                     <toolkit:ContextMenu>
-                                        <toolkit:MenuItem Header="加到我的精選" Click="OnMenuItemAddMySelectClick" Visibility="{Binding AddMenuVisiblity}"/>
-                                        <toolkit:MenuItem Header="刪除" Click="OnMenuItemDeleteClick" Visibility="{Binding DeleteMenuVisiblity}" />
+                                        <toolkit:MenuItem Header="{Binding Path=LocalizedResources.JoinMySelectMenu,Source={StaticResource LocalizedStrings}}" Click="OnMenuItemAddMySelectClick" Visibility="{Binding AddMenuVisiblity}"/>
+                                        <toolkit:MenuItem Header="{Binding Path=LocalizedResources.DeleteMenu,Source={StaticResource LocalizedStrings}}" Click="OnMenuItemDeleteClick" Visibility="{Binding DeleteMenuVisiblity}" />
                                     </toolkit:ContextMenu>
                                 </toolkit:ContextMenuService.ContextMenu>
                             </Grid>
@@ -99,8 +99,8 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Content="確認" FontSize="28" Click="OnConfirmButtonClick"/>
-                <Button Grid.Column="1" Content="取消" FontSize="28" Click="OnConcelButtonClick"/>
+                <Button Grid.Column="0" Content="{Binding Path=LocalizedResources.ConfrimButton,Source={StaticResource LocalizedStrings}}" FontSize="28" Click="OnConfirmButtonClick"/>
+                <Button Grid.Column="1" Content="{Binding Path=LocalizedResources.ConcelButton,Source={StaticResource LocalizedStrings}}" FontSize="28" Click="OnConcelButtonClick"/>
             </Grid>
         </Grid>
     </Grid>

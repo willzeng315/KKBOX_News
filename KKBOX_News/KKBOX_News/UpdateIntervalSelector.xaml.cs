@@ -9,6 +9,7 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using KKBOX_News.Resources;
 
 namespace KKBOX_News
 {
@@ -35,11 +36,11 @@ namespace KKBOX_News
             set;
         }
 
-        private void OnComfirmClick(Object sender, RoutedEventArgs e)
+        private void OnConfirmClick(Object sender, RoutedEventArgs e)
         {
             if (minuteSelector.SelectedItem != null)
             {
-                App.ViewModel.Settings[5].UpdateInterval = String.Format("{0}分", minuteSelector.SelectedItem.ToString());//value.ToString() + "分";
+                App.ViewModel.Settings[5].UpdateInterval = String.Format("{0}{1}", minuteSelector.SelectedItem.ToString(), AppResources.Minute);//value.ToString() + "分";
                 UserSettings.Instance.UpdateInterval = Int32.Parse(minuteSelector.SelectedItem.ToString());
             }
             NavigationService.GoBack();

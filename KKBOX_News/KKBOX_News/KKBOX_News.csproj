@@ -16,6 +16,7 @@
     <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
     <SilverlightApplication>true</SilverlightApplication>
     <SupportedCultures>
+      en-US;zh-CN;
     </SupportedCultures>
     <XapOutputs>true</XapOutputs>
     <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
@@ -100,7 +101,18 @@
       <DependentUpon>ArticleListPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="DBManager\DBManager.cs" />
+    <Compile Include="LocalizedStrings.cs" />
     <Compile Include="PhotoChooser.cs" />
+    <Compile Include="Resources\AppResources.en-US.Designer.cs">
+      <DependentUpon>AppResources.en-US.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Resources\AppResources.zh-CN.Designer.cs">
+      <DependentUpon>AppResources.zh-CN.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="RssXmlParser.cs" />
     <Compile Include="ViewModels\ArticleNavigationPasser.cs" />
     <Compile Include="CoverInformationEditPage.xaml.cs">
@@ -228,6 +240,14 @@
     <EmbeddedResource Include="Resources\AppResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\AppResources.en-US.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AppResources.en-US.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\AppResources.zh-CN.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AppResources.zh-CN.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

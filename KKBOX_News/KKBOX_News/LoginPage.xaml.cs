@@ -11,6 +11,7 @@ using System.Diagnostics;
 using Community.CsharpSqlite.SQLiteClient;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using KKBOX_News.Resources;
 
 namespace KKBOX_News
 {
@@ -142,7 +143,7 @@ namespace KKBOX_News
             }
             else
             {
-                MessageBox.Show("帳號或密碼錯誤");
+                MessageBox.Show(AppResources.AccountPasswordError);
             }
         }
 

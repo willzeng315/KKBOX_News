@@ -16,6 +16,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Community.CsharpSqlite.SQLiteClient;
 using System.Windows.Threading;
+using KKBOX_News.Resources;
 
 namespace KKBOX_News
 {
@@ -51,6 +52,8 @@ namespace KKBOX_News
             appbarMultipleManipulation = this.ApplicationBar as ApplicationBar;
             menuMultipleAdd = this.ApplicationBar.MenuItems[0] as ApplicationBarMenuItem;
             menuMultipleDelete = this.ApplicationBar.MenuItems[1] as ApplicationBarMenuItem;
+            menuMultipleAdd.Text = AppResources.JoinMySelectAppbarMenu;
+            menuMultipleDelete.Text = AppResources.DeleteAppbarMenu;
             menuMultipleDelete.IsEnabled = false;
         }
 
@@ -74,7 +77,7 @@ namespace KKBOX_News
         {
             if (currentPageMode == PageMode.READ_FROM_XML)
             {
-                LoadingText.Text = "更新文章中...";
+                LoadingText.Text = AppResources.UpdateText;
                 WebClientXmlDownload(xmlString);
             }
         }
@@ -122,7 +125,7 @@ namespace KKBOX_News
             else if (parameters.ContainsKey("SearchArticleMode"))
             {
                 currentPageMode = PageMode.SEARCH_ARTICLES;
-                PageTitle = "搜尋文章";
+                PageTitle = AppResources.SearchArticleTitle;
                 SearchManipulation = Visibility.Visible;
                 appbarMultipleManipulation.IsVisible = false;
             }
@@ -233,7 +236,7 @@ namespace KKBOX_News
 
                 currentPageMode = PageMode.READ_FROM_XML;
 
-                LoadingText.Text = "載入中...";
+                LoadingText.Text = AppResources.LoadingText;
 
                 WebClientXmlDownload(xmlString);
 

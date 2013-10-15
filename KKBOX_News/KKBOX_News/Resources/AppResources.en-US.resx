@@ -126,177 +126,177 @@
     <comment>Controls the Language and ensures that the font for all elements in the RootFrame aligns with the app's language. Set to the language code of this resource file's language.</comment>
   </data>
   <data name="ApplicationTitle" xml:space="preserve">
-    <value>KKBOX 音樂誌</value>
+    <value>KKBOX News</value>
   </data>
   <data name="SampleProperty" xml:space="preserve">
     <value>範例執行階段屬性值</value>
   </data>
   <data name="About" xml:space="preserve">
-    <value>關於</value>
+    <value>About</value>
   </data>
   <data name="AboutKKBOX" xml:space="preserve">
-    <value>關於KKBOX</value>
+    <value>About KKBOX</value>
   </data>
   <data name="AboutKKBOXNews" xml:space="preserve">
-    <value>關於KKBOX 音樂誌</value>
+    <value>About KKBOX News</value>
   </data>
   <data name="Account" xml:space="preserve">
-    <value>帳號</value>
+    <value>Account</value>
   </data>
   <data name="Action" xml:space="preserve">
-    <value>行為</value>
+    <value>Action</value>
   </data>
   <data name="AllSelect" xml:space="preserve">
-    <value>全選</value>
+    <value>AllSelect</value>
   </data>
   <data name="AutoUpateArticleList" xml:space="preserve">
-    <value>自動更新文章列表</value>
+    <value>Auto Upate Article List</value>
   </data>
   <data name="AutoUpdate" xml:space="preserve">
-    <value>自動更新</value>
+    <value>Auto Update</value>
   </data>
   <data name="AutoUpdateFrequency" xml:space="preserve">
-    <value>自動更新頻率</value>
+    <value>Auto Update Frequency</value>
   </data>
   <data name="AutoUpdateInterval" xml:space="preserve">
-    <value>文章更新間隔</value>
+    <value>Article Update Interval</value>
   </data>
   <data name="AutoUpdateOption" xml:space="preserve">
-    <value>開啟自動更新</value>
+    <value>Auto Update Option</value>
   </data>
   <data name="ChoosePhotoButton" xml:space="preserve">
-    <value>選擇封面</value>
+    <value>Cover</value>
   </data>
   <data name="ConcelButton" xml:space="preserve">
-    <value>取消</value>
+    <value>Concel</value>
   </data>
   <data name="ConfrimButton" xml:space="preserve">
-    <value>確認</value>
+    <value>Confrim</value>
   </data>
   <data name="CoverEditSubTitle" xml:space="preserve">
-    <value>編輯</value>
+    <value>Edit</value>
   </data>
   <data name="CoverEditTitle" xml:space="preserve">
-    <value>封面資訊</value>
+    <value>Cover Info</value>
   </data>
   <data name="CoverImage" xml:space="preserve">
-    <value>封面圖片</value>
+    <value>Cover</value>
   </data>
   <data name="DeleteAppbarMenu" xml:space="preserve">
-    <value>刪除多個文章</value>
+    <value>Delete Mutiple Article</value>
   </data>
   <data name="DeleteMenu" xml:space="preserve">
-    <value>刪除</value>
+    <value>Delete</value>
   </data>
   <data name="DirectoryName" xml:space="preserve">
-    <value>資料夾名稱</value>
+    <value>Directory Name</value>
   </data>
   <data name="ExternalWebContent" xml:space="preserve">
-    <value>應用程式內直接顯示網頁</value>
+    <value>Open WebBrowser within App</value>
   </data>
   <data name="ExternalWebOption" xml:space="preserve">
-    <value>以外部瀏覽器開啟文章</value>
+    <value>Open WebBrowser by IE</value>
   </data>
   <data name="JoinMySelectAppbarMenu" xml:space="preserve">
-    <value>加入我的精選</value>
+    <value>Join My Selected Article</value>
   </data>
   <data name="JoinMySelectMenu" xml:space="preserve">
-    <value>加入我的精選</value>
+    <value>Join My Selected Article</value>
   </data>
   <data name="JoinMySelectTitle" xml:space="preserve">
-    <value>加入我的精選</value>
+    <value>Join My Selected Article</value>
   </data>
   <data name="Login" xml:space="preserve">
-    <value>登入</value>
+    <value>Login</value>
   </data>
   <data name="LogoutAccout" xml:space="preserve">
-    <value>登出帳號</value>
+    <value>Logout Accout</value>
   </data>
   <data name="Minute" xml:space="preserve">
-    <value>分</value>
+    <value>M</value>
   </data>
   <data name="MySelectedTitle" xml:space="preserve">
-    <value>我的精選</value>
+    <value>My Selected Article</value>
   </data>
   <data name="Password" xml:space="preserve">
-    <value>密碼</value>
+    <value>Password</value>
   </data>
   <data name="RegistrationButton" xml:space="preserve">
-    <value>註冊</value>
+    <value>Registration</value>
   </data>
   <data name="RememberAccoutPW" xml:space="preserve">
-    <value>記住帳號密碼</value>
+    <value>RememberAccout&amp;Password</value>
   </data>
   <data name="SearchArticleButton" xml:space="preserve">
-    <value>搜尋儲存文章</value>
+    <value>Search Articles</value>
   </data>
   <data name="SearchArticleTitle" xml:space="preserve">
-    <value>搜尋文章</value>
+    <value>Search Articles</value>
   </data>
   <data name="SearchButton" xml:space="preserve">
-    <value>搜尋</value>
+    <value>Search</value>
   </data>
   <data name="SettingTitle" xml:space="preserve">
-    <value>設定</value>
+    <value>Setting</value>
   </data>
   <data name="System" xml:space="preserve">
-    <value>系統</value>
+    <value>System</value>
   </data>
   <data name="TopicsTitle" xml:space="preserve">
-    <value>訂閱中心</value>
+    <value>Topics</value>
   </data>
   <data name="UpdateIntervalContent" xml:space="preserve">
-    <value>設定每次自動更新的頻率</value>
+    <value>Set update frequency</value>
   </data>
   <data name="Version" xml:space="preserve">
-    <value>版本</value>
+    <value>Version</value>
   </data>
   <data name="DeleteDirectory" xml:space="preserve">
-    <value>刪除此目錄</value>
+    <value>Delete this direcory</value>
   </data>
   <data name="EditCoverInfo" xml:space="preserve">
-    <value>編輯封面資訊</value>
-  </data>
-  <data name="Every" xml:space="preserve">
-    <value>每隔</value>
-  </data>
-  <data name="ExternalArticleTitle" xml:space="preserve">
-    <value>外部文章</value>
-  </data>
-  <data name="ExternalContent" xml:space="preserve">
-    <value>內容</value>
-  </data>
-  <data name="ExternalLink" xml:space="preserve">
-    <value>連結</value>
-  </data>
-  <data name="ExternalTitle" xml:space="preserve">
-    <value>標題</value>
-  </data>
-  <data name="LoadingText" xml:space="preserve">
-    <value>載入中...</value>
-  </data>
-  <data name="more" xml:space="preserve">
-    <value>更多文章及歌曲</value>
+    <value>Edit cover infromation</value>
   </data>
   <data name="NewExternalArticleButton" xml:space="preserve">
-    <value>新增外部文章</value>
+    <value>New External Article</value>
+  </data>
+  <data name="Every" xml:space="preserve">
+    <value>Every</value>
+  </data>
+  <data name="ExternalArticleTitle" xml:space="preserve">
+    <value>External Article</value>
+  </data>
+  <data name="ExternalContent" xml:space="preserve">
+    <value>Content</value>
+  </data>
+  <data name="ExternalLink" xml:space="preserve">
+    <value>Link</value>
+  </data>
+  <data name="ExternalTitle" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="LoadingText" xml:space="preserve">
+    <value>Loading...</value>
+  </data>
+  <data name="more" xml:space="preserve">
+    <value>more</value>
   </data>
   <data name="UpdateText" xml:space="preserve">
-    <value>更新中...</value>
+    <value>Update...</value>
   </data>
   <data name="AccountExist" xml:space="preserve">
-    <value>帳戶已存在</value>
+    <value>Account Exists</value>
   </data>
   <data name="AccountPasswordError" xml:space="preserve">
-    <value>帳號或密碼錯誤</value>
+    <value>Account or password incorrect</value>
   </data>
   <data name="CheckPassword" xml:space="preserve">
-    <value>確認密碼</value>
+    <value>Confirm Password</value>
   </data>
   <data name="PWNotEqual" xml:space="preserve">
-    <value>密碼與確認密碼不符</value>
+    <value>Password and Comfrim Password is not equal</value>
   </data>
   <data name="RegistrationTitle" xml:space="preserve">
-    <value>註冊帳號</value>
+    <value>Account Registration</value>
   </data>
 </root>

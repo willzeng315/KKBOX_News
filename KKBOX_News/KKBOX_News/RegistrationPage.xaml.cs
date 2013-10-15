@@ -9,6 +9,7 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Community.CsharpSqlite.SQLiteClient;
 using System.Diagnostics;
+using KKBOX_News.Resources;
 
 namespace KKBOX_News
 {
@@ -30,11 +31,11 @@ namespace KKBOX_News
             String sPassword = passwordTextBox.Password;
             if (DBManager.Instance.VerifyAccountExists(sAccount))
             {
-                MessageBox.Show("帳號已存在, 請改用其他帳號");
+                MessageBox.Show(AppResources.AccountExist);
             }
             if (!verifyPasswordEqual())
             {
-                MessageBox.Show("密碼與確認密碼不相符");
+                MessageBox.Show(AppResources.PWNotEqual);
             }
             if (!DBManager.Instance.VerifyAccountExists(sAccount) && verifyPasswordEqual())
             {

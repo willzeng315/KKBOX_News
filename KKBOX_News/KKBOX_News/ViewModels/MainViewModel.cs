@@ -25,33 +25,33 @@ namespace KKBOX_News
             Settings = new ObservableCollection<SettingListItem>();
             Settings.Add(new SettingListItem()
             {
-                Title = "帳戶",
+                Title = AppResources.Account,
                 Type = SettingItemTemplate.TEMPLATE_SPACE
             });
             Settings.Add(new SettingListItem()
             {
-                Title = "登出帳戶",
+                Title = AppResources.LogoutAccout,
                 PageLink = "/LoginPage.xaml",
                 Content = LoginSettings.Instance.CurrentAccount,
                 Type = SettingItemTemplate.TEMPLATE_TEXT_CONTENT
             });
             Settings.Add(new SettingListItem() 
-            { 
-                Title = "行為",
+            {
+                Title = AppResources.Action,
                 Type = SettingItemTemplate.TEMPLATE_SPACE
             });
             Settings.Add(new SettingListItem()
             {
-                Title = "以外部瀏覽器開啟文章",
-                Content = "應用程式內直接顯示網頁",
+                Title = AppResources.ExternalWebOption,
+                Content = AppResources.ExternalWebContent,
                 Type = SettingItemTemplate.TEMPLATE_TXET_CHECK,
                 IsChecked = UserSettings.Instance.IsOpenExternalWeb,
                 FunctionOfCheck = "OpenExternalWeb"
             });
             Settings.Add(new SettingListItem()
             {
-                Title = "開啟自動更新",
-                Content = "開啟自動更新資訊",
+                Title = AppResources.AutoUpdateOption,
+                Content = AppResources.AutoUpdateOption,
                 Type = SettingItemTemplate.TEMPLATE_TXET_CHECK,
                 IsChecked = UserSettings.Instance.IsOpenAutoUpdate,
                 FunctionOfCheck = "OpenAutoUpdate"
@@ -60,32 +60,32 @@ namespace KKBOX_News
 
             Settings.Add(new SettingListItem()
             {
-                Title = "自動更新頻率",
-                Content = "設定每次自動更新的間隔時間",
+                Title = AppResources.AutoUpdateFrequency,
+                Content = AppResources.UpdateIntervalContent,
                 PageLink = "/UpdateIntervalSelector.xaml",
-                UpdateInterval = String.Format("{0}{1}", UserSettings.Instance.UpdateInterval, "分"),
+                UpdateInterval = String.Format("{0}{1}", UserSettings.Instance.UpdateInterval, AppResources.Minute),
                 Type = SettingItemTemplate.TEMPLATE_TEXT_CONTENT
             });
             Settings.Add(new SettingListItem()
             {
-                Title = "關於",
+                Title = AppResources.About,
                 Type = SettingItemTemplate.TEMPLATE_SPACE
             });
             Settings.Add(new SettingListItem()
             {
-                Title = "關於KKBOX",
+                Title = AppResources.AboutKKBOX,
                 Link = "http://www.kkbox.com/about/tc/",
                 Type = SettingItemTemplate.TEMPLATE_TEXT
             });
             Settings.Add(new SettingListItem()
             {
-                Title = "關於KKBOX 音樂誌",
+                Title = AppResources.AboutKKBOXNews,
                 Link = "http://www.kkbox.com/tw/tc/column/index.html",
                 Type = SettingItemTemplate.TEMPLATE_TEXT
             });
             Settings.Add(new SettingListItem()
             {
-                Title = "系統",
+                Title = AppResources.System,
                 Type = SettingItemTemplate.TEMPLATE_SPACE
             });
 
@@ -93,7 +93,7 @@ namespace KKBOX_News
 
             Settings.Add(new SettingListItem()
             {
-                Title = "版本",
+                Title = AppResources.Version,
                 Content = assembly.Version.ToString(),
                 Type = SettingItemTemplate.TEMPLATE_TEXT_CONTENT
             });

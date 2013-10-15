@@ -71,7 +71,7 @@
         </Style>
         <local:BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
         <local:BooleanToTextWarpConverter x:Key="BooleanToWarp"/>
-        
+        <local:LocalizedStrings x:Key="LocalizedStrings"/>
     </Application.Resources>
 
     <Application.ApplicationLifetimeObjects>

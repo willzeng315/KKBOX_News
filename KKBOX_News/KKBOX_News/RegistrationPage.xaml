@@ -21,8 +21,8 @@
 
         <!--TitlePanel 包含應用程式的名稱和頁面標題-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock Text="KKBOX NEWS" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" HorizontalAlignment="Center"/>
-            <TextBlock Text="註冊帳號" FontSize="28" HorizontalAlignment="Center"/>
+            <TextBlock Text="{Binding Path=LocalizedResources.ApplicationTitle,Source={StaticResource LocalizedStrings}}" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" HorizontalAlignment="Center"/>
+            <TextBlock Text="{Binding Path=LocalizedResources.RegistrationTitle,Source={StaticResource LocalizedStrings}}" FontSize="28" HorizontalAlignment="Center"/>
         </StackPanel>
 
         <!--ContentPanel - 其他內容置於此-->
@@ -33,20 +33,24 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10,120,0,0">
-                <TextBlock Text="帳號" VerticalAlignment="Center" FontSize="25"/>
+            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10,120,10,0">
+                <TextBlock Text="{Binding Path=LocalizedResources.Account,Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" FontSize="25"/>
                 <TextBox x:Name="accountTextBox" Width="300" VerticalAlignment="Center" />
             </StackPanel>
-            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10,20,0,0">
-                <TextBlock Text="密碼" VerticalAlignment="Center" FontSize="25"/>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10,20,10,0">
+                <TextBlock Text="{Binding Path=LocalizedResources.Password,Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" FontSize="25"/>
                 <PasswordBox x:Name="passwordTextBox" Width="300" VerticalAlignment="Center" />
             </StackPanel>
-            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="-40,20,0,0">
-                <TextBlock Text="確認密碼" VerticalAlignment="Center" FontSize="25"/>
-                <PasswordBox x:Name="passwordCheckTextBox" Width="300" VerticalAlignment="Center" />
-            </StackPanel>
+            <Grid Grid.Row="2" HorizontalAlignment="Right" Margin="-40,20,10,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="{Binding Path=LocalizedResources.CheckPassword,Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="25"/>
+                <PasswordBox Grid.Column="1" x:Name="passwordCheckTextBox" Width="300" VerticalAlignment="Center" />
+            </Grid>
             <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button  Content="註冊"  FontSize="25" Width="200" Height="100" HorizontalAlignment="Center" Click="OnRegistrationButtonClick"/>
+                <Button  Content="{Binding Path=LocalizedResources.RegistrationButton,Source={StaticResource LocalizedStrings}}"  FontSize="25" Width="200" Height="100" HorizontalAlignment="Center" Click="OnRegistrationButtonClick"/>
             </StackPanel>
         </Grid>
     </Grid>

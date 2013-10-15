@@ -20,10 +20,10 @@
 
 
          <!--Panorama 控制項-->
-        <phone:Panorama Title="KKBOX NEWS" Background="#00ADDA">
+        <phone:Panorama Title="{Binding Path=LocalizedResources.ApplicationTitle,Source={StaticResource LocalizedStrings}}" Background="#00ADDA">
 
             <!--Panorama 項目 1-->
-            <phone:PanoramaItem Header="訂閱中心">
+            <phone:PanoramaItem Header="{Binding Path=LocalizedResources.TopicsTitle,Source={StaticResource LocalizedStrings}}">
                 <Grid>
                     <TextBlock Grid.Row="1" 
                    x:Name="LoadingText" 
@@ -45,13 +45,13 @@
             
 
             <!--Panorama 項目 2-->
-            <phone:PanoramaItem Header="我的精選" Orientation="Horizontal">
+            <phone:PanoramaItem Header="{Binding Path=LocalizedResources.MySelectedTitle,Source={StaticResource LocalizedStrings}}" Orientation="Horizontal">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Button Content="搜尋儲存文章" Width="200" HorizontalAlignment="Left" Click="OnSearchArticleButtonClick"/>
+                    <Button Content="{Binding Path=LocalizedResources.SearchArticleButton,Source={StaticResource LocalizedStrings}}" Width="200" HorizontalAlignment="Left" Click="OnSearchArticleButtonClick"/>
                     <ScrollViewer Grid.Row="1" MaxWidth="700">
                         <ItemsControl ItemsSource="{Binding ArticleDirectories}"  >
                             <ItemsControl.ItemsPanel>
@@ -70,8 +70,8 @@
                                         </ContentPresenter>
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu>
-                                                <toolkit:MenuItem Header="編輯封面資訊" Click="OnDirectoryEditMenuClick"/>
-                                                <toolkit:MenuItem Header="刪除此目錄" Click="OnDirectoryDeleteMenuClick" Visibility="{Binding NonRemoved}"/>
+                                                <toolkit:MenuItem Header="{Binding Path=LocalizedResources.EditCoverInfo,Source={StaticResource LocalizedStrings}}" Click="OnDirectoryEditMenuClick"/>
+                                                <toolkit:MenuItem Header="{Binding Path=LocalizedResources.DeleteDirectory,Source={StaticResource LocalizedStrings}}" Click="OnDirectoryDeleteMenuClick" Visibility="{Binding NonRemoved}"/>
                                             </toolkit:ContextMenu>
                                         </toolkit:ContextMenuService.ContextMenu>
                                     </Button>
@@ -84,7 +84,7 @@
 
 
             <!--Panorama 項目 3-->
-            <phone:PanoramaItem Header="設定">
+            <phone:PanoramaItem Header="{Binding Path=LocalizedResources.SettingTitle,Source={StaticResource LocalizedStrings}}">
                 <ListBox ItemsSource="{Binding Settings}" 
                          ItemTemplate="{StaticResource settingTemplateSelector}"
                          SelectionChanged="OnSettingSelectionChanged"

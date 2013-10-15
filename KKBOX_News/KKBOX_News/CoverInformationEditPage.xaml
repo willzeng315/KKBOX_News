@@ -23,8 +23,8 @@
 
         <!--TitlePanel 包含應用程式的名稱和頁面標題-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock Text="編輯" Style="{StaticResource PhoneTextNormalStyle}"/>
-            <TextBlock Text="封面資訊" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+            <TextBlock Text="{Binding Path=LocalizedResources.CoverEditSubTitle,Source={StaticResource LocalizedStrings}}" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock Text="{Binding Path=LocalizedResources.CoverEditTitle,Source={StaticResource LocalizedStrings}}" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
 
         <!--ContentPanel - 其他內容置於此-->
@@ -38,15 +38,15 @@
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <Rectangle Height="30" Fill="Gray"/>
-                <TextBlock Text="資料夾名稱" Margin="10"/>
+                <TextBlock Text="{Binding Path=LocalizedResources.DirectoryName,Source={StaticResource LocalizedStrings}}" Margin="10"/>
             </Grid>
             <TextBox Text="{Binding CoverTitle,Mode=TwoWay}" Grid.Row="1"/>
             <Grid Grid.Row="2">
                 <Rectangle Height="30" Fill="Gray"/>
-                <TextBlock Text="封面圖片" Margin="10"/>
+                <TextBlock Text="{Binding Path=LocalizedResources.CoverImage,Source={StaticResource LocalizedStrings}}" Margin="10"/>
             </Grid>
             <StackPanel Grid.Row="3" >
-                <Button Content="從相簿選擇封面圖片" FontSize="28" VerticalAlignment="Top" Height="80" Click="OnChoosePhotoClick"/>
+                <Button Content="{Binding Path=LocalizedResources.ChoosePhotoButton,Source={StaticResource LocalizedStrings}}" FontSize="28" VerticalAlignment="Top" Height="80" Click="OnChoosePhotoClick"/>
                 <Image Source="{Binding CoverImage}" Width="200" Height="200" Margin="0,10"/>
             </StackPanel>
             <Grid Grid.Row="4" Height="80">
@@ -54,8 +54,8 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Content="確認" FontSize="28" Click="OnConfirmButtonClick"/>
-                <Button Grid.Column="1" Content="取消" FontSize="28" Click="OnCancelButtonClick"/>
+                <Button Grid.Column="0" Content="{Binding Path=LocalizedResources.ConfrimButton,Source={StaticResource LocalizedStrings}}" FontSize="28" Click="OnConfirmButtonClick"/>
+                <Button Grid.Column="1" Content="{Binding Path=LocalizedResources.ConcelButton,Source={StaticResource LocalizedStrings}}" FontSize="28" Click="OnCancelButtonClick"/>
             </Grid>
         </Grid>
     </Grid>

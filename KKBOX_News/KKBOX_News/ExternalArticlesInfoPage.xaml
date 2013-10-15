@@ -21,8 +21,8 @@
 
         <!--TitlePanel 包含應用程式的名稱和頁面標題-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock Text="KKBOX NEWS" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" HorizontalAlignment="Center"/>
-            <TextBlock Text="外部文章" FontSize="28" HorizontalAlignment="Center"/>
+            <TextBlock Text="{Binding Path=LocalizedResources.ApplicationTitle,Source={StaticResource LocalizedStrings}}" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" HorizontalAlignment="Center"/>
+            <TextBlock Text="{Binding Path=LocalizedResources.ExternalArticleTitle,Source={StaticResource LocalizedStrings}}" FontSize="28" HorizontalAlignment="Center"/>
         </StackPanel>
 
         <!--ContentPanel - 其他內容置於此-->
@@ -33,20 +33,21 @@
                 <RowDefinition />
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10,20,0,0" VerticalAlignment="Top">
-                <TextBlock Text="標題" VerticalAlignment="Center" FontSize="25"/>
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,10,0" VerticalAlignment="Top">
+                <TextBlock Text="{Binding Path=LocalizedResources.ExternalTitle,Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" FontSize="25"/>
                 <TextBox Text="{Binding ExternalArticle.Title,Mode=TwoWay}"  TextWrapping="Wrap" Width="350" Height="150" />
             </StackPanel>
-            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10,20,0,0" VerticalAlignment="Top">
-                <TextBlock Text="內容" VerticalAlignment="Center" FontSize="25"/>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,10,0" VerticalAlignment="Top">
+                <TextBlock Text="{Binding Path=LocalizedResources.ExternalContent,Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" FontSize="25"/>
                 <TextBox Text="{Binding ExternalArticle.Content,Mode=TwoWay}" MaxLength="50" TextWrapping="Wrap" Width="350"  Height="150" />
             </StackPanel>
-            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10,20,0,0" VerticalAlignment="Top">
-                <TextBlock Text="連結" VerticalAlignment="Center" FontSize="25"/>
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,10,0" VerticalAlignment="Top">
+                <TextBlock Text="{Binding Path=LocalizedResources.ExternalLink,Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" FontSize="25"/>
                 <TextBox  Text="{Binding ExternalArticle.Link,Mode=TwoWay}" TextWrapping="Wrap" Width="350" Height="150"  />
             </StackPanel>
             <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button  Content="確認"  FontSize="25" Width="200" Height="100" HorizontalAlignment="Center" Click="OnConfirmButtonClick" VerticalAlignment="Bottom"/>
+                <Button  Content="{Binding Path=LocalizedResources.ConfrimButton,Source={StaticResource LocalizedStrings}}"  FontSize="25" Width="200" Height="100" HorizontalAlignment="Center" Click="OnConfirmButtonClick" VerticalAlignment="Bottom"/>
             </StackPanel>
         </Grid>
     </Grid>

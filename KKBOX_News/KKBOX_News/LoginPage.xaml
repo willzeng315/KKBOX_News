@@ -21,8 +21,8 @@
 
         <!--TitlePanel 包含應用程式的名稱和頁面標題-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock Text="KKBOX NEWS" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" HorizontalAlignment="Center"/>
-            <TextBlock Text="登入" FontSize="28" HorizontalAlignment="Center"/>
+            <TextBlock Text="{Binding Path=LocalizedResources.ApplicationTitle,Source={StaticResource LocalizedStrings}}" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" HorizontalAlignment="Center"/>
+            <TextBlock Text="{Binding Path=LocalizedResources.Login,Source={StaticResource LocalizedStrings}}" FontSize="28" HorizontalAlignment="Center"/>
         </StackPanel>
 
         <!--ContentPanel - 其他內容置於此-->
@@ -34,20 +34,20 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,120,0,0">
-                <TextBlock Text="帳號" VerticalAlignment="Center" FontSize="25"/>
+                <TextBlock Text="{Binding Path=LocalizedResources.Account,Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" FontSize="25"/>
                 <TextBox x:Name="accountTextBox" Width="300" VerticalAlignment="Center" />
             </StackPanel>
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
-                <TextBlock Text="密碼" VerticalAlignment="Center" FontSize="25"/>
+                <TextBlock Text="{Binding Path=LocalizedResources.Password,Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" FontSize="25"/>
                 <PasswordBox x:Name="passwordTextBox" Width="300" VerticalAlignment="Center" />
             </StackPanel>
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
                 <CheckBox IsChecked="{Binding IsSaveAccountAndPassword,Mode=TwoWay}"/>
-                <TextBlock Text="記住帳號密碼" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding Path=LocalizedResources.RememberAccoutPW,Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center"/>
             </StackPanel>
             <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button  Content="註冊"  FontSize="25" Width="200" Height="100" HorizontalAlignment="Center" Click="OnRegistrationButtonClick" />
-                <Button  Content="登入"  FontSize="25" Width="200" Height="100" HorizontalAlignment="Center" Click="OnLoginButtonClick"/>
+                <Button  Content="{Binding Path=LocalizedResources.RegistrationButton,Source={StaticResource LocalizedStrings}}"  FontSize="25" Width="200" Height="100" HorizontalAlignment="Center" Click="OnRegistrationButtonClick" />
+                <Button  Content="{Binding Path=LocalizedResources.Login,Source={StaticResource LocalizedStrings}}"  FontSize="25" Width="200" Height="100" HorizontalAlignment="Center" Click="OnLoginButtonClick"/>
             </StackPanel>
            
         </Grid>
