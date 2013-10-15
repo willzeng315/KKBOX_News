@@ -1,4 +1,5 @@
-﻿using Microsoft.Phone.Tasks;
+﻿using KKBOX_News.DBService;
+using Microsoft.Phone.Tasks;
 using System;
 using System.Collections.Generic;
 using System.IO.IsolatedStorage;

@@ -10,7 +10,7 @@ using Microsoft.Phone.Shell;
 using System.Xml.Linq;
 using System.Diagnostics;
 using Microsoft.Phone.Tasks;
-using Community.CsharpSqlite.SQLiteClient;
+using KKBOX_News.DBService;
 
 namespace KKBOX_News
 {
@@ -33,7 +33,6 @@ namespace KKBOX_News
             {
                 App.ViewModel.SelectTopicParser();
             }
-
         }
 
         private void OnListBoxSelectionChanged(Object sender, SelectionChangedEventArgs e)
@@ -53,8 +52,6 @@ namespace KKBOX_News
                     this.NavigationService.Navigate(new Uri(String.Format("/ArticleListPage.xaml?BrowseRecord&Title={0}", channelItem.Title), UriKind.Relative));
                 }
             }
-
-
             topics.SelectedIndex = -1;
         }
 
@@ -71,7 +68,7 @@ namespace KKBOX_News
                 }
                 else if (settingListItem.PageLink != null)
                 {
-                    if (settingListItem.Title == "登出帳戶")
+                    if (settingListItem.Function == "logout")
                     {
                         App.SaveSettings();
                     }
@@ -101,8 +98,7 @@ namespace KKBOX_News
         private void DeleteDirectoryFromDB(Int32 DirIndex, MySelectedArticleDirectory mySelectedArticleDirectory)
         {
             DBManager.Instance.DeleteDirectoryFromTable(DirIndex);
-
-            App.ViewModel.ArticleDirectories.Remove(mySelectedArticleDirectory);
+            App.ViewModel.DeleteDirectory(mySelectedArticleDirectory);
         }
 
         private void OnSelectedDirectoyClick(Object sender, RoutedEventArgs e)

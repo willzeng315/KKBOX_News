@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KKBOX_News.DBService;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -98,7 +99,7 @@ namespace KKBOX_News
             get;
         }
 
-        public String FunctionOfCheck
+        public String Function
         {
             set;
             get;
@@ -145,11 +146,11 @@ namespace KKBOX_News
             }
             set
             {
-                if (FunctionOfCheck == "OpenExternalWeb")
+                if (Function == "OpenExternalWeb")
                 {
                     UserSettings.Instance.IsOpenExternalWeb = value;
                 }
-                if (FunctionOfCheck == "OpenAutoUpdate")
+                if (Function == "OpenAutoUpdate")
                 {
                     UserSettings.Instance.IsOpenAutoUpdate = value;
                 }

@@ -14,7 +14,7 @@ using System.ServiceModel.Syndication;
 using System.Xml;
 using Microsoft.Phone.Tasks;
 using System.IO.IsolatedStorage;
-using Community.CsharpSqlite.SQLiteClient;
+using KKBOX_News.DBService;
 
 namespace KKBOX_News
 {

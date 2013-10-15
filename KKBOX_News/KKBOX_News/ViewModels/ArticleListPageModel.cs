@@ -1,4 +1,6 @@
-﻿using System;
+﻿using KKBOX_News.DBService;
+using KKBOX_News.NetworkService;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -9,153 +11,145 @@ using System.Windows;
 
 namespace KKBOX_News
 {
-    public class ArticleItem : BindableBase
-    {
-        public ArticleItem()
-        {
-            CheckBoxVisiblity = Visibility.Collapsed;
-            DeleteMenuVisiblity = Visibility.Collapsed;
-            AddMenuVisiblity = Visibility.Visible;
-            ImageVisiblity = Visibility.Visible;
-            IsSelected = false;
-        }
-        #region Property
-        private String iconImagePath = "";
-        public String IconImagePath
-        {
-            get
-            {
-                return iconImagePath;
-            }
-            set
-            {
-                SetProperty(ref iconImagePath, value, "IconImagePath");
-            }
-        }
-
-        private String title = "";
-        public String Title
-        {
-            get
-            {
-                return title;
-            }
-            set
-            {
-                SetProperty(ref title, value, "Title");
-            }
-        }
-
-        private String content = "";
-        public String Content
-        {
-            get
-            {
-                return content;
-            }
-            set
-            {
-                SetProperty(ref content, value, "Content");
-            }
-        }
-        private String link = "";
-        public String Link
-        {
-            get
-            {
-                return link;
-            }
-            set
-            {
-                SetProperty(ref link, value, "Link");
-            }
-        }
-
-        private Boolean isExtended;
-        public Boolean IsExtended
-        {
-            get
-            {
-                return isExtended;
-            }
-            set
-            {
-                SetProperty(ref isExtended, value, "IsExtended");
-            }
-        }
-
-        private Boolean isSelected;
-        public Boolean IsSelected
-        {
-            get
-            {
-                return isSelected;
-            }
-            set
-            {
-                SetProperty(ref isSelected, value, "IsSelected");
-            }
-        }
-
-        private Visibility checkBoxVisiblity;
-        public Visibility CheckBoxVisiblity
-        {
-            get
-            {
-                return checkBoxVisiblity;
-            }
-            set
-            {
-                SetProperty(ref checkBoxVisiblity, value, "CheckBoxVisiblity");
-            }
-        }
-
-        private Visibility deleteMenuVisiblity;
-        public Visibility DeleteMenuVisiblity
-        {
-            get
-            {
-                return deleteMenuVisiblity;
-            }
-            set
-            {
-                SetProperty(ref deleteMenuVisiblity, value, "DeleteMenuVisiblity");
-            }
-        }
-
-        private Visibility addMenuVisiblity;
-        public Visibility AddMenuVisiblity
-        {
-            get
-            {
-                return addMenuVisiblity;
-            }
-            set
-            {
-                SetProperty(ref addMenuVisiblity, value, "AddMenuVisiblity");
-            }
-        }
-
-        private Visibility imageVisiblity;
-        public Visibility ImageVisiblity
-        {
-            get
-            {
-                return imageVisiblity;
-            }
-            set
-            {
-                SetProperty(ref imageVisiblity, value, "ImageVisiblity");
-            }
-        }
-
-    }
-        #endregion
     public class ArticleListPageModel : BindableBase
     {
+        public PageMode CurrentPageMode;
+
         public ArticleListPageModel()
         {
             KKBOXArticles = new ObservableCollection<ArticleItem>();
+            DirectoryIndex = -1;
+            CurrentPageMode = PageMode.NULL;
+        }
+
+        public void LoadArticle()
+        {
+            if (CurrentPageMode == PageMode.NULL)
+            {
+                return;
+            }
+            else
+            {
+                switch (CurrentPageMode)
+                {
+                    case PageMode.READ_FROM_XML:
+
+                        break;
+                    case PageMode.READ_FROM_DIR:
+                        LoadDirectoryArticlesFromTable();
+  
+                        break;
+                    case PageMode.EXTERNAL_ARTICLES:
+                        LoadDirectoryArticlesFromTable();
+                        SetArticleImageCollapsed();
+                        break;
+                    case PageMode.SEARCH_ARTICLES:
+
+                        break;
+                    case PageMode.BROWSE_RECORDS:
+                        LoadBrowseArticleRecordsFromTable();
+                        break;
+
+                }
+            }
+        }
+
+        public void SetLastItemShrink(Int32 lastItemIndex)
+        {
+            KKBOXArticles[lastItemIndex].IsExtended = false;
+        }
+
+        private void SetArticleImageCollapsed()
+        {
+            for (int i = 0; i < KKBOXArticles.Count; i++)
+            {
+                KKBOXArticles[i].ImageVisiblity = Visibility.Collapsed;
+            }
+        }
+
+        private void LoadBrowseArticleRecordsFromTable()
+        {
+            KKBOXArticles = DBManager.Instance.LoadRecordsFromTable();
+        }
+
+        private void LoadDirectoryArticlesFromTable()
+        {
+            KKBOXArticles = DBManager.Instance.LoadDirectoryArticlesFromTable(DirectoryIndex);
+        }
+
+        public void LoadArticleIntoPasser()
+        {
+            ArticleNavigationPasser.Instance.Articles.Clear();
+
+            for (int i = 0; i < KKBOXArticles.Count; i++)
+            {
+                if (KKBOXArticles[i].IsSelected)
+                {
+                    ArticleNavigationPasser.Instance.Articles.Add(KKBOXArticles[i]);
+                }
+            }
+        }
+
+        public void SetArticleCheckBoxVisibility(Visibility visibility)
+        {
+            if (KKBOXArticles != null)
+            {
+                for (int i = 0; i < KKBOXArticles.Count; i++)
+                {
+                    KKBOXArticles[i].CheckBoxVisiblity = visibility;
+                }
+            }
+        }
+
+        public void DeleteDirectoryArticles()
+        {
+            DBManager.Instance.DeleteArticleFromTable(DirectoryIndex);
+
+            for (int i = 0; i < ArticleNavigationPasser.Instance.Articles.Count; i++)
+            {
+                KKBOXArticles.Remove(ArticleNavigationPasser.Instance.Articles[i]);
+            }
+
+            ArticleNavigationPasser.Instance.Articles.Clear();
+        }
+
+        public void SearchSelectedArticle(String keyword)
+        {
+            SearchLocalArticles locaArticles = new SearchLocalArticles();
+            KKBOXArticles = locaArticles.SearchArticleContainKeyWord(keyword);
+        }
+
+        public Boolean IsArtilcesZero()
+        {
+            return (KKBOXArticles.Count == 0) ? true : false;
+        }
+
+        public void ConcelAllSelect()
+        {
+            for (int i = 0; i < KKBOXArticles.Count; i++)
+            {
+                KKBOXArticles[i].IsSelected = false;
+            }
+        }
+
+        public void CheckAllSelect()
+        {
+            for (int i = 0; i < KKBOXArticles.Count; i++)
+            {
+                KKBOXArticles[i].IsSelected = true;
+            }
+        }
+
+        public void LoadRssArticles(String result)
+        {
+            RssXmlParser rssArticleParser = new RssXmlParser();
+            KKBOXArticles = rssArticleParser.GetXmlParserResult(result);
+        }
+
+        public Int32 DirectoryIndex
+        {
+            get;
+            set;
         }
 
         private ObservableCollection<ArticleItem> kkboxArticles = null;

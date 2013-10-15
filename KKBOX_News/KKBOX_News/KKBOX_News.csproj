@@ -100,7 +100,6 @@
     <Compile Include="ArticleListPage.xaml.cs">
       <DependentUpon>ArticleListPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DBManager\DBManager.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="PhotoChooser.cs" />
     <Compile Include="Resources\AppResources.en-US.Designer.cs">
@@ -113,8 +112,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="RssXmlParser.cs" />
-    <Compile Include="ViewModels\ArticleNavigationPasser.cs" />
     <Compile Include="CoverInformationEditPage.xaml.cs">
       <DependentUpon>CoverInformationEditPage.xaml</DependentUpon>
     </Compile>
@@ -122,22 +119,18 @@
     <Compile Include="ExternalArticlesInfoPage.xaml.cs">
       <DependentUpon>ExternalArticlesInfoPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DBManager\InitializeDB.cs" />
-    <Compile Include="LocalImageManipulation.cs" />
     <Compile Include="LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\MySelectedArticleDirectory.cs" />
     <Compile Include="RegistrationPage.xaml.cs">
       <DependentUpon>RegistrationPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\SearchLocalArticles.cs" />
+    <Compile Include="SearchLocalArticles.cs" />
     <Compile Include="UpdateIntervalSelector.xaml.cs">
       <DependentUpon>UpdateIntervalSelector.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\SettingListItem.cs" />
     <Compile Include="ViewModels\ArticleListPageModel.cs" />
-    <Compile Include="BindableBase.cs" />
     <Compile Include="Converters.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -251,12 +244,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Community.CsharpSqlite.SqlLiteClient.WP7">
-      <HintPath>..\packages\wp7sqlite.0.1.1\lib\sl4-windowsphone71\Community.CsharpSqlite.SqlLiteClient.WP7.dll</HintPath>
-    </Reference>
-    <Reference Include="Community.CsharpSqlite.WP7">
-      <HintPath>..\packages\wp7sqlite.0.1.1\lib\sl4-windowsphone71\Community.CsharpSqlite.WP7.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Phone.Controls.Toolkit, Version=8.0.1.0, Culture=neutral, PublicKeyToken=b772ad94eb9ca604, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\WPtoolkit.4.2013.08.16\lib\wp8\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
@@ -265,7 +252,16 @@
       <HintPath>DLL\System.ServiceModel.Syndication.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\KKBOX_News.DBService\KKBOX_News.DBService.csproj">
+      <Project>{ACFD8CAB-25EB-4152-AAF8-DF8818B75C46}</Project>
+      <Name>KKBOX_News.DBService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\KKBOX_News.NetworkService\KKBOX_News.NetworkService.csproj">
+      <Project>{960EF477-85BF-4305-9E22-480411D82415}</Project>
+      <Name>KKBOX_News.NetworkService</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

@@ -9,13 +9,13 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
-using Community.CsharpSqlite.SQLiteClient;
 using Microsoft.Phone.Tasks;
 using System.Windows.Media.Imaging;
 using System.ComponentModel;
 using System.Windows.Media;
 using System.IO.IsolatedStorage;
 using System.IO;
+using KKBOX_News.DBService;
 
 namespace KKBOX_News
 {

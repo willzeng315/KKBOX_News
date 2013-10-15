@@ -14,15 +14,18 @@ using Microsoft.Phone.Tasks;
 using System.Diagnostics;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Community.CsharpSqlite.SQLiteClient;
 using System.Windows.Threading;
 using KKBOX_News.Resources;
+using KKBOX_News.DBService;
+using KKBOX_News.NetworkService;
 
 namespace KKBOX_News
 {
+    public enum PageMode { NULL, READ_FROM_DIR, READ_FROM_XML, SEARCH_ARTICLES, EXTERNAL_ARTICLES, BROWSE_RECORDS };
+
     public partial class ArticleListPage : PhoneApplicationPage, INotifyPropertyChanged
     {
-        public enum PageMode { NULL, READ_FROM_DIR, READ_FROM_XML, SEARCH_ARTICLES, EXTERNAL_ARTICLES, BROWSE_RECORDS };
+
         public enum ConfirmButtonMode { NULL, ADD_ARTICLE, DELETE_ARTICLE };
         private PageMode currentPageMode;
         private ConfirmButtonMode currentConfirmButtonMode;
@@ -81,16 +84,19 @@ namespace KKBOX_News
                 WebClientXmlDownload(xmlString);
             }
         }
-
         private void WebClientXmlDownload(String xmlValue)
         {
-
             IsNotPageLoaded = true;
 
-            Uri uri = new Uri(xmlValue, UriKind.Absolute); ;
-            WebClient webClient = new WebClient();
-            webClient.DownloadStringCompleted += OnDownloadXmlCompleted;
-            webClient.DownloadStringAsync(uri);
+            XmlDownloader selectTopic = new XmlDownloader();
+            selectTopic.XmlLoadCompleted += OnXmlLoadCompleted;
+            selectTopic.GetStringResponse(xmlValue);
+        }
+
+        public void OnXmlLoadCompleted(String result)
+        {
+            ArticleModel.LoadRssArticles(result);
+            IsNotPageLoaded = false;
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -107,6 +113,10 @@ namespace KKBOX_News
 
             if (IsRssArticlePage())
             {
+                currentPageMode = PageMode.READ_FROM_XML;
+
+                ArticleModel.CurrentPageMode = PageMode.READ_FROM_XML;
+
                 if (UserSettings.Instance.IsOpenAutoUpdate)
                 {
                     StartUpdateArticle();
@@ -114,38 +124,44 @@ namespace KKBOX_News
             }
             else if (IsExternalArticlePage())
             {
-                LoadDirectoryArticlesFromTable();
-
-                SetArticleImageCollapsed();
+                currentPageMode = PageMode.EXTERNAL_ARTICLES;
+                ArticleModel.CurrentPageMode = PageMode.EXTERNAL_ARTICLES;
             }
             else if (IsDirectoryArticlePage())
             {
-                LoadDirectoryArticlesFromTable();
+                currentPageMode = PageMode.READ_FROM_DIR;
+                ArticleModel.CurrentPageMode = PageMode.READ_FROM_DIR;
             }
-            else if (parameters.ContainsKey("SearchArticleMode"))
+            else if (IsSearchArticlePage())
             {
                 currentPageMode = PageMode.SEARCH_ARTICLES;
-                PageTitle = AppResources.SearchArticleTitle;
-                SearchManipulation = Visibility.Visible;
-                appbarMultipleManipulation.IsVisible = false;
+                ArticleModel.CurrentPageMode = PageMode.SEARCH_ARTICLES;
+
             }
             else if (IsBrowseRecordPage())
             {
-                LoadBrowseArticleRecordsFromTable();
+                currentPageMode = PageMode.BROWSE_RECORDS;
+                ArticleModel.CurrentPageMode = PageMode.BROWSE_RECORDS;
             }
+
+            ArticleModel.LoadArticle();
         }
 
-        private Boolean CheckLastSelectedItemIndex()
+        private Boolean IsSearchArticlePage()
         {
-            return (lastSelectedItemIndex != -1 && ArticleModel.KKBOXArticles.Count > 0 && lastSelectedItemIndex < ArticleModel.KKBOXArticles.Count) ? true : false;
-        }
+            Boolean searchArticlePage = false;
 
-        private void SetArticleImageCollapsed()
-        {
-            for (int i = 0; i < ArticleModel.KKBOXArticles.Count; i++)
+            IDictionary<String, String> parameters = this.NavigationContext.QueryString;
+
+            if (parameters.ContainsKey("SearchArticleMode"))
             {
-                ArticleModel.KKBOXArticles[i].ImageVisiblity = Visibility.Collapsed;
+                PageTitle = AppResources.SearchArticleTitle;
+                SearchManipulation = Visibility.Visible;
+                appbarMultipleManipulation.IsVisible = false;
+                searchArticlePage = true;
+
             }
+            return searchArticlePage;
         }
 
         private Boolean IsBrowseRecordPage()
@@ -155,6 +171,7 @@ namespace KKBOX_News
             IDictionary<String, String> parameters = this.NavigationContext.QueryString;
 
             directoryIndex = -1;
+            ArticleModel.DirectoryIndex = -1;
 
             DetermineAppBarVisibility("articleBrowseRecordUser");
 
@@ -181,9 +198,7 @@ namespace KKBOX_News
             if (parameters.ContainsKey("DirectoryIndex") && Int32.Parse(parameters["DirectoryIndex"]) == 1)
             {
                 directoryIndex = 1;
-
-                currentPageMode = PageMode.EXTERNAL_ARTICLES;
-
+                ArticleModel.DirectoryIndex = 1;
                 ExternalArticleManipulation = Visibility.Visible;
                 menuMultipleDelete.IsEnabled = true;
                 menuMultipleAdd.IsEnabled = false;
@@ -209,9 +224,9 @@ namespace KKBOX_News
             {
                 directoryIndex = Int32.Parse(parameters["DirectoryIndex"]);
 
-                DetermineAppBarVisibility("directoryArticlesUser");
+                ArticleModel.DirectoryIndex = Int32.Parse(parameters["DirectoryIndex"]);
 
-                currentPageMode = PageMode.READ_FROM_DIR;
+                DetermineAppBarVisibility("directoryArticlesUser");
 
                 menuMultipleDelete.IsEnabled = true;
 
@@ -233,8 +248,6 @@ namespace KKBOX_News
             if (parameters.ContainsKey("Xml") && ArticleModel.KKBOXArticles.Count == 0)
             {
                 xmlString = parameters["Xml"];
-
-                currentPageMode = PageMode.READ_FROM_XML;
 
                 LoadingText.Text = AppResources.LoadingText;
 
@@ -258,7 +271,7 @@ namespace KKBOX_News
 
         private void DetermineAppBarVisibility(String tableName)
         {
-            appbarMultipleManipulation.IsVisible = (DBManager.Instance.IsTableHaveArticles(tableName,directoryIndex)) ? true : false;
+            appbarMultipleManipulation.IsVisible = (DBManager.Instance.IsTableHaveArticles(tableName, directoryIndex)) ? true : false;
         }
 
         private void StartUpdateArticle()
@@ -271,36 +284,6 @@ namespace KKBOX_News
             Timer.Stop();
         }
 
-        private void LoadBrowseArticleRecordsFromTable()
-        {
-            ArticleModel.KKBOXArticles = DBManager.Instance.LoadRecordsFromTable();
-        }
-
-        private void LoadDirectoryArticlesFromTable()
-        {
-            ArticleModel.KKBOXArticles = DBManager.Instance.LoadDirectoryArticlesFromTable(directoryIndex);
-        }
-
-        private void LoadArticleIntoPasser()
-        {
-            ArticleNavigationPasser.Instance.Articles.Clear();
-
-            for (int i = 0; i < ArticleModel.KKBOXArticles.Count; i++)
-            {
-                if (ArticleModel.KKBOXArticles[i].IsSelected)
-                {
-                    ArticleNavigationPasser.Instance.Articles.Add(ArticleModel.KKBOXArticles[i]);
-                }
-            }
-        }
-
-        private void OnDownloadXmlCompleted(Object sender, DownloadStringCompletedEventArgs EventArgs)
-        {
-            RssXmlParser rssArticleParser = new RssXmlParser();
-            ArticleModel.KKBOXArticles = rssArticleParser.GetXmlParserResult(EventArgs);
-            IsNotPageLoaded = false;
-        }
-
         private void OnListBoxSelectionChanged(Object sender, SelectionChangedEventArgs e)
         {
             ListBox listBox = sender as ListBox;
@@ -311,7 +294,7 @@ namespace KKBOX_News
 
                 if (lastSelectedItemIndex != -1 && lastSelectedItemIndex != listBox.SelectedIndex)
                 {
-                    ArticleModel.KKBOXArticles[lastSelectedItemIndex].IsExtended = false;
+                    ArticleModel.SetLastItemShrink(lastSelectedItemIndex);
                     lastSelectedItemIndex = listBox.SelectedIndex;
                 }
 
@@ -354,50 +337,23 @@ namespace KKBOX_News
             DeleteDirectoryArticlesFormDB();
         }
 
-        private void SetArticleCheckBoxVisibility(Visibility visibility)
-        {
-            if (ArticleModel.KKBOXArticles != null)
-            {
-                for (int i = 0; i < ArticleModel.KKBOXArticles.Count; i++)
-                {
-                    ArticleModel.KKBOXArticles[i].CheckBoxVisiblity = visibility;
-                }
-            }
-        }
-
         private Boolean IsAnyArticleSelected()
         {
             return ArticleNavigationPasser.Instance.Articles.Count == 0 ? false : true;
         }
 
-        private void ConcelAllSelect()
-        {
-            for (int i = 0; i < ArticleModel.KKBOXArticles.Count; i++)
-            {
-                ArticleModel.KKBOXArticles[i].IsSelected = false;
-            }
-        }
-
-        private void CheckAllSelect()
-        {
-            for (int i = 0; i < ArticleModel.KKBOXArticles.Count; i++)
-            {
-                ArticleModel.KKBOXArticles[i].IsSelected = true;
-            }
-        }
-
         private void ResetAllSelect()
         {
-            ConcelAllSelect();
+            ArticleModel.ConcelAllSelect();
             checkBoxSelectAll.IsChecked = false;
         }
 
         private void OnConfirmButtonClick(Object sender, RoutedEventArgs e)
         {
             MultipleManipulation = Visibility.Collapsed;
-            SetArticleCheckBoxVisibility(Visibility.Collapsed);
+            ArticleModel.SetArticleCheckBoxVisibility(Visibility.Collapsed);
             appbarMultipleManipulation.IsVisible = true;
-            LoadArticleIntoPasser();
+            ArticleModel.LoadArticleIntoPasser();
             if (currentConfirmButtonMode == ConfirmButtonMode.ADD_ARTICLE && IsAnyArticleSelected())
             {
                 this.NavigationService.Navigate(new Uri("/AddMySelectPage.xaml", UriKind.Relative));
@@ -413,7 +369,7 @@ namespace KKBOX_News
         private void OnConcelButtonClick(Object sender, RoutedEventArgs e)
         {
             MultipleManipulation = Visibility.Collapsed;
-            SetArticleCheckBoxVisibility(Visibility.Collapsed);
+            ArticleModel.SetArticleCheckBoxVisibility(Visibility.Collapsed);
             appbarMultipleManipulation.IsVisible = true;
             ResetAllSelect();
         }
@@ -421,7 +377,7 @@ namespace KKBOX_News
         private void OnAddMyMultiSelectMenuClick(Object sender, EventArgs e)
         {
             MultipleManipulation = Visibility.Visible;
-            SetArticleCheckBoxVisibility(Visibility.Visible);
+            ArticleModel.SetArticleCheckBoxVisibility(Visibility.Visible);
             appbarMultipleManipulation.IsVisible = false;
             currentConfirmButtonMode = ConfirmButtonMode.ADD_ARTICLE;
         }
@@ -429,21 +385,14 @@ namespace KKBOX_News
         private void OnAddMyMultiDeleteMenuClick(Object sender, EventArgs e)
         {
             MultipleManipulation = Visibility.Visible;
-            SetArticleCheckBoxVisibility(Visibility.Visible);
+            ArticleModel.SetArticleCheckBoxVisibility(Visibility.Visible);
             appbarMultipleManipulation.IsVisible = false;
             currentConfirmButtonMode = ConfirmButtonMode.DELETE_ARTICLE;
         }
 
         private void DeleteDirectoryArticlesFormDB()
         {
-            DBManager.Instance.DeleteArticleFromTable(directoryIndex);
-
-            for (int i = 0; i < ArticleNavigationPasser.Instance.Articles.Count; i++)
-            {
-                ArticleModel.KKBOXArticles.Remove(ArticleNavigationPasser.Instance.Articles[i]);
-            }
-
-            ArticleNavigationPasser.Instance.Articles.Clear();
+            ArticleModel.DeleteDirectoryArticles();
             AppbarVisibilityForHasArticles();
         }
 
@@ -576,17 +525,17 @@ namespace KKBOX_News
             CheckBox checkBox = (CheckBox)sender;
             if ((Boolean)checkBox.IsChecked)
             {
-                CheckAllSelect();
+                ArticleModel.CheckAllSelect();
             }
             else
             {
-                ConcelAllSelect();
+                ArticleModel.ConcelAllSelect();
             }
         }
 
         private void AppbarVisibilityForHasArticles()
         {
-            if (ArticleModel.KKBOXArticles.Count == 0)
+            if (ArticleModel.IsArtilcesZero())
             {
                 appbarMultipleManipulation.IsVisible = false;
             }
@@ -598,9 +547,8 @@ namespace KKBOX_News
 
         private void OnSearchArticlesButtonClick(Object sender, RoutedEventArgs e)
         {
-            SearchLocalArticles locaArticles = new SearchLocalArticles();
             String keyword = searchKeywordTextBox.Text;
-            ArticleModel.KKBOXArticles = locaArticles.SearchArticleContainKeyWord(keyword);
+            ArticleModel.SearchSelectedArticle(keyword);
             AppbarVisibilityForHasArticles();
         }
 
@@ -613,7 +561,7 @@ namespace KKBOX_News
         {
             Button button = (Button)sender;
             ArticleItem articleItem = (ArticleItem)button.DataContext;
-            Debug.WriteLine(String.Format("directoryIndex = {0}",directoryIndex));
+            Debug.WriteLine(String.Format("directoryIndex = {0}", directoryIndex));
             if (directoryIndex == 0)
             {
                 DBManager.Instance.InsertRecordToTable(articleItem);

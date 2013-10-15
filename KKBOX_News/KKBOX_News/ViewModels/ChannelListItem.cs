@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KKBOX_News.DBService;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;

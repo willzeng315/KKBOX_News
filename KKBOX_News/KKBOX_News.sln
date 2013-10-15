@@ -2,6 +2,13 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2012 for Windows Phone
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKBOX_News", "KKBOX_News\KKBOX_News.csproj", "{2C9FF629-F38F-4598-B872-138CB6D90CD6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{ACFD8CAB-25EB-4152-AAF8-DF8818B75C46} = {ACFD8CAB-25EB-4152-AAF8-DF8818B75C46}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKBOX_News.DBService", "KKBOX_News.DBService\KKBOX_News.DBService.csproj", "{ACFD8CAB-25EB-4152-AAF8-DF8818B75C46}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKBOX_News.NetworkService", "KKBOX_News.NetworkService\KKBOX_News.NetworkService.csproj", "{960EF477-85BF-4305-9E22-480411D82415}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +38,30 @@ Global
 		{2C9FF629-F38F-4598-B872-138CB6D90CD6}.Release|x86.ActiveCfg = Release|x86
 		{2C9FF629-F38F-4598-B872-138CB6D90CD6}.Release|x86.Build.0 = Release|x86
 		{2C9FF629-F38F-4598-B872-138CB6D90CD6}.Release|x86.Deploy.0 = Release|x86
+		{ACFD8CAB-25EB-4152-AAF8-DF8818B75C46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACFD8CAB-25EB-4152-AAF8-DF8818B75C46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACFD8CAB-25EB-4152-AAF8-DF8818B75C46}.Debug|ARM.ActiveCfg = Debug|ARM
+		{ACFD8CAB-25EB-4152-AAF8-DF8818B75C46}.Debug|ARM.Build.0 = Debug|ARM
+		{ACFD8CAB-25EB-4152-AAF8-DF8818B75C46}.Debug|x86.ActiveCfg = Debug|x86
+		{ACFD8CAB-25EB-4152-AAF8-DF8818B75C46}.Debug|x86.Build.0 = Debug|x86
+		{ACFD8CAB-25EB-4152-AAF8-DF8818B75C46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACFD8CAB-25EB-4152-AAF8-DF8818B75C46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACFD8CAB-25EB-4152-AAF8-DF8818B75C46}.Release|ARM.ActiveCfg = Release|ARM
+		{ACFD8CAB-25EB-4152-AAF8-DF8818B75C46}.Release|ARM.Build.0 = Release|ARM
+		{ACFD8CAB-25EB-4152-AAF8-DF8818B75C46}.Release|x86.ActiveCfg = Release|x86
+		{ACFD8CAB-25EB-4152-AAF8-DF8818B75C46}.Release|x86.Build.0 = Release|x86
+		{960EF477-85BF-4305-9E22-480411D82415}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{960EF477-85BF-4305-9E22-480411D82415}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{960EF477-85BF-4305-9E22-480411D82415}.Debug|ARM.ActiveCfg = Debug|ARM
+		{960EF477-85BF-4305-9E22-480411D82415}.Debug|ARM.Build.0 = Debug|ARM
+		{960EF477-85BF-4305-9E22-480411D82415}.Debug|x86.ActiveCfg = Debug|x86
+		{960EF477-85BF-4305-9E22-480411D82415}.Debug|x86.Build.0 = Debug|x86
+		{960EF477-85BF-4305-9E22-480411D82415}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{960EF477-85BF-4305-9E22-480411D82415}.Release|Any CPU.Build.0 = Release|Any CPU
+		{960EF477-85BF-4305-9E22-480411D82415}.Release|ARM.ActiveCfg = Release|ARM
+		{960EF477-85BF-4305-9E22-480411D82415}.Release|ARM.Build.0 = Release|ARM
+		{960EF477-85BF-4305-9E22-480411D82415}.Release|x86.ActiveCfg = Release|x86
+		{960EF477-85BF-4305-9E22-480411D82415}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

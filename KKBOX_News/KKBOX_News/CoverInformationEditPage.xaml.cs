@@ -15,7 +15,7 @@ using System.Windows.Controls.Primitives;
 using Microsoft.Phone.Tasks;
 using System.IO.IsolatedStorage;
 using System.Windows.Media.Imaging;
-using Community.CsharpSqlite.SQLiteClient;
+using KKBOX_News.DBService;
 
 namespace KKBOX_News
 {

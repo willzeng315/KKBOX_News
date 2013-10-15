@@ -7,8 +7,9 @@ using System.Xml.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using Community.CsharpSqlite.SQLiteClient;
 using System.Windows;
+using KKBOX_News.DBService;
+using KKBOX_News.NetworkService;
 
 namespace KKBOX_News
 {
@@ -33,6 +34,7 @@ namespace KKBOX_News
                 Title = AppResources.LogoutAccout,
                 PageLink = "/LoginPage.xaml",
                 Content = LoginSettings.Instance.CurrentAccount,
+                Function = "logout",
                 Type = SettingItemTemplate.TEMPLATE_TEXT_CONTENT
             });
             Settings.Add(new SettingListItem() 
@@ -46,7 +48,7 @@ namespace KKBOX_News
                 Content = AppResources.ExternalWebContent,
                 Type = SettingItemTemplate.TEMPLATE_TXET_CHECK,
                 IsChecked = UserSettings.Instance.IsOpenExternalWeb,
-                FunctionOfCheck = "OpenExternalWeb"
+                Function = "OpenExternalWeb"
             });
             Settings.Add(new SettingListItem()
             {
@@ -54,7 +56,7 @@ namespace KKBOX_News
                 Content = AppResources.AutoUpdateOption,
                 Type = SettingItemTemplate.TEMPLATE_TXET_CHECK,
                 IsChecked = UserSettings.Instance.IsOpenAutoUpdate,
-                FunctionOfCheck = "OpenAutoUpdate"
+                Function = "OpenAutoUpdate"
             });
 
 
@@ -113,11 +115,11 @@ namespace KKBOX_News
                 
         }
 
-        private void LoadTopics(DownloadStringCompletedEventArgs args) 
+        private void LoadTopics(String result) 
         {
             Topics = new ObservableCollection<ChannelListItem>();
 
-            XDocument ParsedTopic = XDocument.Parse(args.Result);
+            XDocument ParsedTopic = XDocument.Parse(result);
             TopicsInXml = ParsedTopic.Element("kkbox_news").Elements("channel");
 
             foreach (XElement channel in TopicsInXml)
@@ -132,17 +134,23 @@ namespace KKBOX_News
         public void SelectTopicParser()
         {
             IsTopicsXmlLoaded = false;
-            Uri uri = new Uri("https://mail.kkbox.com.tw/~willzeng/SelectChannel.xml");
+            String xmlUri = "https://mail.kkbox.com.tw/~willzeng/SelectChannel.xml";
 
-            WebClient webClient = new WebClient();
-            webClient.DownloadStringCompleted += OnDownloadTopicXmlCompleted;
-            webClient.DownloadStringAsync(uri);
+            XmlDownloader topicsXml = new XmlDownloader();
+            topicsXml.XmlLoadCompleted+=OnXmlLoadCompleted;
+            topicsXml.GetStringResponse(xmlUri);
         }
 
-        void OnDownloadTopicXmlCompleted(Object sender, DownloadStringCompletedEventArgs args)//loadTipics
+        public void DeleteDirectory(MySelectedArticleDirectory deleteItem)
         {
-            LoadTopics(args);
+            ArticleDirectories.Remove(deleteItem);
         }
+
+        private void OnXmlLoadCompleted(String result)
+        {
+            LoadTopics(result);
+        }
+
         #region Property
 
         private IEnumerable<XElement> TopicsInXml;

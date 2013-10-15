@@ -8,33 +8,13 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.Diagnostics;
-using Community.CsharpSqlite.SQLiteClient;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using KKBOX_News.Resources;
+using KKBOX_News.DBService;
 
 namespace KKBOX_News
 {
-    public class UserSettings
-    {
-        private static UserSettings _instance;
-
-        private UserSettings() { }
-
-        public static UserSettings Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    _instance = new UserSettings();
-                return _instance;
-            }
-        }
-        public Boolean IsOpenExternalWeb;
-        public Boolean IsOpenAutoUpdate;
-        public Int32 UpdateInterval;
-    }
-
     public class LoginSettings
     {
         private static LoginSettings _instance;
@@ -117,10 +97,10 @@ namespace KKBOX_News
 
         private void CheckUserTablesExistsAndCreate()
         {
-            if (!InitializeDB.Instance.IsTableExists(String.Format("directoryTableUser{0}", UserId)))
+            if (!InitializeDB.Instance.IsTableExists(String.Format("directoryTableUser{0}", userId)))
             {
-                InitializeDB.Instance.CreateUserTables(UserId);
-                InitializeDB.Instance.InitialUserTableData(UserId);
+                InitializeDB.Instance.CreateUserTables(userId);
+                InitializeDB.Instance.InitialUserTableData(userId);
             }
         }
 
@@ -131,6 +111,8 @@ namespace KKBOX_News
 
             if (isNotAccountOrPasswordEmpty() && DBManager.Instance.VerifyUserAccount(account, password))
             {
+                userId = DBManager.Instance.UserId;
+
                 DBManager.Instance.LoadUserSetting();
                 CheckUserTablesExistsAndCreate();
                 SaveAccountAndPassword(IsSaveAccountAndPassword);
@@ -152,7 +134,7 @@ namespace KKBOX_News
             NavigationService.Navigate(new Uri("/RegistrationPage.xaml", UriKind.Relative));
         }
 
-        public static Int32 UserId;
+        private Int32 userId;
 
         #region Property
 

@@ -7,9 +7,9 @@ using System.Windows.Controls;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
-using Community.CsharpSqlite.SQLiteClient;
 using System.Diagnostics;
 using KKBOX_News.Resources;
+using KKBOX_News.DBService;
 
 namespace KKBOX_News
 {
