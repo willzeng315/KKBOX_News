@@ -115,6 +115,7 @@
     <Compile Include="CoverInformationEditPage.xaml.cs">
       <DependentUpon>CoverInformationEditPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\AdderMySelectPageModel.cs" />
     <Compile Include="ViewModels\DataTemplateSelector.cs" />
     <Compile Include="ExternalArticlesInfoPage.xaml.cs">
       <DependentUpon>ExternalArticlesInfoPage.xaml</DependentUpon>
