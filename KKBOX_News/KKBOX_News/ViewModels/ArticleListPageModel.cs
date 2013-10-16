@@ -36,7 +36,7 @@ namespace KKBOX_News
                         break;
                     case PageMode.READ_FROM_DIR:
                         LoadDirectoryArticlesFromTable();
-  
+
                         break;
                     case PageMode.EXTERNAL_ARTICLES:
                         LoadDirectoryArticlesFromTable();

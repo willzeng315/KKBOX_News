@@ -28,10 +28,6 @@ namespace KKBOX_News
             DataContext = AdderModel;
         }
 
-        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
-        {
-        }
-
         private void OnChoosePhotoClick(Object sender, RoutedEventArgs e)
         {
             PhotoChooser coverChooser = new PhotoChooser();

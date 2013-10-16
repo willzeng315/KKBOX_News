@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.Diagnostics;
 
 namespace KKBOX_News.AppService
 {
@@ -20,28 +21,37 @@ namespace KKBOX_News.AppService
 
         public ObservableCollection<ArticleItem> GetXmlParserResult(String sXML)
         {
-            //String sXML = eventArgs.Result;
-            XDocument root = XDocument.Parse(sXML);
-            XElement channelRoot = root.Element("rss").Element("channel");
-            IEnumerable<XElement> elements = channelRoot.Elements("item");
             selectedArticles = new ObservableCollection<ArticleItem>();
-            foreach (XElement eleItem in elements)
+
+            try
             {
-                String RssTitle = eleItem.Element("title").Value;
-                String RssDescription = eleItem.Element("description").Value;
-                String RssIconPath = ImageRetriever(RssDescription);
-                String RssContent = ContentRetriever(RssDescription);
-                String RssLink = LinkRetriever(RssDescription);
+                XDocument root = XDocument.Parse(sXML);
+                XElement channelRoot = root.Element("rss").Element("channel");
+                IEnumerable<XElement> elements = channelRoot.Elements("item");
+                foreach (XElement eleItem in elements)
+                {
+                    String RssTitle = eleItem.Element("title").Value;
+                    String RssDescription = eleItem.Element("description").Value;
+                    String RssIconPath = ImageRetriever(RssDescription);
+                    String RssContent = ContentRetriever(RssDescription);
+                    String RssLink = LinkRetriever(RssDescription);
 
-                ArticleItem newItem = new ArticleItem();
+                    ArticleItem newItem = new ArticleItem();
 
-                newItem.Title = RssTitle;
-                newItem.Content = RssContent;
-                newItem.IconImagePath = RssIconPath;
-                newItem.Link = RssLink;
-                newItem.IsExtended = false;
-                selectedArticles.Add(newItem);
+                    newItem.Title = RssTitle;
+                    newItem.Content = RssContent;
+                    newItem.IconImagePath = RssIconPath;
+                    newItem.Link = RssLink;
+                    newItem.IsExtended = false;
+                    selectedArticles.Add(newItem);
+                }
+
             }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.ToString());
+            }
+
             return selectedArticles;
         }
 
@@ -56,13 +66,10 @@ namespace KKBOX_News.AppService
                 Int32 EndIndex = description.ToString().IndexOf("jpg");
                 Int32 srcLen = EndIndex - startIndex;
 
-                if (startIndex > EndIndex || srcLen < 0)
+                if (srcLen > 0)
                 {
-                    return null;
+                    ImageSource = description.ToString().Substring(startIndex + IndexShift, srcLen);
                 }
-
-                ImageSource = description.ToString().Substring(startIndex + IndexShift, srcLen);
-                return ImageSource;
             }
             return ImageSource;
         }

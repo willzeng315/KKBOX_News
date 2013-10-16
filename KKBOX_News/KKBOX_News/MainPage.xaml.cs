@@ -25,10 +25,6 @@ namespace KKBOX_News
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             NavigationService.RemoveBackEntry();
-            if (!App.ViewModel.IsTopicsXmlLoaded)
-            {
-                App.ViewModel.SelectTopicParser();
-            }
         }
 
         private void OnListBoxSelectionChanged(Object sender, SelectionChangedEventArgs e)
@@ -87,14 +83,13 @@ namespace KKBOX_News
         {
             MenuItem menuItem = (MenuItem)sender;
             MySelectedArticleDirectory mySelectedArticleDirectory = (MySelectedArticleDirectory)menuItem.DataContext;
-            DeleteDirectoryFromDB(mySelectedArticleDirectory.DirectoryIndex, mySelectedArticleDirectory);
-
+            DeleteDirectory(mySelectedArticleDirectory.DirectoryIndex);
         }
 
-        private void DeleteDirectoryFromDB(Int32 DirIndex, MySelectedArticleDirectory mySelectedArticleDirectory)
+        private void DeleteDirectory(Int32 directoryIndex)
         {
-            DBManager.Instance.DeleteDirectoryFromTable(DirIndex);
-            App.ViewModel.DeleteDirectory(mySelectedArticleDirectory);
+            DBManager.Instance.DeleteDirectoryFromTable(directoryIndex);
+            App.ViewModel.ReLoadDirectory();
         }
 
         private void OnSelectedDirectoyClick(Object sender, RoutedEventArgs e)

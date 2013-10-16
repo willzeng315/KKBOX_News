@@ -15,29 +15,6 @@ using KKBOX_News.AppService;
 
 namespace KKBOX_News
 {
-    public class LoginSettings
-    {
-        private static LoginSettings _instance;
-
-        private LoginSettings() { }
-
-        public static LoginSettings Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    _instance = new LoginSettings();
-                return _instance;
-            }
-        }
-
-        public String LastAccount;
-        public String LastPassword;
-        public String CurrentAccount;
-        public Boolean IsSaveAccountAndPassword;
-        public Boolean Login;
-    }
-
     public partial class LoginPage : PhoneApplicationPage
     {
         public LoginPage()

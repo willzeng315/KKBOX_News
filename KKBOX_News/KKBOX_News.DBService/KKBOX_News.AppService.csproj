@@ -90,11 +90,12 @@
     <Compile Include="DBManager.cs" />
     <Compile Include="InitializeDB.cs" />
     <Compile Include="LocalImageManipulation.cs" />
+    <Compile Include="LoginSettings.cs" />
     <Compile Include="MySelectedArticleDirectory.cs" />
     <Compile Include="PhotoChooser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RssXmlParser.cs" />
-    <Compile Include="UserSetting.cs" />
+    <Compile Include="UserSettings.cs" />
     <Compile Include="XmlDownloader.cs" />
   </ItemGroup>
   <ItemGroup>

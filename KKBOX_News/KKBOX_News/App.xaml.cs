@@ -36,8 +36,8 @@ namespace KKBOX_News
                 //Relogin create new MainViewModel
                 if (LoginSettings.Instance.Login || viewModel == null)
                 {
+                    LocalImageManipulation.Instance.SaveJpgToIsolateStorage("Images/KKBOX.jpg", "KKBOX.jpg");
                     LoginSettings.Instance.Login = false;
-                    LocalImageManipulation.Instance.SaveJpgToIsolateStorage("Images/KKBOX.jpg","KKBOX.jpg");
                     viewModel = new MainViewModel();
                 }
 

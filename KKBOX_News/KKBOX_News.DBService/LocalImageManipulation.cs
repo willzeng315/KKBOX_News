@@ -30,13 +30,13 @@ namespace KKBOX_News.AppService
             }
         }
 
-        public void SaveJpgToIsolateStorage(BitmapImage bitmap, String JpgPath)
+        public void SaveBitImageAsJpgToStorage(BitmapImage bitmap, String JpgName)
         {
             using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                if (!myIsolatedStorage.FileExists(JpgPath))
+                if (!myIsolatedStorage.FileExists(JpgName))
                 {
-                    IsolatedStorageFileStream fileStream = myIsolatedStorage.CreateFile(JpgPath);
+                    IsolatedStorageFileStream fileStream = myIsolatedStorage.CreateFile(JpgName);
 
                     WriteableBitmap wb = new WriteableBitmap(bitmap);
 

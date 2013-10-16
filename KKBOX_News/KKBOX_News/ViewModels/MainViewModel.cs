@@ -17,8 +17,10 @@ namespace KKBOX_News
     {
         public MainViewModel()
         {
+            SelectTopicParser();
             LoadDirectoris();
             LoadSettingList();
+            
         }
 
         private void LoadSettingList()
@@ -118,17 +120,24 @@ namespace KKBOX_News
         private void LoadTopics(String result) 
         {
             Topics = new ObservableCollection<ChannelListItem>();
-
-            XDocument ParsedTopic = XDocument.Parse(result);
-            TopicsInXml = ParsedTopic.Element("kkbox_news").Elements("channel");
-
-            foreach (XElement channel in TopicsInXml)
+            try
             {
-                Topics.Add(new ChannelListItem() { Title = channel.Element("title").Value, ImagePath = channel.Element("icon").Value, Url = channel.Element("url").Value });
-            }
 
-            Topics.Add(new ChannelListItem() { Title = "瀏覽紀錄", IsReadFromRss = false, ImagePath = "Images/lib_browse.png" });
-            IsTopicsXmlLoaded = true;
+                XDocument ParsedTopic = XDocument.Parse(result);
+                TopicsInXml = ParsedTopic.Element("kkbox_news").Elements("channel");
+
+                foreach (XElement channel in TopicsInXml)
+                {
+                    Topics.Add(new ChannelListItem() { Title = channel.Element("title").Value, ImagePath = channel.Element("icon").Value, Url = channel.Element("url").Value });
+                }
+
+                Topics.Add(new ChannelListItem() { Title = "瀏覽紀錄", IsReadFromRss = false, ImagePath = "Images/lib_browse.png" });
+                IsTopicsXmlLoaded = true;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.ToString());
+            }
         }
 
         public void SelectTopicParser()
@@ -141,16 +150,11 @@ namespace KKBOX_News
             topicsXml.GetStringResponse(xmlUri);
         }
 
-        public void DeleteDirectory(MySelectedArticleDirectory deleteItem)
-        {
-            ArticleDirectories.Remove(deleteItem);
-        }
-
         public Int32 GetLastDirectoryIndex()
         {
             Int32 DirectoryIndex = 2; //dirID = 1 is externalArticle
 
-            if (App.ViewModel.ArticleDirectories.Count > 0)
+            if (App.ViewModel.ArticleDirectories.Count > 1)
             {
                 DirectoryIndex = ArticleDirectories[ArticleDirectories.Count - 1].DirectoryIndex + 1;
             }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -24,8 +25,9 @@ namespace KKBOX_News.AppService
             {
                 webClient.DownloadStringAsync(new Uri(xmlURL, UriKind.Absolute));
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Debug.WriteLine(e.ToString());
                 if (XmlLoadCompleted != null)
                 {
                     XmlLoadCompleted("");
