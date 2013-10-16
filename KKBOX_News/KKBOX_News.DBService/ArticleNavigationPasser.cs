@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KKBOX_News.DBService
+namespace KKBOX_News.AppService
 {
     public class ArticleNavigationPasser
     {

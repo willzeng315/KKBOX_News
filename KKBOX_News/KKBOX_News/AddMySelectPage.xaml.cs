@@ -15,8 +15,8 @@ using System.ComponentModel;
 using System.Windows.Media;
 using System.IO.IsolatedStorage;
 using System.IO;
-using KKBOX_News.DBService;
 using KKBOX_News.ViewModels;
+using KKBOX_News.AppService;
 
 namespace KKBOX_News
 {
@@ -30,29 +30,18 @@ namespace KKBOX_News
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
-            IDictionary<String, String> parameters = this.NavigationContext.QueryString;
-
-            if (coverChooser != null)
-            {
-                selectedImageName = coverChooser.GetSelectedImageName();
-                AdderModel.SetCoverImage(coverChooser.GetChooseImage());
-            }
         }
 
         private void OnChoosePhotoClick(Object sender, RoutedEventArgs e)
         {
-            coverChooser = new PhotoChooser();
+            PhotoChooser coverChooser = new PhotoChooser();
+            coverChooser.PhotoChoseCompleted += OnPhotoChoseCompleted;
         }
 
-        private Int32 GetLastDirectoryIndex()
+        private void OnPhotoChoseCompleted(BitmapImage cover, String imageName)
         {
-            Int32 DirectoryIndex = 2; //dirID = 1 is externalArticle
-
-            if (App.ViewModel.ArticleDirectories.Count > 0)
-            {
-                DirectoryIndex = App.ViewModel.ArticleDirectories[App.ViewModel.ArticleDirectories.Count - 1].DirectoryIndex + 1;
-            }
-            return DirectoryIndex;
+            selectedImageName = imageName;
+            AdderModel.SetCoverImage(cover);
         }
 
         private void OnListBoxSelectionChanged(Object sender, SelectionChangedEventArgs e)
@@ -63,7 +52,7 @@ namespace KKBOX_News
 
         private void OnConfirmButtonClick(Object sender, RoutedEventArgs e)
         {
-            AdderModel.AddArticleAction(selectedImageName, GetLastDirectoryIndex());
+            AdderModel.AddArticleAction(selectedImageName);
             NavigationService.GoBack();
         }
 
@@ -73,12 +62,6 @@ namespace KKBOX_News
         }
 
         #region property
-
-        private PhotoChooser coverChooser
-        {
-            get;
-            set;
-        }
 
         private String selectedImageName
         {
@@ -98,8 +81,6 @@ namespace KKBOX_News
                 return adderModel;
             }
         }
-
-
         #endregion
     }
 }

@@ -14,7 +14,7 @@ using System.ServiceModel.Syndication;
 using System.Xml;
 using Microsoft.Phone.Tasks;
 using System.IO.IsolatedStorage;
-using KKBOX_News.DBService;
+using KKBOX_News.AppService;
 
 namespace KKBOX_News
 {
@@ -36,7 +36,6 @@ namespace KKBOX_News
                 //Relogin create new MainViewModel
                 if (LoginSettings.Instance.Login || viewModel == null)
                 {
-                    Debug.WriteLine("App");
                     LoginSettings.Instance.Login = false;
                     LocalImageManipulation.Instance.SaveJpgToIsolateStorage("Images/KKBOX.jpg","KKBOX.jpg");
                     viewModel = new MainViewModel();

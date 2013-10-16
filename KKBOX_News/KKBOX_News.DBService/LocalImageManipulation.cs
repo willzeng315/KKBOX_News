@@ -10,7 +10,7 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Windows.Resources;
 
-namespace KKBOX_News.DBService
+namespace KKBOX_News.AppService
 {
     public class LocalImageManipulation
     {

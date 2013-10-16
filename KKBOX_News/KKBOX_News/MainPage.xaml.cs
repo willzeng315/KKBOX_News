@@ -10,22 +10,18 @@ using Microsoft.Phone.Shell;
 using System.Xml.Linq;
 using System.Diagnostics;
 using Microsoft.Phone.Tasks;
-using KKBOX_News.DBService;
+using KKBOX_News.AppService;
 
 namespace KKBOX_News
 {
     public partial class MainPage : PhoneApplicationPage
     {
-        // 建構函式
         public MainPage()
         {
             InitializeComponent();
-            Debug.WriteLine("MainPage");
-            // 將清單方塊控制項的資料內容設為範例資料
             DataContext = App.ViewModel;
         }
 
-        // 載入 ViewModel 項目的資料
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             NavigationService.RemoveBackEntry();

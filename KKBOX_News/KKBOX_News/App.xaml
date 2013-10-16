@@ -5,6 +5,7 @@
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:local="clr-namespace:KKBOX_News"
+    xmlns:converter="clr-namespace:KKBOX_News.AppService;assembly=KKBOX_News.AppService"
     xmlns:sys="clr-namespace:System;assembly=mscorlib">
     
 
@@ -69,8 +70,8 @@
             <Setter Property="FontSize" Value="{StaticResource PanoramaItemHeaderFontSize}"/>
             <Setter Property="CharacterSpacing" Value="-35"/>
         </Style>
-        <local:BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
-        <local:BooleanToTextWarpConverter x:Key="BooleanToWarp"/>
+        <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
+        <converter:BooleanToTextWarpConverter x:Key="BooleanToWarp"/>
         <local:LocalizedStrings x:Key="LocalizedStrings"/>
     </Application.Resources>
 

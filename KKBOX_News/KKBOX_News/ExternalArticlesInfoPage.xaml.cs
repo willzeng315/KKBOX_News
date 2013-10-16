@@ -8,7 +8,7 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.Diagnostics;
-using KKBOX_News.DBService;
+using KKBOX_News.AppService;
 
 namespace KKBOX_News
 {

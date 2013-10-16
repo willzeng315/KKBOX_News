@@ -10,7 +10,7 @@ using Microsoft.Phone.Shell;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using KKBOX_News.Resources;
-using KKBOX_News.DBService;
+using KKBOX_News.AppService;
 
 namespace KKBOX_News
 {

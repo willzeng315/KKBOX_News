@@ -11,7 +11,7 @@ using System.Diagnostics;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using KKBOX_News.Resources;
-using KKBOX_News.DBService;
+using KKBOX_News.AppService;
 
 namespace KKBOX_News
 {
@@ -46,7 +46,6 @@ namespace KKBOX_News
             CheckUserAccountTableExistAndCreate();
             LoadUserSettings();
             DataContext = this;
-            Debug.WriteLine("LoginPage");
         }
 
         private void CheckUserAccountTableExistAndCreate()

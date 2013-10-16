@@ -8,8 +8,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
-using KKBOX_News.DBService;
-using KKBOX_News.NetworkService;
+using KKBOX_News.AppService;
+
 
 namespace KKBOX_News
 {
@@ -144,6 +144,22 @@ namespace KKBOX_News
         public void DeleteDirectory(MySelectedArticleDirectory deleteItem)
         {
             ArticleDirectories.Remove(deleteItem);
+        }
+
+        public Int32 GetLastDirectoryIndex()
+        {
+            Int32 DirectoryIndex = 2; //dirID = 1 is externalArticle
+
+            if (App.ViewModel.ArticleDirectories.Count > 0)
+            {
+                DirectoryIndex = ArticleDirectories[ArticleDirectories.Count - 1].DirectoryIndex + 1;
+            }
+            return DirectoryIndex;
+        }
+
+        public void ReLoadDirectory()
+        {
+            LoadDirectoris();
         }
 
         private void OnXmlLoadCompleted(String result)

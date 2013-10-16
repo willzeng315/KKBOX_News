@@ -16,8 +16,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Threading;
 using KKBOX_News.Resources;
-using KKBOX_News.DBService;
-using KKBOX_News.NetworkService;
+using KKBOX_News.AppService;
 
 namespace KKBOX_News
 {
@@ -317,7 +316,6 @@ namespace KKBOX_News
 
         private void OnMenuItemAddMySelectClick(Object sender, RoutedEventArgs e)
         {
-
             MenuItem menuItem = (MenuItem)sender;
             ArticleItem articleItem = (ArticleItem)menuItem.DataContext;
 
@@ -561,7 +559,6 @@ namespace KKBOX_News
         {
             Button button = (Button)sender;
             ArticleItem articleItem = (ArticleItem)button.DataContext;
-            Debug.WriteLine(String.Format("directoryIndex = {0}", directoryIndex));
             if (directoryIndex == 0)
             {
                 DBManager.Instance.InsertRecordToTable(articleItem);

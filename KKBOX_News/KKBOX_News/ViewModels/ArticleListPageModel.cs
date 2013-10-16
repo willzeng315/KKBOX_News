@@ -1,5 +1,4 @@
-﻿using KKBOX_News.DBService;
-using KKBOX_News.NetworkService;
+﻿using KKBOX_News.AppService;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -104,12 +103,11 @@ namespace KKBOX_News
         public void DeleteDirectoryArticles()
         {
             DBManager.Instance.DeleteArticleFromTable(DirectoryIndex);
-
-            for (int i = 0; i < ArticleNavigationPasser.Instance.Articles.Count; i++)
+            LoadDirectoryArticlesFromTable();
+            if (DirectoryIndex == 1)
             {
-                KKBOXArticles.Remove(ArticleNavigationPasser.Instance.Articles[i]);
+                SetArticleImageCollapsed();
             }
-
             ArticleNavigationPasser.Instance.Articles.Clear();
         }
 

@@ -1,4 +1,4 @@
-﻿using KKBOX_News.DBService;
+﻿using KKBOX_News.AppService;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

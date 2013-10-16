@@ -1,4 +1,4 @@
-﻿using KKBOX_News.DBService;
+﻿using KKBOX_News.AppService;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -107,7 +107,6 @@ namespace KKBOX_News.ViewModels
             ItemTitle = "";
             IsChecked = false;
         }
-
     }
 
     public class AdderMySelectPageModel
@@ -136,7 +135,7 @@ namespace KKBOX_News.ViewModels
             }
         }
 
-        public void AddArticleAction(String imageName, Int32 directoryIndex)
+        public void AddArticleAction(String imageName)
         {
             for (int i = 3; i < AdderListBox.Count; i++) //start with my select because i=0 is space, i=1 is new directory,i=2 is space
             {
@@ -153,7 +152,7 @@ namespace KKBOX_News.ViewModels
 
             if (AdderListBox[1].IsChecked) //new directory 
             {
-                NewDirectory(imageName, directoryIndex);
+                NewDirectory(imageName, App.ViewModel.GetLastDirectoryIndex());
             }
             ArticleNavigationPasser.Instance.Articles.Clear();
         }
@@ -169,14 +168,11 @@ namespace KKBOX_News.ViewModels
                 imageName = "KKBOX.jpg"; // prevent user want to create new folder but not choose image 
             }
 
-            mySelectedArticleDirectory.CoverImage = LocalImageManipulation.Instance.ReadJpgFromStorage(imageName);
-            mySelectedArticleDirectory.DirectoryIndex = directoryIndex;// GetLastDirectoryIndex();
-
-            App.ViewModel.ArticleDirectories.Add(mySelectedArticleDirectory);
-
             DBManager.Instance.InsertDirectoryToTable(AdderListBox[1].ItemTitle, imageName);
 
-            DBManager.Instance.InsertArticleToTable(mySelectedArticleDirectory.DirectoryIndex);
+            DBManager.Instance.InsertArticleToTable(directoryIndex);
+
+            App.ViewModel.ReLoadDirectory();
         }
 
         public void SetCoverImage(BitmapImage cover)

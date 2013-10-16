@@ -15,7 +15,7 @@ using System.Windows.Controls.Primitives;
 using Microsoft.Phone.Tasks;
 using System.IO.IsolatedStorage;
 using System.Windows.Media.Imaging;
-using KKBOX_News.DBService;
+using KKBOX_News.AppService;
 
 namespace KKBOX_News
 {
@@ -47,12 +47,6 @@ namespace KKBOX_News
                 }
             }
             isReturnFromPhotoChooser = false;
-
-            if (coverChooser != null)
-            {
-                selectedImageName = coverChooser.GetSelectedImageName();
-                CoverImage = coverChooser.GetChooseImage();
-            }
         }
 
         #region Property
@@ -138,37 +132,26 @@ namespace KKBOX_News
         private void OnChoosePhotoClick(Object sender, RoutedEventArgs e)
         {
             isReturnFromPhotoChooser = true;
-            coverChooser = new PhotoChooser();
+            PhotoChooser coverChooser = new PhotoChooser();
+            coverChooser.PhotoChoseCompleted += OnPhotoChoseCompleted;
+        }
+
+        private void OnPhotoChoseCompleted(BitmapImage cover, String imageName)
+        {
+            selectedImageName = imageName;
+            CoverImage = cover;
         }
 
         private void OnConfirmButtonClick(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < App.ViewModel.ArticleDirectories.Count; i++)
-            {
-                if (App.ViewModel.ArticleDirectories[i].DirectoryIndex == directoryIndex)
-                {
-                    App.ViewModel.ArticleDirectories[i].Title = CoverTitle;
-
-                    if (selectedImageName != null)
-                    {
-                        App.ViewModel.ArticleDirectories[i].CoverImage = LocalImageManipulation.Instance.ReadJpgFromStorage(selectedImageName);
-                    }
-                    UpdateDirectoryInfoToTable();
-                    break;
-                }
-            }
+            UpdateDirectoryInfoToTable();
+            App.ViewModel.ReLoadDirectory();
             NavigationService.GoBack();
         }
 
         private void OnCancelButtonClick(Object sender, RoutedEventArgs e)
         {
             NavigationService.GoBack();
-        }
-
-        private PhotoChooser coverChooser
-        {
-            get;
-            set;
         }
     }
 }

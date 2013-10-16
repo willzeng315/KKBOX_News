@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace KKBOX_News.DBService
+namespace KKBOX_News.AppService
 {
     public class ArticleItem : BindableBase
     {

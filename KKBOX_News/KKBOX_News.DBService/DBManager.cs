@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using KKBOX_News;
 
-namespace KKBOX_News.DBService
+namespace KKBOX_News.AppService
 {
     public class DBManager
     {

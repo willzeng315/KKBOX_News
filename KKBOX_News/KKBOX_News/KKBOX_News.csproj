@@ -101,7 +101,6 @@
       <DependentUpon>ArticleListPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="LocalizedStrings.cs" />
-    <Compile Include="PhotoChooser.cs" />
     <Compile Include="Resources\AppResources.en-US.Designer.cs">
       <DependentUpon>AppResources.en-US.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -132,7 +131,6 @@
     </Compile>
     <Compile Include="ViewModels\SettingListItem.cs" />
     <Compile Include="ViewModels\ArticleListPageModel.cs" />
-    <Compile Include="Converters.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -254,13 +252,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\KKBOX_News.DBService\KKBOX_News.DBService.csproj">
+    <ProjectReference Include="..\KKBOX_News.DBService\KKBOX_News.AppService.csproj">
       <Project>{ACFD8CAB-25EB-4152-AAF8-DF8818B75C46}</Project>
-      <Name>KKBOX_News.DBService</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\KKBOX_News.NetworkService\KKBOX_News.NetworkService.csproj">
-      <Project>{960EF477-85BF-4305-9E22-480411D82415}</Project>
-      <Name>KKBOX_News.NetworkService</Name>
+      <Name>KKBOX_News.AppService</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
