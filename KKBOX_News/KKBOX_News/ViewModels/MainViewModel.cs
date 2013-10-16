@@ -20,7 +20,7 @@ namespace KKBOX_News
             SelectTopicParser();
             LoadDirectoris();
             LoadSettingList();
-            
+
         }
 
         private void LoadSettingList()
@@ -39,7 +39,7 @@ namespace KKBOX_News
                 Function = "logout",
                 Type = SettingItemTemplate.TEMPLATE_TEXT_CONTENT
             });
-            Settings.Add(new SettingListItem() 
+            Settings.Add(new SettingListItem()
             {
                 Title = AppResources.Action,
                 Type = SettingItemTemplate.TEMPLATE_SPACE
@@ -114,10 +114,10 @@ namespace KKBOX_News
             {
                 Debug.WriteLine(e.ToString());
             }
-                
+
         }
 
-        private void LoadTopics(String result) 
+        private void LoadTopics(String result)
         {
             Topics = new ObservableCollection<ChannelListItem>();
             try
@@ -146,7 +146,7 @@ namespace KKBOX_News
             String xmlUri = "https://mail.kkbox.com.tw/~willzeng/SelectChannel.xml";
 
             XmlDownloader topicsXml = new XmlDownloader();
-            topicsXml.XmlLoadCompleted+=OnXmlLoadCompleted;
+            topicsXml.XmlLoadCompleted += OnXmlLoadCompleted;
             topicsXml.GetStringResponse(xmlUri);
         }
 
@@ -174,7 +174,7 @@ namespace KKBOX_News
         #region Property
 
         private IEnumerable<XElement> TopicsInXml;
-        
+
         private Boolean isTopicsXmlLoaded;
         public Boolean IsTopicsXmlLoaded
         {

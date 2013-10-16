@@ -59,10 +59,9 @@ namespace KKBOX_News
         }
 
         #endregion
-        public ChannelListItem() 
+        public ChannelListItem()
         {
             IsReadFromRss = true;
         }
     }
-    
 }

@@ -22,6 +22,5 @@ namespace KKBOX_News.AppService
             }
         }
         public List<ArticleItem> Articles = new List<ArticleItem>();
-        
     }
 }

@@ -9,7 +9,7 @@ using KKBOX_News.AppService;
 
 namespace KKBOX_News
 {
-    public class SearchLocalArticles 
+    public class SearchLocalArticles
     {
         public SearchLocalArticles()
         {
@@ -42,7 +42,7 @@ namespace KKBOX_News
             }
             return searchArticleResult;
         }
-        
+
         private List<ArticleItem> allDBArticles
         {
             get;

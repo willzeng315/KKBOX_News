@@ -171,7 +171,7 @@ namespace KKBOX_News.AppService
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Debug.WriteLine(e.ToString());
             }

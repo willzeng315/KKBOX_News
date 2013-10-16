@@ -77,7 +77,7 @@ namespace KKBOX_News.AppService
                     cmd.CommandText = String.Format("SELECT * FROM articleBrowseRecordUser{0}", UserId);
                     using (SqliteDataReader reader = cmd.ExecuteReader())
                     {
-                        if(reader.Read())
+                        if (reader.Read())
                         {
                             recordTableFirstID = reader.GetInt32(0);
                             if (recordArticle.Title == reader.GetString(1))
@@ -126,7 +126,7 @@ namespace KKBOX_News.AppService
                     }
                     if (currentRecords == MaxDisplayRecords)
                     {
-                        cmd.CommandText = String.Format("DELETE FROM articleBrowseRecordUser{0} WHERE id={1}",UserId, recordTableFirstID);
+                        cmd.CommandText = String.Format("DELETE FROM articleBrowseRecordUser{0} WHERE id={1}", UserId, recordTableFirstID);
                         cmd.ExecuteNonQuery();
                     }
 
@@ -317,7 +317,7 @@ namespace KKBOX_News.AppService
                         {
                             allArticles.Add(new ArticleItem()
                             {
-                                
+
                                 Title = reader.GetString(2),
                                 Content = reader.GetString(3),
                                 IconImagePath = reader.GetString(4),
@@ -391,7 +391,7 @@ namespace KKBOX_News.AppService
                     int n = cmd.ExecuteNonQuery();
                     using (SqliteDataReader reader = cmd.ExecuteReader())
                     {
-                        
+
                         if (reader.Read())
                         {
                             UserId = reader.GetInt32(0);
@@ -435,7 +435,7 @@ namespace KKBOX_News.AppService
 
                 using (SqliteCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = String.Format("SELECT * FROM userAccount WHERE id={0}",UserId);
+                    cmd.CommandText = String.Format("SELECT * FROM userAccount WHERE id={0}", UserId);
                     using (SqliteDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -507,7 +507,6 @@ namespace KKBOX_News.AppService
                 }
             }
         }
-
         public void CreateNewAcoount(String account, String password)
         {
             using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
@@ -530,6 +529,5 @@ namespace KKBOX_News.AppService
                 }
             }
         }
-       
     }
 }

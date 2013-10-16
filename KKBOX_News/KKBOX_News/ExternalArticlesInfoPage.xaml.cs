@@ -19,7 +19,7 @@ namespace KKBOX_News
             InitializeComponent();
             ExternalArticle = new ArticleItem();
             ExternalArticle.Link = "http://";
-            
+
             DataContext = this;
         }
 
@@ -34,6 +34,5 @@ namespace KKBOX_News
             get;
             set;
         }
-    
     }
 }

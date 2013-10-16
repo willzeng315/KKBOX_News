@@ -27,7 +27,7 @@ namespace KKBOX_News.AppService
     {
         public object Convert(Object value, Type targetType, Object parameter, CultureInfo culture)
         {
-            
+
             return (Boolean)value ? TextWrapping.Wrap : TextWrapping.NoWrap;
         }
 

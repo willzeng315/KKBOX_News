@@ -32,7 +32,7 @@ namespace KKBOX_News.AppService
             set;
         }
 
-        private String title ="";
+        private String title = "";
         public String Title
         {
             get

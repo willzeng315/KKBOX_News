@@ -39,7 +39,7 @@ namespace KKBOX_News
             }
             if (!DBManager.Instance.VerifyAccountExists(sAccount) && verifyPasswordEqual())
             {
-                DBManager.Instance.CreateNewAcoount(sAccount,sPassword);
+                DBManager.Instance.CreateNewAcoount(sAccount, sPassword);
                 this.NavigationService.GoBack();
             }
         }

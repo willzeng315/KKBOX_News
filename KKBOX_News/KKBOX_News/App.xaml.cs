@@ -31,7 +31,7 @@ namespace KKBOX_News
         {
             get
             {
-                
+
                 // 延遲建立檢視模型，直到必要為止
                 //Relogin create new MainViewModel
                 if (LoginSettings.Instance.Login || viewModel == null)
@@ -142,7 +142,7 @@ namespace KKBOX_News
             {
                 LoginSettings.Instance.IsSaveAccountAndPassword = isSaveAccountAndPassword;
             }
-                
+
         }
 
         public static void SaveSettings()
