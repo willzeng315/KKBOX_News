@@ -139,7 +139,7 @@ namespace KKBOX_News.AppService
             }
         }
 
-        public void InitialUserTableData(Int32 userId)
+        public void InitialUserTableData(Int32 userId, String externalDirName, String MyDirName)
         {
             try
             {
@@ -154,14 +154,14 @@ namespace KKBOX_News.AppService
                         cmd.Parameters.Add("@directoryName", null);
                         cmd.Parameters.Add("@imagePath", null);
 
-                        cmd.Parameters["@directoryName"].Value = "外部文章";
+                        cmd.Parameters["@directoryName"].Value = externalDirName;
                         cmd.Parameters["@imagePath"].Value = "KKBOX.jpg"; //Default Image
 
                         cmd.ExecuteNonQuery();
 
                         for (int i = 0; i < 3; i++)
                         {
-                            cmd.Parameters["@directoryName"].Value = "個人精選" + (i + 1);
+                            cmd.Parameters["@directoryName"].Value = String.Format("{0}{1}", MyDirName,(i+1)); //"個人精選" + (i + 1);
                             cmd.Parameters["@imagePath"].Value = "KKBOX.jpg"; //Default Image
 
                             cmd.ExecuteNonQuery();

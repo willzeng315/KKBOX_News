@@ -293,4 +293,13 @@
   <data name="RegistrationTitle" xml:space="preserve">
     <value>注册帐号</value>
   </data>
+  <data name="ExternalDirTitle" xml:space="preserve">
+    <value>外部文章</value>
+  </data>
+  <data name="IntialDirTitle" xml:space="preserve">
+    <value>个人精选</value>
+  </data>
+  <data name="NewDirectory" xml:space="preserve">
+    <value>新資料夾</value>
+  </data>
 </root>

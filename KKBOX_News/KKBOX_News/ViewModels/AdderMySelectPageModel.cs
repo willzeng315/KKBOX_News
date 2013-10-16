@@ -1,4 +1,5 @@
 ﻿using KKBOX_News.AppService;
+using KKBOX_News.Resources;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -121,7 +122,7 @@ namespace KKBOX_News.ViewModels
         {
             AdderListBox = new ObservableCollection<AdderItem>();
             AdderListBox.Add(new AdderItem() { ItemTitle = "", Type = AdderItemTemplate.TEMPLATE_SPACE });
-            AdderListBox.Add(new AdderItem() { ItemTitle = "新資料夾", Type = AdderItemTemplate.TEMPLATE_TXETBOX });
+            AdderListBox.Add(new AdderItem() { ItemTitle = AppResources.NewDirectory, Type = AdderItemTemplate.TEMPLATE_TXETBOX });
             AdderListBox.Add(new AdderItem() { Type = AdderItemTemplate.TEMPLATE_COVERIMAGE });
             AdderListBox.Add(new AdderItem() { ItemTitle = "", Type = AdderItemTemplate.TEMPLATE_SPACE });
             for (int i = 1; i < App.ViewModel.ArticleDirectories.Count; i++)

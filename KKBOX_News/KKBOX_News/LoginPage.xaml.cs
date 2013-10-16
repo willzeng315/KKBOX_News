@@ -73,10 +73,12 @@ namespace KKBOX_News
 
         private void CheckUserTablesExistsAndCreate()
         {
+            String myDirectoryName = AppResources.IntialDirTitle;
+            String externalDirectoryName = AppResources.ExternalDirTitle;
             if (!InitializeDB.Instance.IsTableExists(String.Format("directoryTableUser{0}", userId)))
             {
                 InitializeDB.Instance.CreateUserTables(userId);
-                InitializeDB.Instance.InitialUserTableData(userId);
+                InitializeDB.Instance.InitialUserTableData(userId, externalDirectoryName, myDirectoryName);
             }
         }
 

@@ -322,6 +322,15 @@ namespace KKBOX_News.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 外部文章 的當地語系化字串。
+        /// </summary>
+        public static string ExternalDirTitle {
+            get {
+                return ResourceManager.GetString("ExternalDirTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 連結 的當地語系化字串。
         /// </summary>
         public static string ExternalLink {
@@ -354,6 +363,15 @@ namespace KKBOX_News.Resources {
         public static string ExternalWebOption {
             get {
                 return ResourceManager.GetString("ExternalWebOption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 個人精選 的當地語系化字串。
+        /// </summary>
+        public static string IntialDirTitle {
+            get {
+                return ResourceManager.GetString("IntialDirTitle", resourceCulture);
             }
         }
         
@@ -435,6 +453,15 @@ namespace KKBOX_News.Resources {
         public static string MySelectedTitle {
             get {
                 return ResourceManager.GetString("MySelectedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 新資料夾 的當地語系化字串。
+        /// </summary>
+        public static string NewDirectory {
+            get {
+                return ResourceManager.GetString("NewDirectory", resourceCulture);
             }
         }
         

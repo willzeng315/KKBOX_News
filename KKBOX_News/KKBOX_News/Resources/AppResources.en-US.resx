@@ -299,4 +299,13 @@
   <data name="RegistrationTitle" xml:space="preserve">
     <value>Account Registration</value>
   </data>
+  <data name="ExternalDirTitle" xml:space="preserve">
+    <value>External Article</value>
+  </data>
+  <data name="IntialDirTitle" xml:space="preserve">
+    <value>MyDirectory</value>
+  </data>
+  <data name="NewDirectory" xml:space="preserve">
+    <value>New Directory</value>
+  </data>
 </root>
