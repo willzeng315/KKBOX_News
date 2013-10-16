@@ -71,33 +71,40 @@ namespace KKBOX_News.AppService
 
         public void InitialAccoutData()
         {
-            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            try
             {
-                conn.Open();
-
-                using (SqliteCommand cmd = conn.CreateCommand())
+                using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
                 {
-                    cmd.Transaction = conn.BeginTransaction();
-                    cmd.CommandText = "INSERT INTO userAccount (account, password, openExternalWeb, openAutoUpdate, updateInterval) VALUES(@account, @password, @openExternalWeb, @openAutoUpdate, @updateInterval);SELECT last_insert_rowid();";
-                    cmd.Parameters.Add("@account", null);
-                    cmd.Parameters.Add("@password", null);
-                    cmd.Parameters.Add("@openExternalWeb", null);
-                    cmd.Parameters.Add("@openAutoUpdate", null);
-                    cmd.Parameters.Add("@updateInterval", null);
+                    conn.Open();
 
-                    for (int i = 0; i < 3; i++)
+                    using (SqliteCommand cmd = conn.CreateCommand())
                     {
-                        cmd.Parameters["@account"].Value = "a" + (i + 1);
-                        cmd.Parameters["@password"].Value = "a" + (i + 1);
-                        cmd.Parameters["@openExternalWeb"].Value = 0;
-                        cmd.Parameters["@openAutoUpdate"].Value = 0;
-                        cmd.Parameters["@updateInterval"].Value = 5;
+                        cmd.Transaction = conn.BeginTransaction();
+                        cmd.CommandText = "INSERT INTO userAccount (account, password, openExternalWeb, openAutoUpdate, updateInterval) VALUES(@account, @password, @openExternalWeb, @openAutoUpdate, @updateInterval);SELECT last_insert_rowid();";
+                        cmd.Parameters.Add("@account", null);
+                        cmd.Parameters.Add("@password", null);
+                        cmd.Parameters.Add("@openExternalWeb", null);
+                        cmd.Parameters.Add("@openAutoUpdate", null);
+                        cmd.Parameters.Add("@updateInterval", null);
 
-                        cmd.ExecuteNonQuery();
+                        for (int i = 0; i < 3; i++)
+                        {
+                            cmd.Parameters["@account"].Value = "a" + (i + 1);
+                            cmd.Parameters["@password"].Value = "a" + (i + 1);
+                            cmd.Parameters["@openExternalWeb"].Value = 0;
+                            cmd.Parameters["@openAutoUpdate"].Value = 0;
+                            cmd.Parameters["@updateInterval"].Value = 5;
+
+                            cmd.ExecuteNonQuery();
+                        }
+                        cmd.Transaction.Commit();
+                        cmd.Transaction = null;
                     }
-                    cmd.Transaction.Commit();
-                    cmd.Transaction = null;
                 }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.ToString());
             }
 
         }
@@ -134,32 +141,39 @@ namespace KKBOX_News.AppService
 
         public void InitialUserTableData(Int32 userId)
         {
-            using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
+            try
             {
-                conn.Open();
-
-                using (SqliteCommand cmd = conn.CreateCommand())
+                using (SqliteConnection conn = new SqliteConnection("Version=3,uri=file:KKBOX_NEWS.db"))
                 {
-                    cmd.Transaction = conn.BeginTransaction();
-                    cmd.CommandText = String.Format("INSERT INTO directoryTableUser{0} (directoryName, imagePath) VALUES(@directoryName, @imagePath);SELECT last_insert_rowid();", userId);
-                    cmd.Parameters.Add("@directoryName", null);
-                    cmd.Parameters.Add("@imagePath", null);
+                    conn.Open();
 
-                    cmd.Parameters["@directoryName"].Value = "外部文章";
-                    cmd.Parameters["@imagePath"].Value = "KKBOX.jpg"; //Default Image
-
-                    cmd.ExecuteNonQuery();
-
-                    for (int i = 0; i < 3; i++)
+                    using (SqliteCommand cmd = conn.CreateCommand())
                     {
-                        cmd.Parameters["@directoryName"].Value = "個人精選" + (i + 1);
+                        cmd.Transaction = conn.BeginTransaction();
+                        cmd.CommandText = String.Format("INSERT INTO directoryTableUser{0} (directoryName, imagePath) VALUES(@directoryName, @imagePath);SELECT last_insert_rowid();", userId);
+                        cmd.Parameters.Add("@directoryName", null);
+                        cmd.Parameters.Add("@imagePath", null);
+
+                        cmd.Parameters["@directoryName"].Value = "外部文章";
                         cmd.Parameters["@imagePath"].Value = "KKBOX.jpg"; //Default Image
 
                         cmd.ExecuteNonQuery();
+
+                        for (int i = 0; i < 3; i++)
+                        {
+                            cmd.Parameters["@directoryName"].Value = "個人精選" + (i + 1);
+                            cmd.Parameters["@imagePath"].Value = "KKBOX.jpg"; //Default Image
+
+                            cmd.ExecuteNonQuery();
+                        }
+                        cmd.Transaction.Commit();
+                        cmd.Transaction = null;
                     }
-                    cmd.Transaction.Commit();
-                    cmd.Transaction = null;
                 }
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine(e.ToString());
             }
         }
     }
